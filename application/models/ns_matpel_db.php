@@ -27,6 +27,21 @@ Class ns_matpel_db extends CI_Model {
 				$cari=$cari." AND pv.replid IN (SELECT idvariabel FROM ns_reff_company WHERE idcompany='".$this->input->post('idcompany')."' AND tipe='ns_matpel' ) ";
 			}
 
+			if ($this->input->post('idpredikattipe')<>""){
+				$cari=$cari." AND pv.idpredikattipe='".$this->input->post('idpredikattipe')."' ";
+			}
+
+			switch ($this->input->post('aktif')) {
+				case '1':
+					$cariaktif = " AND pv.aktif='1' ";
+					break;
+				case '2':
+					$cariaktif = " AND pv.aktif='0' ";
+					break;
+				default:
+				$cariaktif = " ";
+					break;
+			}
       	$sql="SELECT pv.*,CONCAT(ps.matpelkelompok,' ',ps.keterangan) as matpelkelompok
 									,CONCAT(ps2.matpelkelompok,' ',ps2.keterangan) as matpelkelompok2
 									,CONCAT(ps13.matpelkelompok,' ',ps13.keterangan) as matpelkelompok13
@@ -42,7 +57,7 @@ Class ns_matpel_db extends CI_Model {
       			LEFT JOIN ns_matpelkelompok ps3 ON ps3.replid=pv.idmatpelkelompokpersentase
 						LEFT JOIN ns_matpelkelompok ps4 ON ps4.replid=pv.idgroup
 						WHERE pv.replid IS NOT NULL
-						".$cari."
+						".$cari.$cariaktif."
       			ORDER BY ps2.matpelkelompok,pv.no_urut";
 				//echo $sql;
 				$data['show_table']=$this->dbx->data($sql);
@@ -50,6 +65,8 @@ Class ns_matpel_db extends CI_Model {
 				$data['idmatpelkelompok_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',iddepartemen,']',' ',matpelkelompok,' ',keterangan) as nama FROM ns_matpelkelompok WHERE aktif=1 AND iddepartemen='".$this->input->post('iddepartemen')."' ORDER BY nama",'up');
 				//die;
 				$data['idcompany_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM hrm_company ORDER BY nama",'up');
+				$data['idpredikattipe_opt'] = $this->dbx->opt("SELECT DISTINCT predikattipe as replid,predikattipe as nama FROM ns_predikat  WHERE aktif=1  ORDER BY nama",'up');
+				$data['aktif_opt'] =array('1'=>'Aktif','2'=>'Tidak Aktif','3'=>'Semuanya');
         return $data;
     }
 
@@ -70,6 +87,8 @@ Class ns_matpel_db extends CI_Model {
         $data['idmatpelkelompok_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',iddepartemen,']',' ',matpelkelompok,' ',keterangan) as nama FROM ns_matpelkelompok WHERE aktif=1 AND iddepartemen='".$data['isi']->iddepartemen."' ORDER BY nama",'up');
         $data['idmatpelkelompokraport_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',iddepartemen,']',' ',matpelkelompok,' ',keterangan) as nama FROM ns_matpelkelompok  WHERE aktif=1 AND iddepartemen='".$data['isi']->iddepartemen."' ORDER BY nama",'up');
         $data['idmatpelkelompokpersentase_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',iddepartemen,']',' ',matpelkelompok,' ',keterangan) as nama FROM ns_matpelkelompok WHERE aktif=1 AND iddepartemen='".$data['isi']->iddepartemen."' ORDER BY nama",'up');
+		$data['idpredikattipe_opt'] = $this->dbx->opt("SELECT DISTINCT predikattipe as replid,predikattipe as nama FROM ns_predikat  WHERE aktif=1  ORDER BY nama",'up');
+		
         return $data;
   }
 

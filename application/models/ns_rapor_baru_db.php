@@ -283,6 +283,7 @@ Class ns_rapor_baru_db extends CI_Model {
 															mp.idmatpelkelompokpersentase,
 															mp.idmatpelkelompok,
 															mp.external AS matpelexternal,
+															mp.idpredikattipe,
 															kk.jumlahskk
 															,pj.idmodultipe
 															,pdn.idpengembangandirivariabel,ROUND((AVG((pdn.nilai*pdv.persentasemurni)/100)),0) as nilai
@@ -326,6 +327,7 @@ Class ns_rapor_baru_db extends CI_Model {
 																		mp.idmatpelkelompokpersentase,
 																		mp.idmatpelkelompok,
 																		mp.external AS matpelexternal,
+																		mp.idpredikattipe,
 																		kk.jumlahskk
 																		,pj.idmodultipe
 																		,pdn.idpengembangandirivariabel,ROUND((AVG((pdn.nilai*pdv.persentasemurni)/100)),0) as nilai
@@ -371,11 +373,13 @@ Class ns_rapor_baru_db extends CI_Model {
 															mp.kkm,
 															mp.idmatpelkelompokpersentase,
 															mp.idmatpelkelompok,
-															mp.external AS matpelexternal
-															,pj.idmodultipe
-															,pdn.idpengembangandirivariabel,ROUND((AVG((pdn.nilai*pdv.persentasemurni)/100)),0) as nilai
-															,pt.prosestipe
-															,rmpd.matpeldeskripsi as matpeldeskripsitext
+															mp.external AS matpelexternal,
+															mp.idpredikattipe,
+															pj.idmodultipe,
+															pdn.idpengembangandirivariabel,
+															ROUND((AVG((pdn.nilai*pdv.persentasemurni)/100)),0) as nilai,
+															pt.prosestipe,
+															rmpd.matpeldeskripsi as matpeldeskripsitext
 										FROM ns_pembelajaranjadwal pj
 										INNER JOIN kelas k ON k.replid=pj.idkelas
 										INNER JOIN ns_prosestipe pt ON pt.replid=pj.idprosestipe
@@ -418,6 +422,7 @@ Class ns_rapor_baru_db extends CI_Model {
 		      							,mp.replid as idmatpel,mp.matpel,mp.kkm,mp.idmatpelkelompokpersentase
 		      							,mp.idmatpelkelompok
 												,mp.external as matpelexternal
+												,mp.idpredikattipe
 												,pdv.pengembangandirivariabel
 												,psv.prosessubvariabel,psv.persentasemurnisv, kk.jumlahskk
 												".$querynilai."

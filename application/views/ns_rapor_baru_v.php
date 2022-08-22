@@ -1331,12 +1331,12 @@
       											echo "<td align='left'>".ucwords(strtolower($CI->p_c->kalimatrapor(CEIL($rowkelompok->nilaiasli),0))) ."</td>";
       										}
                           if($isi->predikaton==1){
-                              echo "<td align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($rowkelompok->nilaiasli),$isi->predikattipe))."</td>";
+                              echo "<td align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($rowkelompok->nilaiasli),$rowkelompok->idpredikattipe))."</td>";
                           }
                         }else{
                           echo "<td align='center'>".CEIL($rowkelompok->nilaiasli)."</td>";
                           if($isi->predikaton==1){
-                              echo "<td align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($rowkelompok->nilaiasli),$isi->predikattipe))."</td>";
+                              echo "<td align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($rowkelompok->nilaiasli),$rowkelompok->idpredikattipe))."</td>";
                           }
                         }
                       }
@@ -1473,7 +1473,7 @@
                       }
                       echo "<th colspan=".COUNT($arrmodultipe).">".CEIL($average)."</th>";
                       if($isi->predikaton==1){
-                        echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($average),$isi->predikattipe))."</th>";
+                        echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($average),$pengetahuan->idpredikattipe))."</th>";
                       }
                   }
                   $matkel=$pengetahuan->matpelkelompok;
@@ -1809,7 +1809,7 @@
                                       */
                                         foreach((array)$arrmodultipe as $rowmodultipe) {
                                           if (isset($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe])){
-                                              echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe]),$isi->predikattipe))."</th>";
+                                              echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe]),$pengetahuan->idpredikattipe))."</th>";
                                           }else{
                                             echo "<th width='*'>-</th>";
                                           }
@@ -1846,11 +1846,11 @@
                                     }
 
                                     if($pengetahuan->detail<>1){
-                                        echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,$average,$isi->predikattipe))."</th>";
+                                        echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,$average,$pengetahuan->idpredikattipe))."</th>";
                                     }else{
                                       foreach((array)$arrmodultipe as $rowmodultipe) {
                                         if (isset($nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe])){
-                                            echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,$nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe],$isi->predikattipe))."</th>";
+                                            echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,$nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe],$pengetahuan->idpredikattipe))."</th>";
                                         }else{
                                           echo "<th width='*'>-</th>";
                                         }
@@ -1969,12 +1969,12 @@
                                       /*}
 
                                       if($keterampilan->detail<>1){
-                                          echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($average),$isi->predikattipe))."</th>";
+                                          echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($average),$keterampilan->idpredikattipe))."</th>";
                                       }else{
                                       */
                                         foreach((array)$arrmodultipe as $rowmodultipe) {
                                           if (isset($keterampilanmp13[$keterampilan->idmatpel][$rowmodultipe->idmodultipe])){
-                                              echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($keterampilanmp13[$keterampilan->idmatpel][$rowmodultipe->idmodultipe]),$isi->predikattipe))."</th>";
+                                              echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($keterampilanmp13[$keterampilan->idmatpel][$rowmodultipe->idmodultipe]),$keterampilan->idpredikattipe))."</th>";
                                           }else{
                                             echo "<th width='*'>-</th>";
                                           }
@@ -2006,11 +2006,11 @@
                                     }
 
                                     if($keterampilan->detail<>1){
-                                        echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,$average,$isi->predikattipe))."</th>";
+                                        echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,$average,$keterampilan->idpredikattipe))."</th>";
                                     }else{
                                       foreach((array)$arrmodultipe as $rowmodultipe) {
                                         if (isset($keterampilanmp13group[$keterampilan->idgroup][$rowmodultipe->idmodultipe])){
-                                            echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,$keterampilanmp13group[$keterampilan->idgroup][$rowmodultipe->idmodultipe],$isi->predikattipe))."</th>";
+                                            echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,$keterampilanmp13group[$keterampilan->idgroup][$rowmodultipe->idmodultipe],$keterampilan->idpredikattipe))."</th>";
                                         }else{
                                           echo "<th width='*'>-</th>";
                                         }
@@ -2125,12 +2125,12 @@
                                           /*}
 
                                           if($nonakademik->detail<>1){
-                                              echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($average),$isi->predikattipe))."</th>";
+                                              echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($average),$nonakademik->idpredikattipe))."</th>";
                                           }else{
                                           */
                                             foreach((array)$arrmodultipe as $rowmodultipe) {
                                               if (isset($nonakademikmp13[$nonakademik->idmatpel][$rowmodultipe->idmodultipe])){
-                                                  echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($nonakademikmp13[$nonakademik->idmatpel][$rowmodultipe->idmodultipe]),$isi->predikattipe))."</th>";
+                                                  echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($nonakademikmp13[$nonakademik->idmatpel][$rowmodultipe->idmodultipe]),$nonakademik->idpredikattipe))."</th>";
                                               }else{
                                                 echo "<th width='*'>-</th>";
                                               }
@@ -2162,11 +2162,11 @@
                                         }
 
                                         if($nonakademik->detail<>1){
-                                            echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,$average,$isi->predikattipe))."</th>";
+                                            echo "<th colspan=".COUNT($arrmodultipe).">".strtoupper($CI->dbx->ns_predikat($isi->departemen,$average,$nonakademik->idpredikattipe))."</th>";
                                         }else{
                                           foreach((array)$arrmodultipe as $rowmodultipe) {
                                             if (isset($nonakademikmp13group[$nonakademik->idgroup][$rowmodultipe->idmodultipe])){
-                                                echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,$nonakademikmp13group[$nonakademik->idgroup][$rowmodultipe->idmodultipe],$isi->predikattipe))."</th>";
+                                                echo "<th width='*'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,$nonakademikmp13group[$nonakademik->idgroup][$rowmodultipe->idmodultipe],$nonakademik->idpredikattipe))."</th>";
                                             }else{
                                               echo "<th width='*'>-</th>";
                                             }

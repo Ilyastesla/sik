@@ -113,7 +113,7 @@
                                                 */
                                                 echo "<th>Formula</th>";
                                                 echo "<th>Tampilan</th>";
-                                                echo "<th>Predikat</th>";
+                                                //echo "<th>Tipe Predikat</th>";
                                                 echo "<th>Keterangan</th>";
                                                 echo "<th>K13</th>";
                                                 echo "<th>Lokasi Sekolah</th>";
@@ -167,7 +167,7 @@
                             echo "Psikolog: ".($CI->p_c->cekaktif($row->psikologon))."<br/>";
                             echo "Modular :<a href=javascript:void(window.open('".site_url('ns_rapottipe/ubahmodular/'.$row->replid.'/'.!($row->modular))."')) >".$CI->p_c->cekaktif($row->modular)."</a><br/>";
                           echo "</td>";
-                          echo "<td align='center'>".$row->predikattipe."</td>";
+                          //echo "<td align='center'>".$row->predikattipe."</td>";
                           echo "<td align='center'>".strtoupper($row->keterangan)."</td>";
                           echo "<td align='center'>".$CI->p_c->cekaktif($row->k13)."</td>";
                           echo "<td align='center'>".$CI->dbx->variabel_company('ns_rapottipe',$row->replid)."</td>";
@@ -458,6 +458,7 @@
                           </div>
                                 </div>
                             </th></tr>
+            <!--
             <tr>
                 <th align="left">
                       <label class="control-label" for="minlengthfield">Tipe Predikat</label>
@@ -470,6 +471,7 @@
                 </div>
                       </div>
                   </th></tr>
+-->
           <tr>
               <th align="left">
                     <label class="control-label" for="minlengthfield">Batas Nilai</label>

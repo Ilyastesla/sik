@@ -117,7 +117,7 @@
               <div class="control-group">
             <div class="controls">:
                     <?php
-                      echo $isi->kategoritext;
+                      echo $isi->masalahtext;
                     ?>
             </div>
               </div>

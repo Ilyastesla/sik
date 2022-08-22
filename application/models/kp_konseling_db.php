@@ -52,7 +52,7 @@ Class kp_konseling_db extends CI_Model {
                                 ,ta.tahunajaran as tahunajarantext,ta.departemen as departementext,c.nama as companytext
                                 ,k.kelas as kelastext, CONCAT(p.nip,' ',p.nama ) as namawalitext
                                 , CONCAT(p2.nip,' ',p2.nama ) as createdbytext
-                                ,jl.nama as jenislaporantext,t.nama as tempattext,rk.nama as kategoritext,rp.prioritas as prioritastext
+                                ,jl.nama as jenislaporantext,t.nama as tempattext,rk.nama as masalahtext,rp.prioritas as prioritastext
                                 ,st.status as statustext
                                 ,(SELECT 1 FROM kp_konselingreport WHERE idkonseling=r.replid AND fase=1 LIMIT 1) as onproses
                         FROM kp_konseling r
@@ -144,7 +144,7 @@ Class kp_konseling_db extends CI_Model {
                         ,ta.tahunajaran as tahunajarantext,ta.departemen as departementext,c.nama as companytext
                         ,k.kelas as kelastext, CONCAT(p.nip,' ',p.nama ) as namawalitext
                         , CONCAT(p2.nip,' ',p2.nama ) as createdbytext
-                        ,jl.nama as jenislaporantext,t.nama as tempattext,rk.nama as kategoritext,rp.prioritas as prioritastext
+                        ,jl.nama as jenislaporantext,t.nama as tempattext,rk.nama as masalahtext,rp.prioritas as prioritastext
                         ,st.status as statustext
                         ,(SELECT 1 FROM kp_konselingreport WHERE idkonseling=r.replid AND fase=1 LIMIT 1) as onproses
                 FROM kp_konseling r

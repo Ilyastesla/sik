@@ -86,6 +86,34 @@
                 				              </div>
                 						         </th>
       			                  </tr>
+									<tr>
+											
+							<th align="left">
+                                    <label class="control-label" for="minlengthfield">Tipe Predikat</label>
+                                    <div class="control-group">
+                                      <div class="controls">:
+									  <?php
+		                		$arridpredikattipe='data-rule-required=false id="idpredikattipe" onchange=javascript:this.form.submit();';
+		                		echo form_dropdown('idpredikattipe',$idpredikattipe_opt,$this->input->post('idpredikattipe'),$arridpredikattipe);
+		                	?>
+                                          <?php //echo  <p id="message"></p> ?>
+                                      </div>
+                                    </div>
+                                   </th>
+                                  <th align="left">
+                                    <label class="control-label" for="minlengthfield">Status</label>
+                                    <div class="control-group">
+                                      <div class="controls">:
+                                          <?php
+                                            $arraktif='data-rule-required=false onchange=javascript:this.form.submit();';
+                                            echo form_dropdown('aktif',$aktif_opt,$this->input->post('aktif'),$arraktif);
+                                          ?>
+                                          <?php //echo  <p id="message"></p> ?>
+                                      </div>
+                                    </div>
+                                   </th>
+
+          			                  </tr>
     		                </table>
   		            <?php
   			            echo form_close();
@@ -106,6 +134,7 @@
                                                 echo "<th>KTSP</th>";
                                                 echo "<th>K13</th>";
                                                 echo "<th>KKM</th>";
+												echo "<th>Tipe Predikat</th>";
                                                 echo "<th>Keterangan</th>";
                                                 echo "<th>No. Urut</th>";
                                                 echo "<th>Tampilan</th>";
@@ -133,6 +162,7 @@
                               echo "Group: ".$row->grouptext."<br/>";
                           echo "</td>";
 											    echo "<td align='center'>".strtoupper($row->kkm)."</td>";
+												echo "<td align='center'>".strtoupper($row->idpredikattipe)."</td>";
 											    echo "<td align='center'>".strtoupper($row->keterangan)."</td>";
 											    echo "<td align='center'>".strtoupper($row->no_urut)."</td>";
                           echo "<th>";
@@ -325,6 +355,19 @@
 									</div>
 		                		</div>
 				        </th></tr>
+						<tr>
+							<th align="left">
+								<label class="control-label" for="minlengthfield">Tipe Predikat</label>
+								<div class="control-group">
+							<div class="controls">:
+							<?php
+		                		$arridpredikattipe='data-rule-required=true id="idpredikattipe"';
+		                		echo form_dropdown('idpredikattipe',$idpredikattipe_opt,$isi->idpredikattipe,$arridpredikattipe);
+		                	?>
+									<?php //echo  <p id="message"></p> ?>
+							</div>
+								</div>
+                  </th></tr>
 		    		<tr>
 				            <th align="left">
 		                		<label class="control-label" for="minlengthfield">Keterangan</label>

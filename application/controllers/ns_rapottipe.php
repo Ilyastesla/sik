@@ -56,6 +56,7 @@ parent::__construct();
 		//'portraitview' => $this->input->post('portraitview'),
 		//'gruppengembangandiri' => $this->input->post('gruppengembangandiri'),
 		//'nilaimurni' => $this->input->post('nilaimurni'),
+		//'predikat' => $this->input->post('predikat'),
 		$data = array(
 				'rapottipe' => $this->input->post('rapottipe'),
 				'iddepartemen' => $this->input->post('iddepartemen'),

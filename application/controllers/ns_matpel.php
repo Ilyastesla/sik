@@ -59,6 +59,7 @@ parent::__construct();
 				'idgroup' => $this->input->post('idgroup'),
 				'keterangan' => $this->input->post('keterangan'),
 				'kkm' => $this->input->post('kkm'),
+				'idpredikattipe' => $this->input->post('idpredikattipe'),
 				'no_urut' => $this->input->post('no_urut'),
 				'aktif' => $this->input->post('aktif'),
 				'external' => $this->input->post('external'),
