@@ -71,6 +71,7 @@
                                                 <th width='50'>No.</th>
                                                 <th>Jenjang</th>
                                                 <th>Tingkat</th>
+												<th>Fase</th>
                                                 <th>Kesetaraan</th>
                                                 <th>Keterangan</th>
                                                 <th>No. Urut</th>
@@ -86,6 +87,7 @@
 											    echo "<td align='center'>".$no++."</td>";
                           echo "<td align='center'>".strtoupper($row->departemen)."</td>";
                           echo "<td align='center'>".strtoupper($row->tingkat)."</td>";
+						  echo "<td align='center'>".strtoupper($row->fase)."</td>";
                           echo "<td align='center'>".$CI->p_c->romawi($row->idkesetaraan)."</td>";
 											    echo "<td align=''>".strtoupper($row->keterangan)."</td>";
                           echo "<td align=''>".strtoupper($row->urutan )."</td>";
@@ -146,6 +148,18 @@
 								<div class="controls">:
 			                	<?php
 			                		 echo form_input(array('class' => '','style'=>'margin: 0px 0px 5px; width: 687px;', 'id' => 'tingkat','name'=>'tingkat','value'=>$isi->tingkat,'data-rule-required'=>'true' ,'data-rule-maxlength'=>'500', 'data-rule-minlength'=>'1' ,'placeholder'=>'Masukkan 1-100 Karakter'));
+			                	?>
+			                	<?php //echo  <p id="message"></p> ?>
+								</div>
+	                		</div>
+			            </th></tr>
+						<tr>
+		            <th align="left">
+	                		<label class="control-label" for="minlengthfield">Fase</label>
+	                		<div class="control-group">
+								<div class="controls">:
+			                	<?php
+			                		 echo form_input(array('class' => '','style'=>'margin: 0px 0px 5px; width: 50px;', 'id' => 'fase','name'=>'fase','value'=>$isi->fase,'data-rule-required'=>'true' ,'data-rule-maxlength'=>'500', 'data-rule-minlength'=>'1' ,'placeholder'=>'Masukkan 1-100 Karakter'));
 			                	?>
 			                	<?php //echo  <p id="message"></p> ?>
 								</div>

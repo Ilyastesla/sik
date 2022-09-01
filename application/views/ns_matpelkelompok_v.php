@@ -71,6 +71,7 @@
                                                 <th width="80">Persentase (%)</th> -->
                                                 <th>Detail Rapor</th>
                                                 <th>Group Aktif</th>
+												<th>Sembunyikan Nilai</th>
                                                 <th>aktif</th>
                                                 <th width="80">Aksi</th>
                                             </tr>
@@ -88,6 +89,7 @@
                           //echo "<td align='center'>".$row->persentase."</td>";
 											    echo "<td align='center'>".($CI->p_c->cekaktif($row->detail))."</td>";
                           echo "<td align='center'>".($CI->p_c->cekaktif($row->groupon))."</td>";
+						  echo "<td align='center'>".$CI->p_c->cekaktif($row->sembunyinilai)."</td>";
 											    echo "<td align='center'>".$CI->p_c->cekaktif($row->aktif)."</td>";
 											    echo "<td align='center'>";
                           //if ($row->pakai<1){
@@ -210,7 +212,19 @@
     							</div>
     		        		</div>
     		            </th></tr>
-				    <tr>
+				    
+						<tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Sembunyikan Nilai</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		echo form_checkbox('sembunyinilai', '1', $isi->sembunyinilai);
+		                	?>
+		                	<?php //echo  <p id="message"></p> ?>
+							</div>
+		        		</div>
+		            </th></tr>	<tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Aktif</label>
 		        		<div class="control-group">

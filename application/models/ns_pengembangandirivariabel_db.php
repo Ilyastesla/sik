@@ -46,7 +46,7 @@ Class ns_pengembangandirivariabel_db extends CI_Model {
 
 		$data['idcompany_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM hrm_company ORDER BY nama",'up');
 
-		$sqlproses="SELECT replid,CONCAT(prosestipe, ' (',IF(aktif=1,'A','T'),')') as nama
+		$sqlproses="SELECT replid,CONCAT(prosestipe,' ',keterangan, ' (',IF(aktif=1,'A','T'),')') as nama
 								FROM ns_prosestipe
 								WHERE iddepartemen='".$this->input->post('iddepartemen')."'
 									AND replid IN (SELECT idvariabel FROM ns_reff_company WHERE idcompany='".$this->input->post('idcompany')."' AND tipe='ns_prosestipe' )

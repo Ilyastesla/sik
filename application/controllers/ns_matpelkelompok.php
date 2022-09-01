@@ -59,6 +59,7 @@ parent::__construct();
 				'no_urut' => $this->input->post('no_urut'),
 				'detail' => $this->input->post('detail'),
 				'groupon' => $this->input->post('groupon'),
+				'sembunyinilai' => $this->input->post('sembunyinilai'),
 				'aktif' => $this->input->post('aktif'),
 				"modified_date"=> $this->dbx->cts(),
 				"modified_by"=> $this->session->userdata('idpegawai'));

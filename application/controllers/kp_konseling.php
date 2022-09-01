@@ -32,7 +32,7 @@ parent::__construct();
 
 	public function index($print="",$excel="")
 	{
-			$data= $this->kp_konseling_db->data();
+			$data= $this->kp_konseling_db->data("kp_konseling");
 			$data['form']='Layanan Konseling';
 			$data['view']='index';
 			$data['action']='kp_konseling';
@@ -58,9 +58,11 @@ parent::__construct();
 			,"modified_by"=> $this->session->userdata('idpegawai')
 			,"idkonseling"=>$id
 			,"fase"=>1
+			,"idmasalah" => $this->input->post("idmasalah")
+			,"idintensitas" => $this->input->post("idintensitas")
 			,"tanggalkonseling"=> $this->p_c->tgl_db($this->input->post('tanggalkonseling'))
-			,"hasilkonseling" => $this->input->post("hasilkonseling")
-			,"rencanatindaklanjut" => $this->input->post("rencanatindaklanjut")
+			,"hasilkonseling" => str_replace('&nbsp;', ' ', $this->input->post("hasilkonseling"))
+			,"rencanatindaklanjut" => str_replace('&nbsp;', ' ', $this->input->post("rencanatindaklanjut"))
 			,"tanggalakhirtindakan"=> $this->p_c->tgl_db($this->input->post('tanggalakhirtindakan'))
 		);
 

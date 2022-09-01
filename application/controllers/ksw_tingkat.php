@@ -53,6 +53,7 @@ parent::__construct();
 	public function tambah_p($id='') {
 		$data = array(
 										"tingkat"=>$this->input->post("tingkat")
+										,"fase"=>$this->input->post("fase")
 										,"idkesetaraan"=>$this->input->post("idkesetaraan")
 										,"departemen"=>$this->input->post("departemen")
 										,"aktif"=>$this->input->post("aktif")

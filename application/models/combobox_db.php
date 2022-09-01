@@ -157,7 +157,7 @@ function __construct(){
 	function idprosestipe($variabel,$idcompany){
 
 		$idprosestipetext="<option selected='selected' value=''>Pilih...</pilih>";
-		$sql="SELECT pt.replid,CONCAT('[',pt.iddepartemen,'] ',pt.prosestipe, ' (',IF(pt.aktif=1,'A','T'),')') as nama
+		$sql="SELECT pt.replid,CONCAT('[',pt.iddepartemen,'] ',pt.prosestipe,' ',pt.keterangan, ' (',IF(pt.aktif=1,'A','T'),')') as nama
 									FROM ns_prosestipe pt
 									INNER JOIN ns_reff_company rc ON rc.idvariabel=pt.replid
 									WHERE rc.tipe='ns_prosestipe' AND rc.idcompany='".$idcompany."' AND pt.aktif=1 AND pt.iddepartemen IN (SELECT departemen FROM tahunajaran  WHERE replid='".$variabel."')
@@ -243,6 +243,21 @@ function __construct(){
 		$idsiswadata= $this->dbx->data($sql);
 		foreach((array)$idsiswadata as $data) {
 			$idsiswatext.= "<option value='".$data->replid."'>".$data->nama."</option>";
+		}
+		return $idsiswatext;
+	}
+	function idsiswacompany($idcompany,$iddepartemen){
+		$idsiswatext="<option selected='selected' value=''>Pilih...</pilih>";
+		$sql="SELECT s.replid,CONCAT(s.nama,' [ ',nis,' ]') as nama FROM siswa s
+				INNER JOIN kelas k ON k.replid=s.idkelas
+				INNER JOIN tahunajaran ta ON ta.replid=k.idtahunajaran
+				WHERE ta.idcompany='".$idcompany."' AND ta.departemen='".$iddepartemen."' 
+						AND s.aktif=1    
+				ORDER BY s.nama";
+		//echo $sql;
+		$idsiswadata= $this->dbx->data($sql);
+		foreach((array)$idsiswadata as $data) {
+			$idsiswatext.= "<option value='".$data->replid."'>".strtoupper($data->nama)."</option>";
 		}
 		return $idsiswatext;
 	}

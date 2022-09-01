@@ -765,6 +765,9 @@ function cetakabsensi(id) {
                 <p align="left"><b>Legend : D=Terdaftar, A= Alpha, S=Sakit, I= Izin, TP=Tugas Pengganti</b></p>
                 <hr/>
 		            <table class="table table-bordered table-striped">
+						<?php 
+							if ($edit==1){
+						?>
 							<tr>
 								<td colspan=3 align="right">Isi Bersamaan :</td>
 								<td><input type="checkbox" onClick="selectallx('terdaftar','selectall')" id="selectall" class="selectall"/></td>
@@ -779,6 +782,9 @@ function cetakabsensi(id) {
 										?>
 								
 							</tr>
+							<?php 
+							}
+							?>
 				    	    <tr>
 								<th width="30">No.</th>
 								<th width="80">NIS</th>
@@ -792,7 +798,7 @@ function cetakabsensi(id) {
 											$pdv="";
 											foreach((array)$pengembangandirivariabel as $rowpdv) {
 												if($pdv<>""){$pdv=$pdv.',';}
-												echo "<th>".$rowpdv->pengembangandirivariabel."</th>";
+												echo "<th>".$rowpdv->pengembangandirivariabel." ".$rowpdv->keterangan."</th>";
 												$pdv=$pdv.$rowpdv->replid;
 											}
 										?>

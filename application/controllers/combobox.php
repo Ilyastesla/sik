@@ -67,8 +67,12 @@ function __construct(){
 		if($modul=="idrapottipe13"){
 			echo $this->combobox_db->idrapottipe13($id,$this->input->post('idcompany'));
 		}
+		
 		if($modul=="idsiswa"){
 			echo $this->combobox_db->idsiswa($id);
+		}
+		if($modul=="idsiswacompany"){
+			echo $this->combobox_db->idsiswacompany($id,$this->input->post('iddepartemen'));
 		}
 
 		if($modul=="iddepartemen"){

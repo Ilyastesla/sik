@@ -32,7 +32,7 @@ parent::__construct();
 
 	public function index()
 	{
-			$data= $this->kp_konseling_db->data();
+			$data= $this->kp_konseling_db->data("kp_kejadian");
 			$data['form']='Laporan Kejadian';
 			$data['view']='index';
 			$data['action']='kp_kejadian';
@@ -52,17 +52,20 @@ parent::__construct();
 	}
 
     public function tambah_p($id='') {
+		$idkelas=$this->dbx->singlerow("SELECT idkelas as isi FROM siswa WHERE replid='".$this->input->post('idsiswa')."'");
+		//,'idmasalah' => $this->input->post('idmasalah')
         $data = array(
                 "modified_date"=> $this->dbx->cts(),
                 "modified_by"=> $this->session->userdata('idpegawai')
-                ,'idkelas' => $this->input->post('idkelas')
+				,'idcompany' => $this->input->post('idcompany')
+				,'iddepartemen' => $this->input->post('iddepartemen')
+                ,'idkelas' => $idkelas
                 ,'idsiswa' => $this->input->post('idsiswa')
                 ,"tanggallaporan"=> $this->p_c->tgl_db($this->input->post('tanggallaporan'))
                 ,'idjenislaporan' => $this->input->post('idjenislaporan')
                 ,'idtempat' => $this->input->post('idtempat')
-                ,'idmasalah' => $this->input->post('idmasalah')
                 ,'idprioritas' => $this->input->post('idprioritas')
-                ,'latarbelakang' => $this->input->post('latarbelakang')
+                ,'latarbelakang' => str_replace('&nbsp;', ' ', $this->input->post('latarbelakang'))
                 ,'status'=>1
                 );
         

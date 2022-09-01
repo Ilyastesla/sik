@@ -78,7 +78,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
         $data['idtahunajaran_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',tahunajaran) as nama FROM tahunajaran WHERE idcompany='".$this->input->post('idcompany')."' AND departemen='".$this->input->post('iddepartemen')."' ORDER BY aktif DESC ,nama DESC ",'up');
 
 				//iddepartemen=(SELECT departemen FROM tahunajaran WHERE replid='".$this->input->post("idtahunajaran")."')
-		$sqlproses="SELECT replid,CONCAT('[',iddepartemen,'] ',prosestipe, ' (',IF(aktif=1,'A','T'),')') as nama,iddepartemen
+		$sqlproses="SELECT replid,CONCAT('[',iddepartemen,'] ',prosestipe,' ',keterangan, ' (',IF(aktif=1,'A','T'),')') as nama,iddepartemen
 								FROM ns_prosestipe
 								WHERE replid IN (SELECT DISTINCT(idprosestipe) FROM ns_pembelajaranjadwal WHERE idtahunajaran='".$this->input->post('idtahunajaran')."')
 								ORDER BY aktif DESC,nama ASC ";
@@ -172,7 +172,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 
 				//proses Tipe
 				//-----------------------------------------------------------------------------------------------
-				$sqlproses="SELECT pt.replid,CONCAT('[',pt.iddepartemen,'] ',pt.prosestipe, ' (',IF(pt.aktif=1,'A','T'),')') as nama
+				$sqlproses="SELECT pt.replid,CONCAT('[',pt.iddepartemen,'] ',pt.prosestipe,' ',pt.keterangan, ' (',IF(pt.aktif=1,'A','T'),')') as nama
 											FROM ns_prosestipe pt
 											INNER JOIN ns_reff_company rc ON rc.idvariabel=pt.replid
 											WHERE rc.tipe='ns_prosestipe' AND rc.idcompany='".$data["isi"]->idcompany."' AND pt.aktif=1 AND pt.iddepartemen='".$data["isi"]->iddepartemen."'
@@ -367,7 +367,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 														INNER JOIN ns_pengembangandirinilai pdn ON pdv.replid=pdn.idpengembangandirivariabel
 														WHERE pdn.idpembelajaranjadwal='".$id."' ORDER BY pdv.no_urut";
 				}
-				//echo $siswa_sql;die;
+				//echo $pengembangandirivariabel_sql;die;
 				$data['idrapottipe_opt'] = $this->dbx->data($idrapottipe_sql);
       	$data['siswa']=$this->dbx->data($siswa_sql);
 				//echo $pengembangandirivariabel_sql;die;

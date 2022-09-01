@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<style>
+  p{
+    word-wrap: break-word !important;
+  }
+</style>
 <html>
     <?php $this->load->view('header') ?>
         <div class="wrapper row-offcanvas row-offcanvas-left">
@@ -10,6 +15,7 @@
             <aside class="right-side">
 <?php $CI =& get_instance();?>
 <?php if(($view=='tambah2') or ($view=='view') or ($view=='tambaheva')){ ?>
+  
   <section class="content-header table-responsive">
       <h1>
           <?php echo $form ?>
@@ -22,7 +28,27 @@
     -->
 </section>
 <section class="content">
-    <table width="100%" border="0" class="form-horizontal form-validate">
+    <div class="box">
+            <div class="box-header with-border">
+            <h3 class="box-title">Detail Laporan Kejadian</h3>
+            <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+            <i class="fa fa-minus"></i></button>
+            </div>
+            </div>
+            <div class="box-body">
+            <table width="100%" border="0" class="form-horizontal form-validate">
+            <tr>
+              <th align="left">
+              <label class="control-label" for="minlengthfield">Status</label>
+              <div class="control-group">
+            <div class="controls">:
+                    <?php
+                      echo $isi->statustext;
+                    ?>
+            </div>
+              </div>
+            </th></tr>
           <tr>
               <th align="left">
               <label class="control-label" for="minlengthfield">Unit Bisnis</label>
@@ -111,6 +137,7 @@
             </div>
               </div>
             </th></tr>
+            <!--
             <tr>
               <th align="left">
               <label class="control-label" for="minlengthfield">Kategori Masalah</label>
@@ -122,6 +149,7 @@
             </div>
               </div>
             </th></tr>
+-->
             <tr>
               <th align="left">
               <label class="control-label" for="minlengthfield">Skala Prioritas</label>
@@ -134,30 +162,60 @@
               </div>
             </th></tr>
             <tr>
-			            <th align="left">
-	                		<label class="control-label" for="minlengthfield">Latar Belakang</label>
-	                		<div class="control-group">
-								<div class="controls">:
-			                	</div>
-							</div>
-			            </th>
-			        </tr>
-			        <tr>
-			        	<td align='left'>
-                  <p><?php echo $isi->latarbelakang?></p>
+			            <td align="left">
+	                		<h4>Latar Belakang:</h4>
+                  <p align='justify'><?php echo htmlspecialchars_decode($isi->latarbelakang) ?></p>
                     </td></tr>
-                    <tr>
+            <?php if(($view=='tambaheva')){?>
+              <tr>
               <th align="left">
-              <label class="control-label" for="minlengthfield">Status</label>
+              <label class="control-label" for="minlengthfield">Tgl. Konseling</label>
               <div class="control-group">
             <div class="controls">:
                     <?php
-                      echo $isi->statustext;
+                      echo $CI->p_c->tgl_indo($isidata->tanggalkonseling);
                     ?>
             </div>
               </div>
             </th></tr>
+            <tr>
+              <th align="left">
+              <label class="control-label" for="minlengthfield">Kategori Masalah</label>
+              <div class="control-group">
+            <div class="controls">:
+                    <?php
+                      echo $isidata->masalahtext;
+                    ?>
+            </div>
+              </div>
+            </th></tr>
+            <tr>
+              <th align="left">
+              <label class="control-label" for="minlengthfield">Intensitas</label>
+              <div class="control-group">
+            <div class="controls">:
+                    <?php
+                      echo $isidata->intensitastext;
+                    ?>
+            </div>
+              </div>
+            </th></tr>
+              <tr>
+			            <td align="left">
+	                		<h4>Hasil Konseling:</h4>
+                  <p align='justify'><?php echo htmlspecialchars_decode($isidata->hasilkonseling) ?></p>
+                    </td></tr>
+                    <tr>
+			            <td align="left">
+	                		<h4>Rencana Tindak Lanjut:</h4>
+                  <p align='justify'><?php echo htmlspecialchars_decode($isidata->rencanatindaklanjut) ?></p>
+                    </td></tr>
+            <?php } ?>
+                    
          </table>
+            </div>
+          </div>
+    
          <?php if(($view=='view')){?>
          <table class="table table-bordered table-striped">
                     <thead>
@@ -168,9 +226,11 @@
                             
                               }
                             }
-                            echo "<tr><th width='50'>No</th>";
+                            echo "<tr><th width='50px'>No</th>";
                             echo "<th>Tanggal Konseling</th>";
-                            echo "<th>Hasil Konseling</th>";
+                            echo "<th>Kategori Masalah</th>";
+                            echo "<th>Intensitas</th>";
+                            echo "<th width='150px'>Hasil Konseling</th>";
                             echo "<th>Rencana Tindak Lanjut</th>";
                             echo "<th>Tgl. Akhir Tindakan</th>";
                             echo "<th>Evaluasi Tindakan</th>";
@@ -189,10 +249,12 @@
 											    echo "<tr>";
 											    echo "<td align='center'>".$no++."</td>";
                           echo "<td align='center'>".$CI->p_c->tgl_indo($rowisi2->tanggalkonseling)."</td>";
-                          echo "<td align='center'>".($rowisi2->hasilkonseling)."</td>";
-                          echo "<td align='center'>".($rowisi2->rencanatindaklanjut)."</td>";
+                          echo "<td align='center'>".($rowisi2->masalahtext)."</td>";
+                          echo "<td align='center'>".($rowisi2->intensitastext)."</td>";
+                          echo "<td align='center'>".htmlspecialchars_decode($rowisi2->hasilkonseling)."</td>";
+                          echo "<td align='center'>".htmlspecialchars_decode($rowisi2->rencanatindaklanjut)."</td>";
                           echo "<td align='center'>".$CI->p_c->tgl_indo($rowisi2->tanggalakhirtindakan)."</td>";
-                          echo "<td align='center'>".($rowisi2->evaluasitindakan)."</td>";
+                          echo "<td align='center'>".htmlspecialchars_decode($rowisi2->evaluasitindakan)."</td>";
                           echo "<td align='center'>".($rowisi2->kategorievaluasitext)."</td>";
                           echo "<td align='center'>".$CI->p_c->cekaktif($rowisi2->tutup)."</td>";
                           if(($action=="kp_konseling")){
@@ -209,6 +271,7 @@
                           }
                           echo "</tr>";
 											}
+                      echo "<tr><td colspan='9'>&nbsp;</td></tr>";
 											?>
 
                                         </tbody>
@@ -274,9 +337,7 @@
                                     </div>
                                 </div>
                                 </th>
-            </tr>
-    	                    <tr>
-            						       <th align="left">
+                                <th align="left">
       				                		<label class="control-label" for="minlengthfield">Jenjang</label>
       				                		<div class="control-group">
               											<div class="controls">:
@@ -288,6 +349,10 @@
               											</div>
             				              </div>
             						         </th>
+            </tr>
+            <!--
+    	                    <tr>
+            						       
                                   <th align="left">
           				                		<label class="control-label" for="minlengthfield">Tahun Pelajaran</label>
           				                		<div class="control-group">
@@ -327,6 +392,7 @@
                 				              </div>
             						            </th>
       			                  </tr>
+                            -->
                               <tr>
                                   <th align="left" colspan="2">
                                      <label class="control-label" for="minlengthfield">Nama</label>
@@ -364,13 +430,14 @@
                                           <tr>
                                               <?php
                                                 echo "<th width='50'>No</th>";
-                                                echo "<th>NIS</th>";
                                                 echo "<th>Nama</th>";
                                                 echo "<th>Tahun Ajaran</th>";
                                                 echo "<th>Kelas</th>";
                                                 echo "<th>ABK</th>";
-                                                echo "<th>Aktif</th>";
+                                                //echo "<th>Aktif</th>";
                                                 echo "<th>Pembuat Laporan</th>";
+                                                echo "<th>Tgl. Laporan</th>";
+                                                echo "<th>Prioritas</th>";
                                                 echo "<th>Status</th>";
                                                 echo "<th width='200'>Aksi</th>";
                                               ?>
@@ -384,15 +451,15 @@
 											    echo "<td align='center'>".$no++."</td>";
                                                 echo "<td align='center'>";
                                                 //echo "<a href=javascript:void(window.open('".site_url('kp_konseling/view/0/'.$row->replid)."'))>".strtoupper($row->nis)."</a> ";
-                                                echo "<a href=javascript:void(window.open('".site_url('general/datasiswa/'.$row->replid)."')) >".strtoupper($row->nis)."</a> ";
-                                                echo "</td>";
-                                                echo "<td align='center'>".strtoupper($row->namasiswatext);
+                                                echo "<a href=javascript:void(window.open('".site_url('general/datasiswa/'.$row->replid)."')) >".strtoupper($row->nis)."</a> ".strtoupper($row->namasiswatext);
                                                 echo "</td>";
                                                 echo "<td align='center'>".strtoupper($row->tahunajarantext);
                                                 echo "<td align='center'>".strtoupper($row->kelastext)."<br/>[".$row->namawalitext."]</td>";
                                                 echo "<td align='center'>".($CI->p_c->cekaktif($row->abk))."</td>";
-                                                echo "<td align='center'>".$CI->p_c->cekaktif($row->aktifsiswa)."</td>";
+                                                //echo "<td align='center'>".$CI->p_c->cekaktif($row->aktifsiswa)."</td>";
                                                 echo "<td align='center'>".($row->createdbytext)."</td>";
+                                                echo "<td align='center'>".$CI->p_c->tgl_indo($row->tanggallaporan)."</td>";
+                                                echo "<td align='center'>".($row->prioritastext)."</td>";
                                                 echo "<td align='center'>".($row->statustext)."</td>";
                                                 echo "<td align='center'>";
                                                 if($action=="kp_kejadian"){ 
@@ -435,31 +502,9 @@
       });
 
       $("#idcompany").change(function(){
-	    var value=$(this).val();
-		$.ajax({
-          data:{modul:'idtahunajaranall',id:$("#iddepartemen").val(),idcompany:value},
-          success: function(respond){
-            $("#idtahunajaran").html(respond);
-				}
-		});
-
+	      var value=$(this).val();
         $.ajax({
-          data:{modul:'idrapottipe13',id:$("#iddepartemen").val(),idcompany:value},
-          success: function(respond){
-            $("#idrapottipe").html(respond);
-          }
-        }); 
-
-        $.ajax({
-          data:{modul:'idkelas',id:-1},
-          success: function(respond){
-            $("#idkelas").html(respond);
-          }
-        });
-        
-        
-        $.ajax({
-          data:{modul:'idsiswa',id:-1},
+          data:{modul:'idsiswacompany',id:value,iddepartemen:$("#iddepartemen").val()},
           success: function(respond){
             $("#idsiswa").html(respond);
           }
@@ -468,47 +513,16 @@
 	    });
 
       $("#iddepartemen").change(function(){
-        var value=$(this).val();
+	      var value=$(this).val();
         $.ajax({
-            data:{modul:'idtahunajaranall',id:value,idcompany:$("#idcompany").val()},
-            success: function(respond){
-              $("#idtahunajaran").html(respond);
-          }
-        }); 
-
-        $.ajax({
-          data:{modul:'idkelas',id:-1},
-          success: function(respond){
-            $("#idkelas").html(respond);
-          }
-        });
-    });
-
-    $("#idtahunajaran").change(function(){
-      var value=$(this).val();
-        $.ajax({
-          data:{modul:'idkelas',id:value},
-          success: function(respond){
-            $("#idkelas").html(respond);
-          }
-        });
-        $.ajax({
-          data:{modul:'idsiswa',id:-1},
-          success: function(respond){
-            $("#idsiswa").html(respond);
-          }
-        }); 
-    });
-
-    $("#idkelas").change(function(){
-        var value=$(this).val();
-        $.ajax({
-          data:{modul:'idsiswa',id:value},
+          data:{modul:'idsiswacompany',id:$("#idcompany").val(),iddepartemen:value},
           success: function(respond){
             $("#idsiswa").html(respond);
           }
         });
-    });
+			
+	    });
+
     });
   </script>
 <section class="content-header table-responsive">
@@ -551,6 +565,7 @@
             </div>
               </div>
               </th></tr>
+              <!--
 		            <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Tahun Pelajaran</label>
@@ -577,6 +592,7 @@
 							</div>
 		        		</div>
 		            </th></tr>
+  -->
 		            <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Nama Siswa</label>
@@ -629,6 +645,7 @@
 							</div>
 		        		</div>
 		            </th></tr>
+                <!--
                     <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Kategori Masalah</label>
@@ -642,6 +659,7 @@
 							</div>
 		        		</div>
 		            </th></tr>
+  -->
                        <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Skala Prioritas</label>
@@ -693,6 +711,8 @@
             echo form_open($action,$attributes);
            
           ?>
+          
+  
   <table width="100%" border="0" style="text-align:left;">
   <tr>
                           <th align="left">
@@ -707,6 +727,32 @@
                               </div>
                           </th>
                        </tr>
+                <tr>
+        <th align="left">
+        <label class="control-label" for="minlengthfield">Kategori Masalah</label>
+        <div class="control-group">
+      <div class="controls">:
+              <?php
+                $arridmasalah="data-rule-required=true id=idmasalah";
+                echo form_dropdown('idmasalah',$idmasalah_opt,$isi2->idmasalah,$arridmasalah);
+              ?>
+              <?php //echo  <p id="message"></p> ?>
+      </div>
+        </div>
+        </th></tr>
+        <tr>
+        <th align="left">
+        <label class="control-label" for="minlengthfield">Intensitas</label>
+        <div class="control-group">
+      <div class="controls">:
+              <?php
+                $arridintensitas="data-rule-required=true id=idintensitas";
+                echo form_dropdown('idintensitas',$idintensitas_opt,$isi2->idintensitas,$arridintensitas);
+              ?>
+              <?php //echo  <p id="message"></p> ?>
+      </div>
+        </div>
+        </th></tr>
     <tr>
     <tr>
     <td align="left">
@@ -772,34 +818,6 @@
     echo form_open($action,$attributes);       
   ?>
   <table width="100%" border="0" style="text-align:left;">
-  <tr>
-			            <th align="left">
-	                		<label class="control-label" for="minlengthfield">Hasil Konseling</label>
-	                		<div class="control-group">
-								<div class="controls">:
-			                	</div>
-							</div>
-			            </th>
-			        </tr>
-			        <tr>
-			        	<td align='left'>
-                  <p><?php echo $isi2->hasilkonseling?></p>
-                    </td></tr>
-                    <tr>
-                    <tr>
-			            <th align="left">
-	                		<label class="control-label" for="minlengthfield">Rencana Tindak Lanjut</label>
-	                		<div class="control-group">
-								<div class="controls">:
-			                	</div>
-							</div>
-			            </th>
-			        </tr>
-			        <tr>
-			        	<td align='left'>
-                  <p><?php echo $isi2->rencanatindaklanjut?></p>
-                    </td></tr>
-                    <tr>
     <tr>
     <td align="left">
         <h4>Evaluasi Tindakan yang sudah Diberikan</h4>
