@@ -59,6 +59,18 @@
                                     </div>
                                 </div>
                                 </th>
+                                <th align="left">
+                                <label class="control-label" for="minlengthfield">Departemen</label>
+                                <div class="control-group">
+                                    <div class="controls">:
+                                        <?php
+                                        $arriddepartemen="data-rule-required=true id=iddepartemen onchange='javascript:this.form.submit();'";
+                                        echo form_dropdown('iddepartemen',$iddepartemen_opt,$this->input->post('iddepartemen'),$arriddepartemen);
+                                        ?>
+                                        <?php //echo  <p id="message"></p> ?>
+                                    </div>
+                                </div>
+                                </th>
                         </tr>
 	                    <tr>
         						            <th align="left">

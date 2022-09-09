@@ -264,46 +264,6 @@
 
 
     <body class="skin-blue">
-        <!-- header logo: style can be found in header.less -->
-        <script>
-        $( document ).ready(function() {
-          $.ajax({
-            type:"POST",
-            cache: false,
-            url: "<?php echo site_url('combobox/ambil_data') ?>",
-            data:{modul:'notifkronologiscount'},
-            success: function(respond){
-              $("#countnotif").text(respond);
-            }
-          });
-
-          var refreshId = setInterval(function() {
-            $.ajax({
-              type:"POST",
-              cache: false,
-              url: "<?php echo site_url('combobox/ambil_data') ?>",
-              data:{modul:'notifkronologiscount'},
-              success: function(respond){
-                $("#countnotif").text(respond);
-              }
-            });
-          }, 7000);
-          $.ajaxSetup({ cache: false });
-        });
-        $(function(){
-          $('#notifclick').on('click', function () {
-            $.ajax({
-              type:"POST",
-              cache: false,
-              url: "<?php echo site_url('combobox/ambil_data') ?>",
-              data:{modul:'notifkronologis'},
-              success: function(respond){
-                $("#notifall").append(respond);
-              }
-            });
-          });
-        });
-        </script>
         <header class="header">
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
@@ -331,6 +291,45 @@
                         $CI =& get_instance();
                         if($CI->dbx->checkpage($this->session->userdata('role_id'),'online_kronologis')==true){
                         ?>
+                        <script>
+                          $( document ).ready(function() {
+                            $.ajax({
+                              type:"POST",
+                              cache: false,
+                              url: "<?php echo site_url('combobox/ambil_data') ?>",
+                              data:{modul:'notifkronologiscount'},
+                              success: function(respond){
+                                $("#countnotif").text(respond);
+                              }
+                            });
+
+                            var refreshId = setInterval(function() {
+                              $.ajax({
+                                type:"POST",
+                                cache: false,
+                                url: "<?php echo site_url('combobox/ambil_data') ?>",
+                                data:{modul:'notifkronologiscount'},
+                                success: function(respond){
+                                  $("#countnotif").text(respond);
+                                }
+                              });
+                            }, 7000);
+                            $.ajaxSetup({ cache: false });
+                          });
+                          $(function(){
+                            $('#notifclick').on('click', function () {
+                              $.ajax({
+                                type:"POST",
+                                cache: false,
+                                url: "<?php echo site_url('combobox/ambil_data') ?>",
+                                data:{modul:'notifkronologis'},
+                                success: function(respond){
+                                  $("#notifall").append(respond);
+                                }
+                              });
+                            });
+                          });
+                          </script>
                         <li class="dropdown notifications-menu">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="notifclick">
                                 <i class='glyphicon glyphicon-bell'></i>
@@ -342,17 +341,27 @@
                                   <ul class="menu" id="notifall">
                                   </ul>
                                 </li>
-                                <li class="footer"><a href="javascript:void(window.open('<?php echo site_url('online_kronologis') ?>'))">Lihat Semua</a></li>
+                                <li class="footer"><a href="<?php echo site_url('online_kronologis') ?>">Lihat Semua</a></li>
                               </ul>
                         </li>
                       <?php } ?>
 
-
+                      <li class="dropdown user user-menu">
+	                       	<a href="<?php echo site_url("hrm_codeofconduct") ?>">
+	                            <i class='glyphicon glyphicon-book'></i>Kebijakan
+	                        </a>
+	                      </li>
+                        <li class="dropdown user user-menu">
+	                       	<a href="<?php echo site_url("manualbook") ?>">
+	                            <i class='glyphicon glyphicon-film'></i> Manual Book
+	                        </a>
+	                      </li>
+                        <!--
                         <li class="dropdown user user-menu">
 	                       	<a href="<?php echo site_url("main/menu/main/1") ?>">
 	                            <i class='glyphicon glyphicon-home'></i>
 	                        </a>
-	                      </li>
+	                      </li>-->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <!--<i class="glyphicon glyphicon-user"></i>-->

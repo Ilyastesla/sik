@@ -76,13 +76,13 @@ parent::__construct();
 							,prioritas as prioritastext
 							,DATE_ADD(kk.tanggalpengajuan,INTERVAL kr.periode DAY) as dateline
 							,(DATE_ADD(kk.tanggalpengajuan,INTERVAL kr.periode DAY)<=CURRENT_DATE()) as urgent
-							,CURRENT_DATE() as tglprint
+							,CURRENT_DATE() as tglprint,c.city as citycompanytext
       			FROM inventory_permintaan_barang kk
       			LEFT JOIN hrm_company c ON kk.idcompany=c.replid
       			LEFT JOIN pegawai p ON kk.pemohon=p.replid
       			LEFT JOIN hrm_departemen d ON kk.iddepartemen=d.replid
       			LEFT JOIN hrm_status s ON kk.status=s.node
-						LEFT JOIN reff_prioritas kr ON kr.replid=kk.idprioritas
+				LEFT JOIN reff_prioritas kr ON kr.replid=kk.idprioritas
       			WHERE kk.replid='".$id."'
       			ORDER BY kk.tanggalpengajuan";
 				//echo $sql;die;
@@ -94,16 +94,19 @@ parent::__construct();
 				}
 
 
-        $sql="SELECT pm.*,CONCAT('[',im.kode,'] ',' ',im.nama) as materialtext,pm.idmaterial,u.unit as idunit,im.stock,im.inventaris
+        $sql="SELECT pm.*,CONCAT('[',im.kode,'] ',' ',im.nama) as materialtext,pm.idmaterial,u.unit as idunit,im.stock,im.inventaris,CONCAT(mf.nama,' [',mf.kode,']') as kodefiskaltext,k.idfiskal,im.idkelompok,k.nama as kelompokbarangtext
         			,(SELECT SUM(jml_serah) FROM inventory_penyerahan_barang_mat WHERE pm.idpermintaan_barang=idpermintaanbarang AND idmaterial=pm.idmaterial AND idpermintaan_mat=pm.replid) as total_serah
         		FROM inventory_permintaan_barang_mat pm
         		LEFT JOIN inventory_material im ON pm.idmaterial=im.replid
         		LEFT JOIN inventory_unit u ON pm.idunit=u.replid
+				LEFT JOIN inventory_kelompok k ON k.replid=im.idkelompok
+				LEFT JOIN inventory_fiskal mf ON mf.replid=k.idfiskal
         		WHERE idpermintaan_barang='".$id."' ".$penyerahanfilter;
 				//echo $sql;die;
         $data['material'] = $this->dbx->data($sql);
 
-				$sql="SELECT pyb.*,(SELECT SUM(jml_serah) FROM inventory_penyerahan_barang_mat WHERE idinventory_penyerahan=pyb.replid) as pakaiserah FROM inventory_penyerahan_barang pyb WHERE pyb.idpermintaan_barang='".$id."' ";
+				$sql="SELECT pyb.*,(SELECT SUM(jml_serah) FROM inventory_penyerahan_barang_mat WHERE idinventory_penyerahan=pyb.replid) as pakaiserah 
+						FROM inventory_penyerahan_barang pyb WHERE pyb.idpermintaan_barang='".$id."' ";
 				if($idpenyerahan<>""){
 					$sql=$sql." AND replid='".$idpenyerahan."'";
 					$data['penyerahan_head'] = $this->dbx->rows($sql);
@@ -116,8 +119,10 @@ parent::__construct();
 
 	public function material_stiker_print_db($data,$idinventaris) {
         $sql="SELECT pm.*,CONCAT('[',im.kode,'] ',' ',im.nama) as materialtext, c.nama as companytext,d.departemen as departementext
+		,k.nama as kelompokbarangtext
         		FROM inventory_penyerahan_barang_mat pm
         		LEFT JOIN inventory_material im ON pm.idmaterial=im.replid
+				LEFT JOIN inventory_kelompok k ON k.replid=im.idkelompok
 				LEFT JOIN hrm_company c ON pm.idcompany=c.replid
 				LEFT JOIN hrm_departemen d ON pm.iddepartemen=d.replid
         		WHERE pm.replid='".$idinventaris."' ";
@@ -156,6 +161,27 @@ parent::__construct();
 					return $data;
 		}
 
+	public function head_penyerahan_material($idpermintaan,$idpenyerahan,$data) {
+		$sqlminta="SELECT * FROM inventory_permintaan_barang WHERE replid='".$idpermintaan."'";
+		$data['permintaan']=$this->dbx->rows($sqlminta);
+
+		$sql="SELECT *
+				FROM inventory_penyerahan_barang ipb
+				WHERE ipb.replid='".$idpenyerahan."'";
+		$data['isi'] = $this->dbx->rows($sql);
+
+		if ($data['isi']== NULL ) {
+			unset($data['isi']);
+			$sql="SELECT ".$this->dbx->tablecolumn('inventory_penyerahan_barang').",'".$idpermintaan."' as idpermintaan_barang,CURRENT_DATE() as tanggalserah,1 as status";
+			//echo $sql;die;
+			$data['isi']=$this->dbx->rows($sql);
+			
+		}
+
+		$data['idpegawai_opt'] = $this->dbx->opt("select replid,CONCAT(nama,' [',nip,']') as nama FROM pegawai WHERE aktif=1 AND idcompany='".$data['permintaan']->idcompany."' ORDER BY nama","up");
+		return $data;
+	}
+
 
 
     public function penyerahan_material($data,$idpermintaan_mat,$idpenyerahan){
@@ -166,8 +192,9 @@ parent::__construct();
         			,c.kodecabang,d.kodedepartemen,f.kode as kodefiskal,im.kode as kodematerial
         			,pb.jml_serah,pb.idkelompok_inventaris,pb.idruang
         			,pm.idpermintaan_barang, pm.idmaterial, pb.idinventory_pembelian
-					,pyb.tanggalserah, pyb.kode_transaksi as kodepenyerahan,kk.iddepartemen,pb.idpj,kk.idcompany
+					,pyb.tanggalserah, pyb.kode_transaksi as kodepenyerahan,kk.iddepartemen as iddepartemenpermintaan,pb.idpj,kk.idcompany
 					,(SELECT SUM(jml_serah) FROM inventory_penyerahan_barang_mat WHERE pm.idpermintaan_barang=idpermintaanbarang AND idmaterial=pm.idmaterial AND idpermintaan_mat=pm.replid) as total_serah
+					,pb.iddepartemen
         		FROM
 						inventory_permintaan_barang_mat pm
         		INNER JOIN inventory_permintaan_barang kk ON kk.replid=pm.idpermintaan_barang
@@ -182,6 +209,8 @@ parent::__construct();
         		WHERE pyb.replid='".$idpenyerahan."' AND pm.replid='".$idpermintaan_mat."' ";
         //echo $sql;die;
         $data['isi'] = $this->dbx->rows($sql);
+		
+		$data['idpj_opt'] = $this->dbx->opt("select replid,CONCAT(nama,' [',nip,']') as nama FROM pegawai WHERE aktif=1 AND idcompany='".$data['isi']->idcompany."' ORDER BY nama","up");
         $data['kelompok_inventaris_opt'] = $this->dbx->opt("SELECT replid,reff_nama as nama FROM inventory_reff WHERE grup='inventaris' ORDER BY reff_nama",'up');
         $data['ruang_opt'] = $this->dbx->opt("SELECT replid, nama FROM inventory_ruang ORDER BY nama",'up');
         $data['unit_opt'] = $this->dbx->opt("SELECT im.replid,im.unit as nama FROM inventory_unit im ORDER BY im.unit",'up');
@@ -190,7 +219,8 @@ parent::__construct();
 																INNER JOIN inventory_pembelian_mat b ON a.replid=b.idinventory_pembelian
 																WHERE b.idmaterial='".$data['isi']->idmaterial."' AND a.status<>4
 																ORDER BY nama",'up');
-		$data['idpj_opt'] = $this->dbx->opt("select replid,CONCAT(nama,' [',nip,']') as nama from pegawai where aktif=1 ORDER BY nama","up");
+		
+		$data['iddepartemen_opt'] = $this->dbx->opt("select replid,departemen as nama FROM hrm_departemen WHERE aktif=1 AND idcompany='".$data['isi']->idcompany."' ORDER BY departemen",'up');
         return $data;
 
     }
@@ -207,10 +237,10 @@ parent::__construct();
 
 
     public function kode_inventaris($tahun,$kode){
-	    $sql2="SELECT LPAD(RIGHT(RIGHT(trim(kode_inventaris),31),4)+1,4,'0') as kode_transaksi2 FROM inventory_penyerahan_barang_mat where year(tanggalserah)='".$tahun."'
-ORDER BY RIGHT(RIGHT(trim(kode_inventaris),31),4) DESC LIMIT 1";
+	    //$sql2="SELECT LPAD(RIGHT(RIGHT(trim(kode_inventaris),31),4)+1,4,'0') as kode_transaksi2 FROM inventory_penyerahan_barang_mat where year(tanggalserah)='".$tahun."' ORDER BY RIGHT(RIGHT(trim(kode_inventaris),31),4) DESC LIMIT 1";
+		$sql2="SELECT LPAD(RIGHT(TRIM(kode_inventaris), 4)+1,4,'0') as kode_transaksi2 FROM inventory_penyerahan_barang_mat where year(tanggalserah)='".$tahun."' ORDER BY RIGHT(trim(kode_inventaris),4) DESC LIMIT 1";
 		//echo $sql2;die;
-		 $query2=$this->db->query($sql2);
+		$query2=$this->db->query($sql2);
 	    $isi2=$query2->row();
 	    if ($query2->num_rows() > 0) {
 	    	$kode_inventaris=$kode.'.'.$isi2->kode_transaksi2;
@@ -303,31 +333,6 @@ ORDER BY RIGHT(RIGHT(trim(kode_inventaris),31),4) DESC LIMIT 1";
 		} else {
 		  return false;
 		}
-	}
-
-	public function head_penyerahan_material($idpermintaan,$idpenyerahan,$data) {
-				$sql="SELECT *
-						FROM inventory_penyerahan_barang ipb
-						WHERE ipb.replid='".$idpenyerahan."'";
-				$data['isi'] = $this->dbx->rows($sql);
-
-				if ($data['isi']== NULL ) {
-					unset($data['isi']);
-					$sql="SELECT
-							NULL as replid,
-					NULL as kode_transaksi,
-					'".$idpermintaan."' as idpermintaan_barang,
-					CURRENT_DATE() as tanggalserah,
-					1 as status,
-					idcompany,
-					NULL as created_date,
-					NULL as created_by,
-					NULL as modified_date,
-					NULL as modified_by
-					FROM inventory_permintaan_barang WHERE replid='".$idpermintaan."'";
-					$data['isi']=$this->dbx->rows($sql);
-				}
-				return $data;
 	}
 
 	public function kode_transaksi($company,$tanggalserah){

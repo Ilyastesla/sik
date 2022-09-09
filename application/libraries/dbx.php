@@ -593,60 +593,113 @@ function getpegawai($replid,$nip=0,$shownip=0)
 	 return $pegawaitext;
 }
 
- function getheadercompany($idcompany)
- {
- 	$head="";
- 	$sql = "SELECT * FROM hrm_company WHERE replid='".$idcompany."'";
-	//echo $sql;die;
- 	$query = $this->db->query($sql);
+	function getheadercompany($idcompany)
+	{
+		$head="";
+		$sql = "SELECT * FROM hrm_company WHERE replid='".$idcompany."'";
+		//echo $sql;die;
+		$query = $this->db->query($sql);
 
- 	if ($query->num_rows() > 0) {
- 		$rows=$query->row();
- 		/*
-		if ($rows->company_code<>""){
-			$head = $head."<b>".$rows->company_code."</b>"."<br/>";
-		}
-		*/
-		if ($rows->nama<>""){
-			$head = $head.$rows->nama."<br/>";
-		}else {
-				$head = $head."<br/>";
-		}
+		if ($query->num_rows() > 0) {
+			$rows=$query->row();
+			/*
+			if ($rows->company_code<>""){
+				$head = $head."<b>".$rows->company_code."</b>"."<br/>";
+			}
+			*/
+			if ($rows->nama<>""){
+				$head = $head.$rows->nama."<br/>";
+			}else {
+					$head = $head."<br/>";
+			}
 
-		if ($rows->street<>""){
-			$head = $head.$rows->street;
-		}
-		if ($rows->street<>""){
-			$head = $head." ".$rows->zip."<br/>";
-		}else {
-				$head = $head."<br/>";
-		}
+			if ($rows->street<>""){
+				$head = $head.$rows->street;
+			}
+			if ($rows->street<>""){
+				$head = $head." ".$rows->zip."<br/>";
+			}else {
+					$head = $head."<br/>";
+			}
 
-		if (($rows->city<>"0") and ($rows->city<>"")){
-			$head = $head.$rows->city."";
-		}
-		if (($rows->country<>"0") and ($rows->country<>"")){
-				$head = $head." ".$rows->country."<br/>";
-		}
+			if (($rows->city<>"0") and ($rows->city<>"")){
+				$head = $head.$rows->city."";
+			}
+			if (($rows->country<>"0") and ($rows->country<>"")){
+					$head = $head." ".$rows->country."<br/>";
+			}
 
-		if ($rows->phone<>""){
-				$head = $head."Telp: ".$rows->phone;
-		}
-		if ($rows->fax<>""){
-			$head = $head." Fax: ".$rows->fax."<br/>";
-		}else {
-				$head = $head."<br/>";
-		}
-		if ($rows->website<>""){
-			$head = $head."Website: ".$rows->website;
-		}
-		if ($rows->email<>""){
-			$head = $head." Email: ".$rows->email;
-		}
- 	} //if numrows
+			if ($rows->phone<>""){
+					$head = $head."Telp: ".$rows->phone;
+			}
+			if ($rows->fax<>""){
+				$head = $head." Fax: ".$rows->fax."<br/>";
+			}else {
+					$head = $head."<br/>";
+			}
+			if ($rows->website<>""){
+				$head = $head."Website: ".$rows->website;
+			}
+			if ($rows->email<>""){
+				$head = $head." Email: ".$rows->email;
+			}
+		} //if numrows
 
- 	echo $head;
- }
+		echo $head;
+	}
+
+	function getkopsuratcompany($idcompany)
+	{
+		$head="<center>";
+		$sql = "SELECT * FROM hrm_company WHERE replid='".$idcompany."'";
+		//echo $sql;die;
+		$query = $this->db->query($sql);
+
+		if ($query->num_rows() > 0) {
+			$rows=$query->row();
+			/*
+			if ($rows->company_code<>""){
+				$head = $head."<b>".$rows->company_code."</b>"."<br/>";
+			}
+			*/
+			$head = $head."<h4>".$rows->nama."</h4>";
+			if ($rows->logo<>""){
+				$head = $head."<img src='".base_url()."images/".$rows->logo."' height='50px'>";
+			}
+			$head = $head."<br/>";
+			if ($rows->street<>""){
+				$head = $head."Alamat: ".$rows->street;
+			}
+			if ($rows->street<>""){
+				$head = $head." ".$rows->zip;
+			}
+			if (($rows->city<>"0") and ($rows->city<>"")){
+				$head = $head.$rows->city."";
+			}
+			if (($rows->country<>"0") and ($rows->country<>"")){
+					$head = $head." ".$rows->country;
+			}
+
+			$head = $head."<br/>";
+
+			if ($rows->phone<>""){
+					$head = $head."Telp: ".$rows->phone.",";
+			}
+			if ($rows->fax<>""){
+				$head = $head." Fax: ".$rows->fax.",";
+			}
+			
+			if ($rows->website<>""){
+				$head = $head." Website: ".$rows->website.",";
+			}
+
+			if ($rows->email<>""){
+				$head = $head." Email: ".$rows->email;
+			}
+		} //if numrows
+		$head.="<hr style='width:100% !important;' /><br/></center>";
+		echo $head;
+	}
 
 	function uploadfile($idcompany){
 		//load the helper

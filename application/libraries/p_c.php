@@ -479,6 +479,20 @@ Class p_c {
       case 12:	return "XII";	break;
 		}
 	}
+
+	public function hari_indo($var) {
+		switch(strtolower($var)) {
+			case "monday":	return "Senin";break;
+			case "tuesday":	return "Selasa";break;
+			case "wednesday":	return "Rabu";break;
+			case "thursday":	return "Kamis";break;
+			case "friday":	return "Jumat";break;
+			case "saturday":	return "Sabtu";break;
+			case "sunday":	return "Minggu";break;
+		}
+	}
+
+
   public function toalfabet($var){
       $alphabet = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
       return $alphabet[$var];

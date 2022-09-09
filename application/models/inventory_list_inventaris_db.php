@@ -10,6 +10,10 @@ parent::__construct();
 
 				$cari=$cari." AND pb.idcompany='".$this->input->post('idcompany')."' ";
 
+				if ($this->input->post('iddepartemen')<>""){
+					$cari=$cari." AND pb.iddepartemen='".$this->input->post('iddepartemen')."' ";
+				}
+
 				if ($this->input->post('idkelompok')<>""){
 					$cari=$cari." AND m.idkelompok='".$this->input->post('idkelompok')."' ";
 				}
@@ -61,19 +65,20 @@ parent::__construct();
 					ORDER BY pb.kode_inventaris";
 					$data['show_table']=$this->dbx->data($sql);
 
-
-				$data['fiskal_opt'] = $this->dbx->opt("SELECT replid,nama FROM inventory_fiskal ORDER BY nama",'up');
-				$data['kelompok_opt'] = $this->dbx->opt("SELECT replid,nama FROM inventory_kelompok ORDER BY nama",'up');
-        $data['idkelompok_inventaris_opt'] = $this->dbx->opt("SELECT replid,reff_nama as nama FROM inventory_reff WHERE grup='inventaris' ORDER BY reff_nama",'up');
-				$data['idkondisi_opt'] = $this->dbx->opt("SELECT replid,reff_nama as nama FROM inventory_reff WHERE grup='kondisibarang' ORDER BY reff_nama",'up');
-				$data['idruang_opt'] = $this->dbx->opt("SELECT replid, nama FROM inventory_ruang ORDER BY nama",'up');
-				$companyrow=$this->session->userdata('idcompany');
+		$companyrow=$this->session->userdata('idcompany');
 		$sqlcompany="SELECT replid,nama as nama
 								FROM hrm_company
 								WHERE replid IN (".$companyrow.") AND aktif=1
 								ORDER BY nama";
 		$data['idcompany_opt'] = $this->dbx->opt($sqlcompany,'up');
-      	return $data;
+		$data['iddepartemen_opt'] = $this->dbx->opt("select replid,departemen as nama FROM hrm_departemen WHERE aktif=1 AND idcompany='".$this->input->post('idcompany')."' ORDER BY departemen",'up');
+		
+				$data['fiskal_opt'] = $this->dbx->opt("SELECT replid,nama FROM inventory_fiskal ORDER BY nama",'up');
+				$data['kelompok_opt'] = $this->dbx->opt("SELECT replid,nama FROM inventory_kelompok ORDER BY nama",'up');
+        $data['idkelompok_inventaris_opt'] = $this->dbx->opt("SELECT replid,reff_nama as nama FROM inventory_reff WHERE grup='inventaris' ORDER BY reff_nama",'up');
+				$data['idkondisi_opt'] = $this->dbx->opt("SELECT replid,reff_nama as nama FROM inventory_reff WHERE grup='kondisibarang' ORDER BY reff_nama",'up');
+				$data['idruang_opt'] = $this->dbx->opt("SELECT replid, nama FROM inventory_ruang ORDER BY nama",'up');
+		return $data;
     }
 }
 ?>

@@ -23,7 +23,7 @@ Class keu_administrasi_calon_db extends CI_Model {
 				$cari2=$cari2." AND c.nama like '%".$this->input->post('nama')."%' ";
 			}
 
-			if ($cari2==""){
+			//if ($cari2==""){
 				//$cari=$cari." AND MONTH(c.tanggal_daftar)=MONTH(CURRENT_DATE()) AND YEAR(c.tanggal_daftar)=YEAR(CURRENT_DATE()) ";
 				if ($this->input->post('idkelompok')<>""){
 					$cari=$cari." AND c.idkelompok='".$this->input->post('idprogram')."' ";
@@ -32,17 +32,19 @@ Class keu_administrasi_calon_db extends CI_Model {
 				if ($this->input->post('idproses')<>""){
 					$cari=$cari." AND c.idproses='".$this->input->post('idproses')."' ";
 				}
-				if ($this->input->post('tahunmasuk')<>""){
+				if ($this->input->post('idtahunajaran')<>""){
 					$cari=$cari." AND c.idtahunajaran='".$this->input->post('idtahunajaran')."' ";
+				}else{
+					$cari=$cari." AND ta.departemen='".$this->input->post('iddepartemen')."' ";
+					$cari=$cari." AND ta.aktifdaftar='1' ";
 				}
-			}
+			//}
 
-			if ($cari==""){
-				$cari=$cari." AND ta.departemen='".$this->input->post('iddepartemen')."' ";
-				$cari=$cari." AND ta.aktifdaftar='1' ";
+			//if ($cari==""){
+				
 
 				//$cari=$cari." AND MONTH(c.tanggal_daftar)=MONTH(CURRENT_DATE()) AND YEAR(c.tanggal_daftar)=YEAR(CURRENT_DATE()) ";
-			}
+			//}
 
 			$cari=$cari." AND ta.idcompany='".$this->input->post('idcompany')."' ";
 			//}

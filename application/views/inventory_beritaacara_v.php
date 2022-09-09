@@ -152,7 +152,31 @@
 							<div class="controls">:
 		                	<?php
 		                		$arrcompany='data-rule-required=true';
-		                		echo form_dropdown('idcompany',$company_opt,$isi->idcompany,$arrcompany);
+		                		echo form_dropdown('idcompany',$idcompany_opt,$isi->idcompany,$arrcompany);
+		                	?>
+							</div>
+		        		</div>
+		            </th></tr>
+					<tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Staff Gudang</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		$arridstaffgudang='data-rule-required=true';
+		                		echo form_dropdown('idstaffgudang',$idpegawai_opt,$isi->idstaffgudang,$arridstaffgudang);
+		                	?>
+							</div>
+		        		</div>
+		            </th></tr>
+					<tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Manajer Umum</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		$arridmanajerumum='data-rule-required=true';
+		                		echo form_dropdown('idmanajerumum',$idpegawai_opt,$isi->idmanajerumum,$arridmanajerumum);
 		                	?>
 							</div>
 		        		</div>
@@ -195,12 +219,18 @@
 	    </section>
 <!------------------------------------------------------------------------------------------------------------------------------------>
 <?php } elseif($view=='material'){ ?>
+	<script language="javascript">
+	function cetakprint() {
+		newWindow('<?php echo site_url("inventory_beritaacara/printthis/".$isi->replid); ?>', 'cetakrapot','900','800','resizable=1,scrollbars=1,status=0,toolbar=0')
+	}
+	</script>
 		<section class="content-header table-responsive">
 	            <h1>
 	                <?php echo $form ?>
 	                <small><?php echo $form_small ?></small>
 	            </h1>
               <ol class="breadcrumb">
+			  <li><a href="JavaScript:cetakprint()"><i class="fa fa-file-text"></i>&nbsp;Cetak</a></li>
                   <li><a href="javascript:void(window.open('<?php echo site_url('inventory_beritaacara/tambah'); ?>'))" ><i class="fa fa-plus-square"></i> Tambah</a></li>
               </ol>
             </section>
@@ -221,6 +251,24 @@
 		        		<div class="control-group">
 							<div class="controls">:
 							<?php echo strtoupper($isi->company);?>
+							</div>
+		        		</div>
+		            </th></tr>
+					<tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Staff Gudang</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php echo $CI->dbx->getpegawai($isi->idstaffgudang)?>
+							</div>
+		        		</div>
+		            </th></tr>
+					<tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Manajer Umum</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php echo $CI->dbx->getpegawai($isi->idmanajerumum)?>
 							</div>
 		        		</div>
 		            </th></tr>
@@ -276,6 +324,7 @@
                                     	<th width='50'>No.</th>
                                         <th>Kode Inventaris</th>
                                         <th>Material</th>
+										<th>Kelompok Barang</th>
                                         <th>Departemen</th>
 										<th>Penanggung Jawab</th>
                                         <th>Ruangan</th>
@@ -292,12 +341,13 @@
 										foreach($material as $row) {
 										    echo "<tr>";
 										    echo "<td align='center'>".$no++."</td>";
-                        echo "<td align='center'>".$row->kode_inventaris."</td>";
+                        					echo "<td align='center'>".$row->kode_inventaris."</td>";
 										    echo "<td align=''><a href=javascript:void(window.open('".site_url('inventory_material/view/'.$row->idmaterial)."')) >".$row->materialtext."</a></td>";
-												echo "<td align='center'>".$row->departementext."</td>";
-                        echo "<td align='center'>".$row->pegawaitext."</td>";
-                        echo "<td align='center'>".$row->kondisitext."</td>";
-                        echo "<td align='center'>".$row->ruangtext."</td>";
+											echo "<td align=''>".$row->kelompokmaterialtext."</td>";
+											echo "<td align='center'>".$row->departementext_lama." => ".$row->departementext."</td>";
+                        					echo "<td align='center'>".$row->pegawaitext_lama." => ".$row->pegawaitext."</td>";
+                        					echo "<td align='center'>".$row->ruangtext_lama." => ".$row->ruangtext."</td>";
+											echo "<td align='center'>".$row->kondisitext_lama." => ".$row->kondisitext."</td>";
 										    if(!isset($viewview)){
 										    echo "<td align='center'>";
 										    echo "<a href=javascript:void(window.open('".site_url('inventory_beritaacara/tambahmaterial/'.$isi->replid.'/'.$row->replid)."')) class='btn btn-xs btn-warning'>Ubah</a>";

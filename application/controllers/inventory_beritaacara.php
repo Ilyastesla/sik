@@ -56,6 +56,8 @@ public function __construct() {
 				"idcompany"=> $this->input->post("idcompany"),
 				"tanggaltransaksi"=> $this->p_c->tgl_db($this->input->post('tanggaltransaksi')),
 				"keterangan"=> $this->input->post("keterangan"),
+				"idstaffgudang"=> $this->input->post("idstaffgudang"),
+				"idmanajerumum"=> $this->input->post("idmanajerumum"),
 				"modified_date"=> $this->dbx->cts(),
 				"modified_by"=> $this->session->userdata('idpegawai'));
 		if ($id<>""){
@@ -69,7 +71,7 @@ public function __construct() {
 
 			if ($id<>""){$result=TRUE;}
 		}
-
+		//echo $this->db->last_query();die;
 		if ($result == TRUE) {
 			redirect('inventory_beritaacara/material/'.$id);
 			//redirect('inventory_beritaacara/view/'.$id);
@@ -118,15 +120,15 @@ public function __construct() {
     $data = array(
 				"idinventory_beritaacara"=>$idberita_acara,
 				"idinventory_penyerahan_barang"=> $this->input->post("idinventory_penyerahan_barang"),
-        "iddepartemen"=> $this->input->post("iddepartemen"),
-        "idpj"=> $this->input->post("idpj"),
-        "idruang"=> $this->input->post("idruang"),
-        "idkondisi"=> $this->input->post("idkondisi"),
-        "iddepartemen_lama"=> $this->input->post("iddepartemen_lama"),
-        "idpj_lama"=> $this->input->post("idpj_lama"),
-        "idruang_lama"=> $this->input->post("idruang_lama"),
-        "idkondisi_lama"=> $this->input->post("idkondisi_lama"),
-        "modified_date"=> $this->dbx->cts(),
+				"iddepartemen"=> $this->input->post("iddepartemen"),
+				"idpj"=> $this->input->post("idpj"),
+				"idruang"=> $this->input->post("idruang"),
+				"idkondisi"=> $this->input->post("idkondisi"),
+				"iddepartemen_lama"=> $this->input->post("iddepartemen_lama"),
+				"idpj_lama"=> $this->input->post("idpj_lama"),
+				"idruang_lama"=> $this->input->post("idruang_lama"),
+				"idkondisi_lama"=> $this->input->post("idkondisi_lama"),
+				"modified_date"=> $this->dbx->cts(),
 				"modified_by"=> $this->session->userdata('idpegawai')
       );
 
@@ -189,21 +191,29 @@ public function __construct() {
 		$data['form_small']='Lihat';
 		$data['view']='material';
 		$data['viewview']='0';
-    $data['action']='#';
+    	$data['action']='#';
 		$data= $this->inventory_beritaacara_db->view_db($id,$data);
 		$this->load->view('inventory_beritaacara_v',$data);
 	}
 
 	public function hapus($id) {
-		$result = $this->inventory_beritaacara_db->hapusmaterial2_db($id) ;
-		$result = $this->inventory_beritaacara_db->hapus_db($id) ;
+		$result = $this->dbx->hapusdata('inventory_beritaacara_mat','idinventory_beritaacara',$id) ;
+		$result = $this->dbx->hapusdata('inventory_beritaacara','replid',$id) ;
 		if ($result == TRUE) {
-      ?><script>
+      		?><script>
 					window.opener.location.reload();
 					window.close();
 				</script>
 			<?php
 		}
+	}
+
+	public function printthis($id,$excel="") {
+		$data['form']='BERITA ACARA INVENTARIS';
+		$data['form_small']='Cetak';
+		$data['excel']=$excel;
+		$data= $this->inventory_beritaacara_db->view_db($id,$data);
+		$this->load->view('inventory_beritaacara_print_v',$data);
 	}
 
 }//end of class

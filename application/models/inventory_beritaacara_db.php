@@ -28,6 +28,7 @@ public function __construct() {
 				LEFT JOIN hrm_status s ON s.node=kk.status
 				WHERE kk.replid IS NOT NULL ".$cari."
 			ORDER BY kk.tanggaltransaksi";
+		//echo $sql;die;
 		$data['show_table']=$this->dbx->data($sql);
 		$companyrow=$this->session->userdata('idcompany');
 		$sqlcompany="SELECT replid,nama as nama
@@ -60,7 +61,13 @@ public function __construct() {
         	$data['isi']=$this->dbx->rows($sql);
         }
 
-      	$data['company_opt'] = $this->dbx->opt("select replid,CONCAT(company_code,' ',nama) as nama from hrm_company WHERE aktif=1 ORDER BY nama",'up');
+		$companyrow=$this->session->userdata('idcompany');
+		$sqlcompany="SELECT replid,nama as nama
+								FROM hrm_company
+								WHERE replid IN (".$companyrow.") AND aktif=1
+								ORDER BY nama";
+		$data['idcompany_opt'] = $this->dbx->opt($sqlcompany,'up');
+		$data['idpegawai_opt'] = $this->dbx->opt("SELECT replid, CONCAT(nama,' [',nip,']') as nama FROM pegawai WHERE aktif=1 ORDER BY nama",'up');
         return $data;
     }
 
@@ -100,21 +107,21 @@ public function __construct() {
 
       	$sql="SELECT km.*,im.nama as materialtext,ba.idcompany,CONCAT(pb.kode_inventaris,' ',im.nama) as materialtext
       			FROM inventory_beritaacara_mat km
-            INNER JOIN inventory_beritaacara ba ON ba.replid=km.idinventory_beritaacara
+            	INNER JOIN inventory_beritaacara ba ON ba.replid=km.idinventory_beritaacara
       			LEFT JOIN inventory_penyerahan_barang_mat pb ON pb.replid=km.idinventory_penyerahan_barang
-            LEFT JOIN inventory_material im ON pb.idmaterial=im.replid
+            	LEFT JOIN inventory_material im ON pb.idmaterial=im.replid
       			WHERE km.replid='".$id."'";
         $data['isi'] = $this->dbx->rows($sql);
 
         if ($data['isi']== NULL ) {
         	unset($data['isi']);
-					$sql="SELECT ".$this->dbx->tablecolumn('inventory_beritaacara_mat').",'' as materialtext,'' as idcompany ";
+			$sql="SELECT ".$this->dbx->tablecolumn('inventory_beritaacara_mat').",'' as materialtext,'' as idcompany ";
         	$data['isi']=$this->dbx->rows($sql);
         }
         $data['iddepartemen_opt'] = $this->dbx->opt("select replid,departemen as nama FROM hrm_departemen WHERE aktif=1 AND idcompany='".$data['dataindex']->idcompany."' ORDER BY departemen",'up');
         $data['idpj_opt'] = $this->dbx->opt("select replid,CONCAT(nama,' [',nip,']') as nama from pegawai where aktif=1 ORDER BY nama","up");
         $data['idkondisi_opt'] = $this->dbx->opt("SELECT replid,reff_nama as nama FROM inventory_reff WHERE grup='kondisibarang' ORDER BY reff_nama",'up');
-				$data['idruang_opt'] = $this->dbx->opt("SELECT replid, nama FROM inventory_ruang ORDER BY nama",'up');
+		$data['idruang_opt'] = $this->dbx->opt("SELECT replid, nama FROM inventory_ruang ORDER BY nama",'up');
     	return $data;
     }
 
@@ -125,7 +132,7 @@ public function __construct() {
     	$data['id']=$id;
     	//,IF(penerima<>'',CONCAT(px.nama,' (',px.nip,')'),p.nama)  as penerimatext
       	$sql="SELECT kk.*,c.nama as company
-      				,c.phone,c.fax,c.website,c.email,c.street,c.zip,s.status as statustext
+      				,c.phone,c.fax,c.website,c.email,c.street,c.zip,s.status as statustext,c.city as citycompanytext,CURRENT_DATE() as hariini,DAYNAME(kk.tanggaltransaksi) as namahari
       			FROM inventory_beritaacara kk
       			LEFT JOIN hrm_company c ON kk.idcompany=c.replid
 				LEFT JOIN hrm_status s ON s.node=kk.status
@@ -139,14 +146,24 @@ public function __construct() {
                       ,CONCAT(p.nama,' [',p.nip,']') as pegawaitext
                       ,k.reff_nama as kondisitext
                       ,r.nama as ruangtext
+					  ,d2.departemen as departementext_lama
+                      ,CONCAT(p2.nama,' [',p2.nip,']') as pegawaitext_lama
+                      ,k2.reff_nama as kondisitext_lama
+                      ,r2.nama as ruangtext_lama,km.nama as kelompokmaterialtext
         		FROM inventory_beritaacara_mat pm
         		LEFT JOIN inventory_penyerahan_barang_mat pb ON pb.replid=pm.idinventory_penyerahan_barang
 				LEFT JOIN inventory_material im ON im.replid=pb.idmaterial
+				LEFT JOIN inventory_kelompok km ON km.replid=im.idkelompok
 				LEFT JOIN hrm_departemen d ON d.replid=pm.iddepartemen
 				LEFT JOIN pegawai p ON p.replid=pm.idpj
 				LEFT JOIN inventory_reff k ON k.replid=pm.idkondisi
 				LEFT JOIN inventory_ruang r ON r.replid=pm.idruang
-        		WHERE idinventory_beritaacara='".$id."'";
+        		LEFT JOIN hrm_departemen d2 ON d2.replid=pm.iddepartemen_lama
+				LEFT JOIN pegawai p2 ON p2.replid=pm.idpj_lama
+				LEFT JOIN inventory_reff k2 ON k2.replid=pm.idkondisi_lama
+				LEFT JOIN inventory_ruang r2 ON r2.replid=pm.idruang_lama
+        		
+				WHERE idinventory_beritaacara='".$id."'";
         $data['material'] = $this->dbx->data($sql);
         return $data;
     }

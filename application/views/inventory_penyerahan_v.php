@@ -318,6 +318,33 @@ function cetakterima(id) {
 		 										 </div>
 		 								 </th>
 		 							</tr>
+									 <tr>
+										<th align="left">
+											<label class="control-label" for="minlengthfield">Penerima</label>
+											<div class="control-group">
+												<div class="controls">:
+												<?php echo $CI->dbx->getpegawai($penyerahan_head->idpjheadpenyerahan)?>
+												</div>
+											</div>
+										</th></tr>
+									 <tr>
+										<th align="left">
+											<label class="control-label" for="minlengthfield">Staff Gudang</label>
+											<div class="control-group">
+												<div class="controls">:
+												<?php echo $CI->dbx->getpegawai($penyerahan_head->idstaffgudang)?>
+												</div>
+											</div>
+										</th></tr>
+										<tr>
+										<th align="left">
+											<label class="control-label" for="minlengthfield">Manajer Umum</label>
+											<div class="control-group">
+												<div class="controls">:
+												<?php echo $CI->dbx->getpegawai($penyerahan_head->idmanajerumum)?>
+												</div>
+											</div>
+										</th></tr>
 						<?php } ?>
 				     <tr>
 				     	<td align="left">
@@ -374,6 +401,8 @@ function cetakterima(id) {
                                     <tr>
                                     	<th width='50'>No.</th>
                                         <th>Material</th>
+										<th>Kelompok Barang</th>
+										<th>Kelompok Fiskal</th>
 										<th>Inventaris</th>
                                         <th>Jumlah</th>
                                         <th>Total Serah</th>
@@ -409,7 +438,9 @@ function cetakterima(id) {
 										    echo "<tr>";
 										    echo "<td align='center'>".$no++."</td>";
 										    echo "<td align=''><a href=javascript:void(window.open('".site_url('inventory_material/view/'.$row->idmaterial)."')) >".$row->materialtext."</a><br /><b>Stok: ".$stock."</b></td>";
-										    echo "<td align='center'>".$CI->p_c->cekaktif($row->jumlah)."</td>";
+										    echo "<td align='center'>".$row->kelompokbarangtext."</td>";
+											echo "<td align='center'>".$row->kodefiskaltext."</td>";
+											echo "<td align='center'>".$CI->p_c->cekaktif($row->inventaris)."</td>";
 											echo "<td align='center'>".$row->jumlah."</td>";
 										    echo "<td align='center'>".$total_serah."</td>";
 										    echo "<td align='center' ".$bg.">".$sisaserah."</td>";
@@ -418,7 +449,16 @@ function cetakterima(id) {
 										    if(($edit) and ($idpenyerahan<>"")){
 											    echo "<td>";
 											    if (($stock>=$sisaserah) and ($sisaserah>0)){
-											    	echo "<a href=".site_url('inventory_penyerahan/penyerahan_material/'.$row->replid.'/'.$idpenyerahan)." class='btn btn-warning'>Penyerahan</a>";
+													if ($row->inventaris){
+														if ($row->idfiskal<>""){
+															echo "<a href=".site_url('inventory_penyerahan/penyerahan_material/'.$row->replid.'/'.$idpenyerahan)." class='btn btn-warning'>Penyerahan</a>";
+														}else{
+															echo "<font color='red'><b>Silahkan isi terlebih dahulu kelompok fiskal pada kelompok barang<br/><br/><a href='".site_url('inventory_kelompok/ubah/'.$row->idkelompok)."' target='_blank'>Disini!</a></b></font>";
+														}
+													}else{
+														echo "<a href=".site_url('inventory_penyerahan/penyerahan_material/'.$row->replid.'/'.$idpenyerahan)." class='btn btn-warning'>Penyerahan</a>";
+													}
+											    	
 											    }else if ($sisaserah==0){
 											    	echo "<font color='green'><b>Penyerahan Selesai</b></font>";
 											    }else{
@@ -434,7 +474,7 @@ function cetakterima(id) {
 											    echo "<td align=''>&nbsp;</td>";
 
 											    $noinventaris=$CI->inventory_penyerahan_db->noinventaris_db($row->idpermintaan_barang,$row->idmaterial,$row->replid);
-											    echo "<td colspan='6'>";
+											    echo "<td colspan='9'>";
 											    ?>
 											    <table class="table table-bordered table-striped">
 				                                <thead>
@@ -625,7 +665,22 @@ function cetakterima(id) {
 												 </div>
 										 </th>
 									</tr>
-				     	<tr>
+									<tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Departemen</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+								$iddepartemen=$isi->iddepartemen;
+								if ($isi->iddepartemenpermintaan){
+									$iddepartemen=$isi->iddepartemenpermintaan;
+								}
+		                		$arriddepartemen='data-rule-required=true';
+		                		echo form_dropdown('iddepartemen',$iddepartemen_opt,$iddepartemen,$arriddepartemen);
+		                	?>
+							</div>
+		        		</div>
+		            </th></tr>
 						 <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Penanggung Jawab</label>
@@ -705,8 +760,10 @@ function cetakterima(id) {
 			            	<input type="hidden" name="inventaris" value="<?php echo $isi->inventaris; ?>">
 			            	<input type="hidden" name="kodecabang" value="<?php echo $isi->kodecabang; ?>">
 			            	<input type="hidden" name="idcompany" value="<?php echo $isi->idcompany; ?>">
+							<!--
 							<input type="hidden" name="iddepartemen" value="<?php echo $isi->iddepartemen; ?>">
 							<input type="hidden" name="kodedepartemen" value="<?php echo $isi->kodedepartemen; ?>">
+							-->
 			            	<input type="hidden" name="kodefiskal" value="<?php echo $isi->kodefiskal; ?>">
 			            	<input type="hidden" name="kodematerial" value="<?php echo $isi->kodematerial; ?>">
 			            	<input type="hidden" name="stock" value="<?php echo $isi->stock; ?>">
@@ -738,18 +795,54 @@ function cetakterima(id) {
 				<th align="left">
 						<label class="control-label" for="minlengthfield">Tgl. Penyerahan</label>
 						<div class="control-group">
-			<div class="controls">:
-				<?php
-					echo form_input(array('class' => '', 'id' => 'dp1','name'=>'tanggalserah','value'=>$CI->p_c->tgl_form($isi->tanggalserah),'data-rule-required'=>'false' ,'data-rule-maxlength'=>'100', 'data-rule-minlength'=>'2' ,'placeholder'=>'DD-MM-YYYY','autocomplete'=>'off'));
-				?>
-			<?php //echo  <p id="message"></p> ?>
-			</div>
+						<div class="controls">:
+							<?php
+								echo form_input(array('class' => '', 'id' => 'dp1','name'=>'tanggalserah','value'=>$CI->p_c->tgl_form($isi->tanggalserah),'data-rule-required'=>'false' ,'data-rule-maxlength'=>'100', 'data-rule-minlength'=>'2' ,'placeholder'=>'DD-MM-YYYY','autocomplete'=>'off'));
+							?>
+						<?php //echo  <p id="message"></p> ?>
+						</div>
 						</div>
 				</th>
 		 </tr>
 		 <tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Penerima</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		$arridpjheadpenyerahan='data-rule-required=true';
+		                		echo form_dropdown('idpjheadpenyerahan',$idpegawai_opt,$isi->idpjheadpenyerahan,$arridpjheadpenyerahan);
+		                	?>
+							</div>
+		        		</div>
+		            </th></tr>
+		 <tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Staff Gudang</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		$arridstaffgudang='data-rule-required=true';
+		                		echo form_dropdown('idstaffgudang',$idpegawai_opt,$isi->idstaffgudang,$arridstaffgudang);
+		                	?>
+							</div>
+		        		</div>
+		            </th></tr>
+					<tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Manajer Umum</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		$arridmanajerumum='data-rule-required=true';
+		                		echo form_dropdown('idmanajerumum',$idpegawai_opt,$isi->idmanajerumum,$arridmanajerumum);
+		                	?>
+							</div>
+		        		</div>
+		            </th></tr>
+		 <tr>
 	 <th align="left">
-		  <input type="hidden" name="idcompany" value="<?php echo $isi->idcompany; ?>">
+		  <input type="hidden" name="idcompany" value="<?php echo $permintaan->idcompany; ?>">
 		 <button class='btn btn-primary'>Simpan</button>
 		 <a href="javascript:void(window.open('<?php echo site_url('inventory_penyerahan/view/'.$idpermintaan.'/1') ?>'))" class="btn btn-success">Batal</a>
 	 </th>

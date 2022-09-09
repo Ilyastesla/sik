@@ -109,9 +109,8 @@ public function __construct() {
 			for ($i = 1; $i <= $jumlah; $i++) {
 				$rows_pembelian = $this->dbx->rows("SELECT * FROM inventory_pembelian a INNER JOIN inventory_pembelian_mat b ON a.replid=b.idinventory_pembelian WHERE b.idmaterial='".$idmat."' AND a.replid='".$this->input->post("idinventory_pembelian")."'");
 				$tanggalpembelian=$rows_pembelian->tanggalpembelian;
-				//$kode_depan=$kodecabang.'.'.$kodedepartemen.'.'.$idkelompok_inventaris.'.'.$kodefiskal.'.'.str_replace('-','',$tanggalserah).'.'.$kodematerial;
-				$kode_depan=$kodecabang.'.'.$kodedepartemen.'.'.$idkelompok_inventaris.'.'.$kodefiskal.'.'.str_replace('-','',$tanggalpembelian).'.'.$kodematerial;
-				//$kode_inventaris=$this->inventory_penyerahan_db->kode_inventaris(substr($tanggalserah,0,4),$kode_depan);
+				//$kode_depan=$kodecabang.'.'.$kodedepartemen.'.'.$idkelompok_inventaris.'.'.$kodefiskal.'.'.str_replace('-','',$tanggalpembelian).'.'.$kodematerial;
+				$kode_depan=$kodecabang.'.'.$idkelompok_inventaris.'.'.$kodefiskal.'.'.str_replace('-','',$tanggalpembelian).'.'.$kodematerial;
 				$kode_inventaris=$this->inventory_penyerahan_db->kode_inventaris(substr($tanggalserah,0,4),$kode_depan);
 				$data = array(
 					"idinventory_penyerahan"=> $this->input->post('idinventory_penyerahan'),
@@ -178,10 +177,11 @@ public function __construct() {
 		}
 	}
 
-	public function inventory_penyerahan_print($id,$idpenyerahan) {
+	public function inventory_penyerahan_print($id,$idpenyerahan,$excel='') {
 		$data['form']='Penyerahan Barang';
 		$data['form_small']='Lihat';
 		$data['edit']=0;
+		$data['excel']=$excel;
 		$data= $this->inventory_penyerahan_db->view_db($id,$data,$idpenyerahan);
 		$this->load->view('inventory_penyerahan_print_v',$data);
 	}
@@ -223,6 +223,9 @@ public function __construct() {
 			//"pemohon"=> $this->session->userdata('idpegawai'),
 			$data = array(
 					"tanggalserah"=> $this->p_c->tgl_db($this->input->post('tanggalserah')),
+					"idpjheadpenyerahan"=> $this->input->post("idpjheadpenyerahan"),
+					"idstaffgudang"=> $this->input->post("idstaffgudang"),
+					"idmanajerumum"=> $this->input->post("idmanajerumum"),
 					"status"=> "1",
 					"idpermintaan_barang"=> $idpermintaan,
 					"idcompany"=> $this->input->post('idcompany'),

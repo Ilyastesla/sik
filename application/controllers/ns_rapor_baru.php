@@ -33,7 +33,7 @@ parent::__construct();
 	public function index()
 	{
 			$data= $this->ns_rapor_baru_db->data();
-			$data['form']='Laporan Pembelajaran K13';
+			$data['form']='Laporan Pembelajaran K13 dan IKM';
 			$data['view']='index';
 			$data['action']='ns_rapor_baru';
 			$this->load->view('ns_rapor_baru_v', $data);
@@ -42,7 +42,7 @@ parent::__construct();
 	// TAMBAH
 	//-------------------------------------------------------------------------------------------
 	public function tambah($id="") {
-		$data['form']='Laporan Pembelajaran K13';
+		$data['form']='Laporan Pembelajaran K13 dan IKM';
 		$data['form_small']='Tambah Data';
 		$data['view']='tambah';
 		$data['indeks']='1';
@@ -52,7 +52,7 @@ parent::__construct();
 	}
 
 	public function tambah2($id="") {
-		$data['form']='Laporan Pembelajaran K13';
+		$data['form']='Laporan Pembelajaran K13 dan IKM';
 		$data['form_small']='Tambah Data';
 		$data['view']='tambah';
 		$data['indeks']='2';
@@ -182,7 +182,7 @@ parent::__construct();
 	// Rapot
 	//-------------------------------------------------------------------------------------------
 	public function rapot($id) {
-		$data['form']='Laporan Pembelajaran K13';
+		$data['form']='Laporan Pembelajaran K13 dan IKM';
 		$data['form_small']='Rapor';
 		$data['view']='rapot';
 		$data['id']=$id;
@@ -194,7 +194,7 @@ parent::__construct();
 	// DETAIL Rapot MATPEL
 	//-------------------------------------------------------------------------------------------
 	public function ns_rapor_baru_detailmatpel($id,$idmatpel="") {
-		$data['form']='Laporan Pembelajaran K13';
+		$data['form']='Laporan Pembelajaran K13 dan IKM';
 		$data['form_small']='Rapor Detail Per Mata Pelajaran';
 		$data['action']='ns_rapor_baru/tambahnilai_p/'.$id;
 		$data['id']=$id;
@@ -262,7 +262,7 @@ parent::__construct();
 
 	public function printrapot($id,$excel="")
 	{
-		$data['form']='Laporan Pembelajaran K13';
+		$data['form']='Laporan Pembelajaran K13 dan IKM';
 		$data['form_small']='Rapot';
 		$data['view']='rapot';
 		$data['excel']=$excel;
@@ -274,7 +274,7 @@ parent::__construct();
 
 	public function digitalrapot($id)
 	{
-		$data['form']='Laporan Pembelajaran K13';
+		$data['form']='Laporan Pembelajaran K13 dan IKM';
 		$data['form_small']='Rapot';
 		$data['view']='rapot';
 		$data['excel']=0;
@@ -286,7 +286,7 @@ parent::__construct();
 
 	public function printrapotavg($id,$excel="")
 	{
-		$data['form']='Laporan Pembelajaran K13';
+		$data['form']='Laporan Pembelajaran K13 dan IKM';
 		$data['form_small']='Rapot';
 		$data['view']='rapot';
 		$data['excel']=$excel;
@@ -298,7 +298,7 @@ parent::__construct();
 
 	public function digitalrapotavg($id)
 	{
-		$data['form']='Laporan Pembelajaran K13';
+		$data['form']='Laporan Pembelajaran K13 dan IKM';
 		$data['form_small']='Rapot';
 		$data['view']='rapot';
 		$data['excel']=0;

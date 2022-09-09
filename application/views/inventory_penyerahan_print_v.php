@@ -1,119 +1,146 @@
-<!DOCTYPE html>
-<?php
-$CI =& get_instance();
-?>
-<html>
-<title><?php echo $form ?></title>
-<link href="<?php echo base_url(); ?>css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<script src="<?php echo base_url(); ?>js/jquery2.min.js"></script>
-<script src="<?php echo base_url(); ?>js/bootstrap.min.js" type="text/javascript"></script>
+<?php 
+$this->load->view('headerprint_v');
 
-<link href="<?php echo base_url(); ?>css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<script src="<?php echo base_url(); ?>js/morris/morris.min.js" type="text/javascript"></script>
-<link href="<?php echo base_url(); ?>js/morris/morris.css" rel="stylesheet" type="text/css" />
-<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+$CI =& get_instance();
+if ($excel==1){
+	header('Content-Type: application/vnd.ms-excel'); //IE and Opera
+	header('Content-Type: application/x-msexcel'); // Other browsers
+	header('Content-Disposition: attachment; filename=penyerahanbarang.xls');
+	header('Expires: 0');
+	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+}else{
+    ?>
+	<script language="javascript">
+		window.print();
+	</script>
+    <?php
+}
+?>
 <style>
-	@page {
-		  size: A4;
-		  width:210mm;
-		  height:297mm;
-		  margin-left: 0;
-			margin-right: 0;
-			margin-top: default;
-			margin-bottom: 100px;
-		}
-	table {
-		width: 85% !important;
-	}
-	@media print {
-        .breaktable {
-        	page-break-inside:avoid !important;
-		    	page-break-after: auto;
-		  	}
-				.lpd thead {display: table-header-group;}
-				.lpd {
-					page-break-inside:avoid !important;
-					page-break-after: auto;
-				}
-     }
+    h3,h4 {
+        line-height: 0px !important;
+    }
 </style>
 <body>
 	<center >
-
-  <table width="100%" border="0">
-    <tr>
-      <td align="left" width="50%" valign="bottom"><?php $CI->dbx->getheadercompany($isi->idcompany)?></td>
-      <td align="right" width="50%" valign="bottom"><h3>BPB</h3><h4><b><u>Bukti Penerimaan Barang</u></b></h4></td>
-    </tr>
-    <tr>
-        <td colspan=2><hr/></td>
-    </tr>
-  </table>
-
-    <table style="border-collapse:collapse" border="0" cellpadding="2">
-			<tr>
-          <th align="left" width="20%">No. Penyerahan</th><th align="left" width="30%">: <?php echo $penyerahan_head->kode_transaksi; ?></th>
-					<th align="left" width="20%">Tgl. Penyerahan</th><th align="left" width="30%">: <?php echo $CI->p_c->tgl_indo($penyerahan_head->tanggalserah); ?></th>
-      </tr>
-			<tr>
+  <?php $CI->dbx->getkopsuratcompany($isi->idcompany); ?>
+  <center>
+    <b><h3><u><?php echo $form ?></u></h3>Nomor: <?php echo $isi->kode_transaksi ?><br/><br/></b>
+    
+    
+  <table class="tablecontent">
+      <tr>
           <th align="left">No. Permintaan</th><th align="left">: <?php echo strtoupper($isi->kode_transaksi); ?></th>
           <th align="left">Tgl. Permintaan</th><th align="left">: <?php echo $CI->p_c->tgl_indo($isi->created_date); ?></th>
       </tr>
       <tr>
-          <th align="left">Pemohon</th><th align="left">: <?php echo $CI->dbx->getpegawai($isi->pemohon,0,0); ?></th>
+          <th align="left">Pemohon</th><th align="left">: <?php echo $CI->dbx->getpegawai($isi->pemohon,0,1); ?></th>
           <th align="left">Tgl. Kebutuhan</th><th align="left">: <?php echo $CI->p_c->tgl_indo($isi->tanggalpengajuan); ?></th>
       </tr>
+			<tr>
+          <th align="left" width="20%">No. Penyerahan</th><th align="left" width="30%">: <?php echo $penyerahan_head->kode_transaksi; ?></th>
+					<th align="left" width="20%">Tgl. Penyerahan</th><th align="left" width="30%">: <?php echo $CI->p_c->tgl_indo($penyerahan_head->tanggalserah); ?></th>
+      </tr>
+      <tr>
+          <th align="left" width="20%">Penerima</th><th align="left" width="30%">: <?php echo $CI->dbx->getpegawai($penyerahan_head->idpjheadpenyerahan,0,1); ?></th>
+					<!--<th align="left" width="20%">Tgl. Penyerahan</th><th align="left" width="30%">: <?php echo $CI->p_c->tgl_indo($penyerahan_head->tanggalserah); ?></th>-->
+      </tr>
+			<!--
       <tr>
           <th align="left">Departemen</th><th align="left">: <?php echo strtoupper($isi->departemen); ?></th>
       </tr>
+  -->
     </table>
-    <table style="border-collapse:collapse;" border="1" cellpadding="2">
+    <br/>
+    <table class="tablecontent tablecontent_">
       <thead>
           <tr>
-            	<td align='center' widtd='50'>No.</b></td>
-              <td align='center'><b>Material</b></td>
-              <td align='center'><b>Jumlah Permintaan</b></td>
-							<td align='center'><b>Jumlah Penyerahan</b></td>
+          <th width='50'>No.</th>
+                                        <th>Material</th>
+										<th>Kelompok Barang</th>
+										<th>Kelompok Fiskal</th>
+                                        <th>Total Serah</th>
+                                        <th>Unit</th>
           </tr>
       </thead>
       <tbody>
-        <?php
-        $jml_c=0;$no=1;$stock=0;$totalall=0;
-        if (!empty($material)){
-            foreach($material as $row) {
-                  $totalall=$totalall+$row->hargatotal;
-                  echo "<tr>";
-                  echo "<td align='center'>".$no++."</td>";
-                  echo "<td align='left'>&nbsp;&nbsp;".$row->materialtext."</td>";
-                  echo "<td align='center'>".$row->jumlah.' '.$row->idunit."</td>";
-									echo "<td align='center'>".$row->total_serah.' '.$row->idunit."</td>";
-                  echo "</tr>";
-            }
-        }
-        echo "<tr>";
-        echo "<th align='left' colspan='8' valign='top' height='50px'>&nbsp;&nbsp;Keterangan : <br><p align='justify'>&nbsp;&nbsp;".$isi->keterangan."</p></th>";
-        echo "</tr>";
-        ?>
-      </tbody>
+                                	<?php
+                                	$jml_c=0;$no=1;$stock=0;$nlx="";
+                                	if (!empty($material)){
+										foreach($material as $row) {
+												$sisaserah=0;$total_serah=0;
+												$sisaserah=$row->jumlah-$row->total_serah;
+                      	if ($row->total_serah<>""){
+                      		$total_serah=$row->total_serah;
+                      	}
+                      	if($nlx<>""){$nlx=$nlx.',';}
+										    echo "<tr>";
+										    echo "<td align='center'>".$no++."</td>";
+										    echo "<td align=''>".$row->materialtext."</b></td>";
+										    echo "<td align='center'>".$row->kelompokbarangtext."</td>";
+											echo "<td align='center'>".$row->kodefiskaltext."</td>";
+											  echo "<td align='center'>".$total_serah."</td>";
+										    echo "<td align='center'>".$row->idunit."</td>";
+
+										    echo "</tr>";
+										    //------------------------------------------------------------------------------------
+										    if ($total_serah>0){
+											    echo "<tr>";
+											    echo "<td align=''>&nbsp;</td>";
+
+											    $noinventaris=$CI->inventory_penyerahan_db->noinventaris_db($row->idpermintaan_barang,$row->idmaterial,$row->replid);
+											    echo "<td colspan='9'>";
+											    ?>
+											    <table class="tablecontent tablecontent_">
+				                                <thead>
+				                                    <tr>
+				                                    	<th width='50'>No.</th>
+														                     <?php if ($row->inventaris) { ?>
+				                                        <th>No. Inventaris</th>
+				                                        <th>Kelompok Inventaris</th>
+				                                        <th>Ruangan</th>
+																							<?php }else{ ?>
+																								<th>Jumlah Serah</th>
+																								<th>Unit</th>
+																							<?php
+																								} ?>
+				                                        
+				                                    </tr>
+				                                </thead>
+				                                <tbody>
+
+											    <?php
+											    $no2=1;
+											    foreach((array)$noinventaris as $rownoinventaris) {
+												    echo "<tr>";
+												    echo "<td>".$no2++."</td>";
+												    if ($row->inventaris) {
+												    	echo "<td>".$rownoinventaris->kode_inventaris."</td>";
+												    	echo "<td>".$rownoinventaris->kelompok_inventaris."</td>";
+												    	echo "<td>".$rownoinventaris->ruangan."</td>";
+												    }else{
+															echo "<td align='center'>".$rownoinventaris->jml_serah."</td>";
+															echo "<td align='center'>".$rownoinventaris->unit."</td>";
+														}
+											    }
+											    echo "</table>";
+											    echo "</td>";
+											    echo "</tr>";
+
+											}// $total_serah=0
+										    $nlx=$nlx.$row->idmaterial;
+										}
+									}
+									?>
+                                </tbody>
     </table>
     <br/>
-    <table style="border-collapse:collapse" border="0" cellpadding="2">
-      <tr>
-          <td colspan="5" align="right"><font><b>Tangerang Selatan, <?php echo $CI->p_c->tgl_indo($isi->tglprint); ?>&nbsp;&nbsp;&nbsp;</b></font></td>
-        </tr>
-      <tr>
-          <td align="center" width="20%"><b>Pemohon</b></td>
-          <td align="center" width="20%"><b>Petugas</b></td>
-      </tr>
-        <tr>
-          <td align="center" height="80px"></td>
-          <td align="center"></td>
-        </tr>
-        <tr>
-          <td align="center"><b><?php echo $CI->dbx->getpegawai($isi->pemohon,0,0); ?></b></td>
-					<td align="center"><b><?php echo $CI->dbx->getpegawai($penyerahan_head->created_by,0,0); ?></b></td>
-        </tr>
-    </table>
+    <table class="tablecontent">
+            <tr><td align='right' colspan=2><?php echo $isi->citycompanytext.', '.$CI->p_c->tgl_indo($isi->tglprint) ?></td></tr>
+            <tr align='center'><td width="50%">Penerima</td><td>Staff Pengadaan dan Gudang</td></tr>
+            <tr><td  height='80px'></td><td></td></tr>
+            <tr align='center'><td><b><?php echo $CI->dbx->getpegawai($penyerahan_head->idpjheadpenyerahan)?></b><hr/>Staff Pengadaan dan Gudang</td><td><b><?php echo $CI->dbx->getpegawai($penyerahan_head->idstaffgudang)?></b><hr/>Manajer Umum</td></tr>
+        </table>
    </center>
 </body>
 <? die; ?>

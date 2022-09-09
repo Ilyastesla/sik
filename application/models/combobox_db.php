@@ -299,13 +299,15 @@ function __construct(){
 							WHERE replid IN (".$companyrow.") AND aktif=1
 							ORDER BY nama";
 
-		$sqlnotif="SELECT replid,namacalon 
-					FROM online_kronologis 
-					WHERE status=1 AND idunitbisnis IN (".$sqlcompany.") 
-							AND YEAR(created_date)=YEAR(CURRENT_DATE()) ORDER BY created_date ASC";
+		$sqlnotif="SELECT ok.replid,ok.namacalon,c.nama as companytext 
+					FROM online_kronologis ok 
+					LEFT JOIN hrm_company c ON c.replid=ok.idunitbisnis 
+					WHERE ok.status=1 AND ok.idunitbisnis IN (".$sqlcompany.") 
+							AND YEAR(ok.created_date)=YEAR(CURRENT_DATE()) ORDER BY ok.created_date ASC";
+		//echo $sqlnotif;
 		$notifkronologisdata= $this->dbx->data($sqlnotif);
 		foreach((array)$notifkronologisdata as $data) {
-			$notifkronologistext.="<li><a href='".site_url('online_kronologis/viewkronologis/'.$data->replid)."'><i class='fa fa-user'></i>".$data->namacalon."</a></li>";
+			$notifkronologistext.="<li><a href='".site_url('online_kronologis/viewkronologis/'.$data->replid)."'><br/>&nbsp;".$data->namacalon."<br/>&nbsp;".$data->companytext."<br/><br/></a></li>";
 		}
 		return $notifkronologistext;
 	}

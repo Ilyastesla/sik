@@ -61,7 +61,7 @@
                                                 echo "<th width='50'>No.</th>";
                                                 echo "<th>Perusahaan</th>";
                                                 echo "<th>Departemen</th>";
-                                                //echo "<th>Kode Departemen<th>";
+                                                echo "<th>Kode Departemen</th>";
                                                 echo "<th>Aktif</th>";
                                                 echo "<th width='80'>Aksi</th>";
                                                 ?>
@@ -76,7 +76,7 @@
 											    echo "<td align='center'>".$no++."</td>";
                           echo "<td align='center'>".strtoupper($row->companytext)."</td>";
 											    echo "<td align='center'>".strtoupper($row->departemen)."</td>";
-											    //echo "<td align='center'>".strtoupper($row->kodedepartemen)."</td>";
+											    echo "<td align='center'>".strtoupper($row->kodedepartemen)."</td>";
 											    echo "<td align='center'>".$CI->p_c->cekaktif(strtoupper($row->aktif))."</td>";
 											    echo "<td align='center'>";
                           echo "<a href=javascript:void(window.open('".site_url('departemen/ubah/'.$row->replid)."')) class='btn btn-xs btn-warning fa fa-check-square'></a>&nbsp;";
@@ -142,7 +142,7 @@
 								</div>
 	                		</div>
 			            </th></tr>
-              <!--
+              
 			        <tr>
 		            <th align="left">
 	                		<label class="control-label" for="minlengthfield">Kode Departemen</label>
@@ -155,8 +155,7 @@
 								</div>
 	                		</div>
 			            </th></tr>
-              -->
-			        <tr>
+                    <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Aktif</label>
 		        		<div class="control-group">

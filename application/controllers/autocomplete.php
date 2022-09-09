@@ -65,6 +65,7 @@ class Autocomplete extends CI_Controller
 					'value'	=>$row->namamaterial,
 					'replid'	=>$row->replid,
 					'iddepartemen'	=>$row->iddepartemen,
+					'idpj'	=>$row->idpj,
 					'idpemohon'	=>$row->pemohon,
 					'idruang'	=>$row->idruang,
 					'idkondisi'	=>$row->idkondisi

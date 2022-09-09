@@ -274,7 +274,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 	public function view_db($id,$data) {
 				//,r.region
 				// LEFT JOIN regional r ON r.replid=pv.idregion
-      	$sql="SELECT pv.*,CONCAT('[',ps.iddepartemen,'] ',ps.prosestipe) as prosestipe,mp.matpel
+      	$sql="SELECT pv.*,CONCAT('[',ps.iddepartemen,'] ',ps.prosestipe,' ',ps.keterangan) as prosestipe,mp.matpel
 										,mp.iddepartemen,ta.tahunajaran,k.kelas,p.periode,ta.aktif as aktiftahunajaran, mp.kkm,ta.aktif as aktiftahunajaran
 										,ps.nilaiwali,ps.iddepartemen,k.idwali
 									,(SELECT COUNT(*) FROM ns_pengembangandirinilai WHERE idpembelajaranjadwal=pv.replid) as jmlsiswakelas
@@ -368,8 +368,9 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 														WHERE pdn.idpembelajaranjadwal='".$id."' ORDER BY pdv.no_urut";
 				}
 				//echo $pengembangandirivariabel_sql;die;
+				//echo $siswa_sql;die;
 				$data['idrapottipe_opt'] = $this->dbx->data($idrapottipe_sql);
-      	$data['siswa']=$this->dbx->data($siswa_sql);
+      			$data['siswa']=$this->dbx->data($siswa_sql);
 				//echo $pengembangandirivariabel_sql;die;
 				$data['pengembangandirivariabel']=$this->dbx->data($pengembangandirivariabel_sql);
 				//AND idsiswa='".$rowsiswa->replid."' AND idpengembangandirivariabel='".$rowpdv2->replid."'
