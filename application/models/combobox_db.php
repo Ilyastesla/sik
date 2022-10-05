@@ -162,6 +162,7 @@ function __construct(){
 									INNER JOIN ns_reff_company rc ON rc.idvariabel=pt.replid
 									WHERE rc.tipe='ns_prosestipe' AND rc.idcompany='".$idcompany."' AND pt.aktif=1 AND pt.iddepartemen IN (SELECT departemen FROM tahunajaran  WHERE replid='".$variabel."')
 									ORDER BY pt.aktif DESC,nama ASC ";
+		//echo $sql;
 		$idprosestipedata= $this->dbx->data($sql);
 		foreach((array)$idprosestipedata as $data) {
 			$idprosestipetext.= "<option value='".$data->replid."'>".$data->nama."</option>";
@@ -184,7 +185,7 @@ function __construct(){
 												))
 												ORDER BY mp.iddepartemen, mp.matpel";
 		//AND replid IN (".$this->session->userdata('matpel').")
-
+		//echo $sql;
 		$idmatpeldata= $this->dbx->data($sql);
 		foreach((array)$idmatpeldata as $data) {
 			$idmatpeltext.= "<option value='".$data->replid."'>".$data->nama."</option>";

@@ -17,7 +17,9 @@ Class ksw_rekapitulasi_db extends CI_Model {
 			if ($this->input->post('idtahunajaran')<>""){
 				$cari=$cari." AND t.replid='".$this->input->post('idtahunajaran')."' ";
 			}else{
-				$cari=$cari." AND t.aktif=1 ";
+				if ($this->input->post('siswa_backup')==""){
+					//$cari=$cari." AND t.aktif=1 ";
+				}
 			}
 
 			if ($this->input->post('idtingkat')<>""){
@@ -32,28 +34,57 @@ Class ksw_rekapitulasi_db extends CI_Model {
 				$cari2=$cari2." AND s.region='".$this->input->post('idregional')."' ";
 			}
 
+			$carisiswa="";
+			if ($this->input->post('siswa_backup')<>""){
+				$carisiswa=" AND s.tgl_proses='".$this->input->post('siswa_backup')."' ";
+			}
+			if ($this->input->post('siswa_backup')<>""){
 				$sql = "SELECT
-                	t.tahunajaran,t.departemen
-                	,tkt.tingkat as tingkattext
-                	,j.jurusan AS jurusantext
-                	,ks.kelompok AS kelompok_siswatext
-                	,SUM(k.kapasitas) as totkapasitas
-                	,SUM((SELECT COUNT(*) FROM siswa s WHERE s.idkelas=k.replid AND s.aktif=1 ".$cari2.")) as jmlsiswa
-                  ,SUM((SELECT COUNT(*) FROM siswa s WHERE s.idkelas=k.replid AND s.aktif=1 AND s.abk=1 ".$cari2." )) as jmlsiswaabk
-				  ,(SELECT region FROM regional WHERE replid='".$this->input->post('idregional')."') as regionaltext
-              FROM kelas k
-              INNER JOIN tahunajaran t ON k.idtahunajaran = t.replid
-              INNER JOIN tingkat tkt ON tkt.replid = k.idtingkat
-              INNER JOIN kelompoksiswa ks ON ks.replid = k.kelompok_siswa
-              LEFT JOIN jurusan j ON j.replid = k.jurusan
-              WHERE
-              	k.replid <> 0
-                ".$cari."
-              GROUP BY t.replid,tkt.replid,j.replid,ks.replid
-              ORDER BY
-              	t.departemen ASC,t.tahunajaran DESC,CAST(tkt.tingkat AS SIGNED) ASC";
-				//echo $sql;die;
-				$data['show_table']=$this->dbx->data($sql);
+							COUNT(s.replid) as jmlsiswa,
+							SUM(s.abk) as jmlsiswaabk,
+							t.tahunajaran,t.departemen
+							,tkt.tingkat as tingkattext
+							,j.jurusan AS jurusantext
+							,ks.kelompok AS kelompok_siswatext
+							,SUM(k.kapasitas) as totkapasitas
+							,(SELECT region FROM regional WHERE replid='".$this->input->post('idregional')."') as regionaltext
+						FROM kelas k
+						INNER JOIN siswa_backup s ON s.idkelas=k.replid 
+						INNER JOIN tahunajaran t ON k.idtahunajaran = t.replid
+						INNER JOIN tingkat tkt ON tkt.replid = k.idtingkat
+						INNER JOIN kelompoksiswa ks ON ks.replid = k.kelompok_siswa
+						LEFT JOIN jurusan j ON j.replid = k.jurusan
+						WHERE
+							k.replid <> 0
+							".$cari.$carisiswa."
+						GROUP BY t.replid,tkt.replid,j.replid,ks.replid
+						ORDER BY
+							t.tahunajaran DESC,t.departemen ASC,CAST(tkt.tingkat AS SIGNED) ASC,ks.kelompok";
+			}else{
+				$sql = "SELECT
+						t.tahunajaran,t.departemen
+						,tkt.tingkat as tingkattext
+						,j.jurusan AS jurusantext
+						,ks.kelompok AS kelompok_siswatext
+						,SUM(k.kapasitas) as totkapasitas
+						,SUM((SELECT COUNT(*) FROM siswa s WHERE s.idkelas=k.replid AND s.aktif=1 ".$cari2.")) as jmlsiswa
+						,SUM((SELECT COUNT(*) FROM siswa s WHERE s.idkelas=k.replid AND s.aktif=1 AND s.abk=1 ".$cari2." )) as jmlsiswaabk
+						,(SELECT region FROM regional WHERE replid='".$this->input->post('idregional')."') as regionaltext
+				FROM kelas k
+				INNER JOIN tahunajaran t ON k.idtahunajaran = t.replid
+				INNER JOIN tingkat tkt ON tkt.replid = k.idtingkat
+				INNER JOIN kelompoksiswa ks ON ks.replid = k.kelompok_siswa
+				LEFT JOIN jurusan j ON j.replid = k.jurusan
+				WHERE
+					k.replid <> 0
+					AND k.replid IN (SELECT idkelas FROM siswa WHERE aktif=1) 
+					".$cari."
+				GROUP BY t.replid,tkt.replid,j.replid,ks.replid
+				ORDER BY
+					t.tahunajaran DESC,t.departemen ASC,CAST(tkt.tingkat AS SIGNED) ASC,ks.kelompok";
+			}
+			//echo $sql;die;
+			$data['show_table']=$this->dbx->data($sql);
 
 			//echo $sql;die;
 			$companyrow=$this->session->userdata('idcompany');
@@ -68,6 +99,7 @@ Class ksw_rekapitulasi_db extends CI_Model {
 													  WHERE aktif=1 AND departemen='".$this->input->post('iddepartemen')."' ORDER BY CAST(tingkat AS SIGNED) ASC",'up');
 			$data['kelompok_siswa_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',kelompok) as nama FROM kelompoksiswa ks WHERE ks.departemen='".$this->input->post('iddepartemen')."' AND ks.aktif=1 ORDER BY ks.departemen,ks.kelompok",'up');
 			$data['idregional_opt'] = $this->dbx->opt("SELECT replid,region as nama FROM regional ks ORDER BY nama",'up');
+			$data['siswa_backup_opt'] = $this->dbx->opt("SELECT DISTINCT tgl_proses as replid,tgl_proses as nama FROM siswa_backup  ORDER BY tgl_proses DESC",'up');
 			return $data;
     }
 }

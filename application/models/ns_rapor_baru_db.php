@@ -77,8 +77,11 @@ Class ns_rapor_baru_db extends CI_Model {
 
         //KELAS
         //-----------------------------------------------------------------------------------------------
-				$data['idkelas_opt'] = $this->dbx->opt("SELECT k.replid,CONCAT(t.tingkat,' - ',k.kelas) as nama FROM kelas k INNER JOIN tingkat t ON k.idtingkat=t.replid
-        												WHERE k.aktif=1 AND k.idtahunajaran='".$this->input->post('idtahunajaran')."'
+		$data['idkelas_opt'] = $this->dbx->opt("SELECT k.replid,CONCAT(t.tingkat,' - ',k.kelas) as nama 
+												FROM kelas k 
+												INNER JOIN tingkat t ON k.idtingkat=t.replid
+												INNER JOIN ns_rapot r ON r.idkelas=k.replid
+        										WHERE k.aktif=1 AND k.idtahunajaran='".$this->input->post('idtahunajaran')."'
         												ORDER BY t.tingkat,k.kelas",'up');
 
 
@@ -89,13 +92,19 @@ Class ns_rapor_baru_db extends CI_Model {
 
         //Tipe Rapor
         //-----------------------------------------------------------------------------------------------
-				$sql_rt="SELECT replid,CONCAT('[',iddepartemen,'] ',rapottipe,' ',keterangan, ' (',IF(aktif=1,'A','T'),')') as nama
-									FROM ns_rapottipe
-									WHERE k13=1
-									AND iddepartemen IN (SELECT departemen FROM tahunajaran WHERE replid='".$this->input->post('idtahunajaran')."')
-									AND replid IN (SELECT idvariabel FROM ns_reff_company WHERE idcompany='".$this->input->post('idcompany')."' AND tipe='ns_rapottipe' )
-									ORDER BY aktif DESC, nama ASC";
-				$data['idrapottipe_opt'] = $this->dbx->opt($sql_rt,'up');
+		/*
+		$sql_rt="SELECT replid,CONCAT('[',iddepartemen,'] ',rapottipe,' ',keterangan, ' (',IF(aktif=1,'A','T'),')') as nama
+							FROM ns_rapottipe
+							WHERE k13=1
+							AND iddepartemen IN (SELECT departemen FROM tahunajaran WHERE replid='".$this->input->post('idtahunajaran')."')
+							AND replid IN (SELECT idvariabel FROM ns_reff_company WHERE idcompany='".$this->input->post('idcompany')."' AND tipe='ns_rapottipe' )
+							ORDER BY aktif DESC, nama ASC";
+		*/
+		$sql_rt="SELECT rt.replid,CONCAT('[',rt.iddepartemen,'] ',rt.rapottipe,' ',rt.keterangan, ' (',IF(rt.aktif=1,'A','T'),')') as nama
+				FROM ns_rapottipe rt
+				INNER JOIN ns_rapot r ON r.idrapottipe=rt.replid
+				WHERE r.idtahunajaran='".$this->input->post('idtahunajaran')."'";
+		$data['idrapottipe_opt'] = $this->dbx->opt($sql_rt,'up');
 
         $data['idperiode_opt'] = $this->dbx->opt("SELECT replid,periode as nama FROM ns_periode ORDER BY nama");
         $data['created_by_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM pegawai ORDER BY nama",'up');
@@ -242,7 +251,7 @@ Class ns_rapor_baru_db extends CI_Model {
 				,psos.predikat as predikatsosialtext,psos.deskripsi as descsosialtext
 				,pk.paketkompetensitext,t.replid as idtingkat, t.tingkat as tingkattext, t.idkesetaraan as kesetaraantext
 				,com.nama as companytext,com.city as citytext,com.logo as logotext,com.cap as captext,com.alamatrapor
-				, tkt.tingkat as idnaiktingkattext
+				, tkt.tingkat as idnaiktingkattext, t.fase as fasetext
       			FROM ns_rapot pv
       			LEFT JOIN tahunajaran ta ON ta.replid=pv.idtahunajaran
 				LEFT JOIN tahunajaran tar ON tar.replid=pv.idtahunajaranrapot
@@ -590,7 +599,7 @@ Class ns_rapor_baru_db extends CI_Model {
 										,pj.idmodultipe
 										,psv.prosessubvariabel,psv.persentasemurnisv
 										,'".$data['isi']->region."' as regiontext
-										,pt.keterangan as keteranganprosestext
+										,pt.keterangan as keteranganprosestext,pdv.tabelhitung
 						FROM ns_pembelajaranjadwal pj
 						INNER JOIN kelas k ON k.replid=pj.idkelas
 						INNER JOIN ns_matpel mp ON mp.replid=pj.idmatpel

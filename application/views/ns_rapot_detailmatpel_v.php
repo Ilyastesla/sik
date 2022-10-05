@@ -166,7 +166,7 @@ function cetakexcel() {
 	            		$no=1;
 				        echo "<table class='table table-bordered'>";
 				        echo "<tr>";
-	            		echo "<td align='' colspan=5><b><a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/penilaian')."/".$rowkelompok->replid."/0'))>".strtoupper($rowkelompok->prosestipe.' '.$rowkelompok->keteranganprosestext).'</a> [ '.$CI->p_c->tgl_indo($rowkelompok->tanggalkegiatan).' ]'.", Dibuat Oleh : ".$rowkelompok->walikelas ."</b>
+	            		echo "<td align='' colspan=5><b><a href='".site_url('ns_pembelajaranjadwal/penilaian')."/".$rowkelompok->replid."/0')' target='_blank'>".strtoupper($rowkelompok->prosestipe.' '.$rowkelompok->keteranganprosestext).'</a> [ '.$CI->p_c->tgl_indo($rowkelompok->tanggalkegiatan).' ]'.", Dibuat Oleh : ".$rowkelompok->walikelas ."</b>
 	            		<br/>
 	            		<font ".$alert."><b>Kelas : ".$rowkelompok->kelastext." (".$rowkelompok->regiontext.")</b></font><br/>
                   <font ".$alert."><b>Modul : ".$rowkelompok->idmodultipe."</b></font>
@@ -177,6 +177,7 @@ function cetakexcel() {
 	                    echo "<th>Mata Pelajaran</th>";
                       echo "<th>Proses Sub Variabel</th>";
 	                    echo "<th>Variabel Penilaian</th>";
+						echo "<th>Jenis Tabel</th>";
 	                    echo "<th width='100'>Nilai</th>";
 	                    echo "</tr>";
             		}
@@ -185,7 +186,8 @@ function cetakexcel() {
 				    echo "<td align='left'>".ucwords(strtolower($rowkelompok->matpel))."</td>";
             echo "<td align='left'>".ucwords(strtolower($rowkelompok->prosessubvariabel))." (".$rowkelompok->persentasemurnisv."%)"."</td>";
 				    echo "<td align='center'>".ucwords(strtolower($rowkelompok->pengembangandirivariabel))." (".$rowkelompok->persentasemurni."%)"."</td>";
-				    echo "<td align='center'>".$rowkelompok->nilai."</td>";
+				    echo "<td align='center'>".$rowkelompok->tabelhitung."</td>";
+					echo "<td align='center'>".$rowkelompok->nilai."</td>";
 				    echo "</tr>";
             		$pembelajaranjadwal=$rowkelompok->replid;
             	}

@@ -6,27 +6,34 @@ Class user_authentication extends CI_Controller {
 
 public function __construct() {
 parent::__construct();
+	if($this->config->item("maintenance")<>1){
+		// Load form helper library
+		$this->load->helper('form');
 
-	// Load form helper library
-	$this->load->helper('form');
+		// Load form validation library
+		$this->load->library('form_validation');
 
-	// Load form validation library
-	$this->load->library('form_validation');
+		// Load session library
+		$this->load->library('session');
 
-	// Load session library
-	$this->load->library('session');
-
-	// Load database
-	$this->load->model('user_authentication_db');
+		// Load database
+		$this->load->model('user_authentication_db');
+	}
 
 }
 
 public function index()
 {
-	$data['idcompany_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM hrm_company WHERE aktif=1 ORDER BY kodecabang",'up',1);
-	if( $this->session->userdata('logged_in') ) redirect('/main');
-	else $this->load->view('user_authentication_v',$data);
-	//die;
+	$data=NULL;
+	if($this->config->item("maintenance")=="1"){
+		$data['form']='SIK Maintenance';
+		$data['form_small']='Tunggu Informasi Selajutnya dari PPTIK';
+		$this->load->view('maintenance_v',$data);
+	}else{
+		$data['idcompany_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM hrm_company WHERE aktif=1 ORDER BY kodecabang",'up',1);
+		if( $this->session->userdata('logged_in') ) redirect('/main');
+		else $this->load->view('user_authentication_v',$data);
+	}
 }
 
 // Check for user login process
@@ -62,6 +69,7 @@ public function user_login_process() {
 				'password' => $this->input->post('password')
 				);
 			$result = $this->user_authentication_db->read_user_information($sess_array);
+			//echo $result;die;
 			if($result != false){
 				if ($result->status_pegawai<>1){
 					$this->session->set_flashdata("error_message","Pegawai Tidak Aktif");

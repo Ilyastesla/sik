@@ -311,5 +311,10 @@ parent::__construct();
 			$data['excel']=$excel;
 			$this->load->view('ksw_siswa_print_v', $data);
 	}
+
+	public function cadangkandata() {
+		$this->dbx->cadangkansiswa();
+		redirect("ksw_siswa");
+	}
 }//end of class
 ?>

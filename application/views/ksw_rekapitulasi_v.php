@@ -11,6 +11,25 @@
 <?php $CI =& get_instance();?>
 
 <?php if($view=='index'){ ?>
+  <script language="javascript">
+  function submitform() {
+    document.getElementById("form").setAttribute("action", "<?php echo $action; ?>");
+    document.getElementById("form").setAttribute("target", "");
+    
+  }
+
+  function cetakprint() {
+    document.getElementById("form").setAttribute("action", "<?php echo $action."/printthis" ?>");
+    document.getElementById("form").setAttribute("target", "_blank");
+    document.getElementById("form").submit();
+  }
+  function cetakexcel() {
+
+    document.getElementById("form").setAttribute("action", "<?php echo $action."/printthis/1" ?>");
+    document.getElementById("form").setAttribute("target", "_blank");
+    document.getElementById("form").submit();
+  }
+  </script>
                 <!-- Content Header (Page header) -->
                 <section class="content-header table-responsive">
                     <h1>
@@ -19,18 +38,15 @@
                     </h1>
 
                     <ol class="breadcrumb">
-                        <!--
-                        <li><a href="javascript:void(window.open('<?php echo site_url('ksw_rekapitulasi/tambah'); ?>'))" ><i class="fa fa-plus-square"></i> Tambah</a></li>
-
-                        <li><a href="#"><i class="fa fa-file-text"></i>Cetak</a></li>
-                        <li><a href="#"><i class="fa fa-file-excel-o"></i>Excel</a></li>
-                        -->
+                            <!-- <li><a href="javascript:void(window.open('<?php echo site_url('keu_administrasi/tambah'); ?>'))" ><i class="fa fa-plus-square"></i> Tambah</a></li> -->
+                            <li><a href="JavaScript:cetakprint()"><i class="fa fa-file-text"></i>&nbsp;Cetak</a></li>
+                            <li><a href="JavaScript:cetakexcel()"><i class="fa fa-print"></i>&nbsp;Excel</a></li>
                     </ol>
                 </section>
                 <section class="content-header table-responsive">
                 <?php
-  			             $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate','onsubmit'=>'return validate()');
-  		    	echo form_open($action,$attributes);
+  			             $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate','onsubmit'=>'JavaScript:submitform()');
+                     echo form_open($action,$attributes);
   		    		?>
                     	<table width="100%" border="0">
     	                    <tr>
@@ -59,7 +75,9 @@
             				              </div>
             						         </th>
     			                  </tr>
+                            
                             <tr>
+                              <!--
                               <th align="left">
                                   <label class="control-label" for="minlengthfield">Tahun Pelajaran</label>
                                   <div class="control-group">
@@ -72,6 +90,7 @@
                                     </div>
                                   </div>
                               </th>
+-->
                               <th align="left">
                                 <label class="control-label" for="minlengthfield">Tingkat</label>
                                 <div class="control-group">
@@ -112,6 +131,21 @@
                                     </th>
                                     
                               </tr>
+                              <tr>
+                                <th align="left">
+                                     <label class="control-label" for="minlengthfield">Dari Cadangan</label>
+                                     <div class="control-group">
+                                       <div class="controls">:
+                                           <?php
+                                             $arrsiswa_backup='data-rule-required=false onchange=javascript:this.form.submit();';
+                                             echo form_dropdown('siswa_backup',$siswa_backup_opt,$this->input->post('siswa_backup'),$arrsiswa_backup);
+                                           ?>
+                                           <?php //echo  <p id="message"></p> ?>
+                                       </div>
+                                     </div>
+                                    </th>
+                                    
+                              </tr>
           			            <tr>
           				            <th align="left" colspan="4">
           				            	<button class='btn btn-primary' name='filter' value="1">Filter</button>
@@ -136,8 +170,8 @@
                                           <tr>
                                               <?php
                                               echo "<th width='50' >No</th>";
-                                              echo "<th>Jenjang</th>";
                                               echo "<th>Tahun Ajaran</th>";
+                                              echo "<th>Jenjang</th>";
                                               echo "<th>Tingkat</th>";
                                               echo "<th>Jurusan</th>";
                                               echo "<th>Regional</th>";
@@ -162,8 +196,8 @@
                           $jmlsiswaabktotal+=$row->jmlsiswaabk;
 											    echo "<tr>";
 											    echo "<td align='center'>".$no++."</td>";
-                          echo "<td align='center'>".strtoupper($row->departemen)."</td>";
                           echo "<td align='center'>".strtoupper($row->tahunajaran)."</td>";
+                          echo "<td align='center'>".strtoupper($row->departemen)."</td>";
                           echo "<td align='center'>".($row->tingkattext)."</td>";
                           echo "<td align='center'>".($row->jurusantext)."</td>";
                           echo "<td align='center'>".($row->regionaltext)."</td>";

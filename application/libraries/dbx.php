@@ -648,7 +648,7 @@ function getpegawai($replid,$nip=0,$shownip=0)
 		echo $head;
 	}
 
-	function getkopsuratcompany($idcompany)
+	function getkopsuratcompany($idcompany,$excel)
 	{
 		$head="<center>";
 		$sql = "SELECT * FROM hrm_company WHERE replid='".$idcompany."'";
@@ -663,7 +663,7 @@ function getpegawai($replid,$nip=0,$shownip=0)
 			}
 			*/
 			$head = $head."<h4>".$rows->nama."</h4>";
-			if ($rows->logo<>""){
+			if (($rows->logo<>"") AND ($excel<>1)){
 				$head = $head."<img src='".base_url()."images/".$rows->logo."' height='50px'>";
 			}
 			$head = $head."<br/>";
@@ -918,6 +918,14 @@ function getpegawai($replid,$nip=0,$shownip=0)
 			$datatext=$datatext.$row->nama;
 		}
 		return $datatext;
+	}
+
+	public function cadangkansiswa(){
+		$sql="INSERT INTO siswa_backup(replid,idkelas,region,tgl_proses,aktif,kota,provinsi,negara,abk,created_by)
+				SELECT replid,idkelas,region,NOW(),aktif,kota,provinsi,negara,abk,'".$this->session->userdata('idpegawai')."' FROM siswa WHERE aktif=1
+				";
+		//echo $sql;die;
+		$this->db->query($sql);
 	}
 
 }

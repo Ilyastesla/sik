@@ -22,7 +22,7 @@ if ($excel==1){
     }
 </style>
 <body>
-    <?php $CI->dbx->getkopsuratcompany($isi->idcompany); ?>
+    <?php $CI->dbx->getkopsuratcompany($isi->idcompany,$excel); ?>
     <center>
     <b><h3><u><?php echo $form ?></u></h3>Nomor: <?php echo $isi->kode_transaksi ?><br/><br/></b>
     <p align="justify"><?php echo "Pada hari ini ".$CI->p_c->hari_indo($isi->namahari)." tanggal ".$CI->p_c->tgl_indo($isi->tanggaltransaksi)." dilaporkan oleh Staff Pengadaan dan Gudang, bahwa terdapat barang-barang yang mengalami perubahan diantaranya pergantian departemen, pergantian penanggung jawab, pergantian ruangan dan pergantian kondisi. <br/>Rincian tertera pada tabel di bawah ini:" ?></p>

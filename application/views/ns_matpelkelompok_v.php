@@ -72,6 +72,7 @@
                                                 <th>Detail Rapor</th>
                                                 <th>Group Aktif</th>
 												<th>Sembunyikan Nilai</th>
+												<th>Tgl. Buat</th>
                                                 <th>aktif</th>
                                                 <th width="80">Aksi</th>
                                             </tr>
@@ -91,6 +92,7 @@
                           echo "<td align='center'>".($CI->p_c->cekaktif($row->groupon))."</td>";
 						  echo "<td align='center'>".$CI->p_c->cekaktif($row->sembunyinilai)."</td>";
 											    echo "<td align='center'>".$CI->p_c->cekaktif($row->aktif)."</td>";
+												echo "<td align='center'>".($row->created_date)."</td>";
 											    echo "<td align='center'>";
                           //if ($row->pakai<1){
 											      echo "<a href=javascript:void(window.open('".site_url('ns_matpelkelompok/ubah/'.$row->replid)."')) class='btn btn-xs btn-warning fa fa-check-square' ></a>&nbsp;&nbsp;";

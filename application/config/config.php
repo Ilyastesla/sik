@@ -1,5 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+$config['maintenance']	= '0';
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

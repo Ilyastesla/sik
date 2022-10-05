@@ -23,7 +23,7 @@ if ($excel==1){
 </style>
 <body>
 	<center >
-  <?php $CI->dbx->getkopsuratcompany($isi->idcompany); ?>
+  <?php $CI->dbx->getkopsuratcompany($isi->idcompany,$excel); ?>
   <center>
     <b><h3><u><?php echo $form ?></u></h3>Nomor: <?php echo $isi->kode_transaksi ?><br/><br/></b>
     

@@ -117,7 +117,8 @@
           			            <tr>
           				            <th align="left" colspan="4">
           				            	<button class='btn btn-primary' name='filter' value="1">Filter</button>
-          				            	<?php echo "<a href='".site_url($action)."'  class='btn btn-danger'>Bersihkan</a>&nbsp;&nbsp;";?>
+          				            	<?php echo "<a href='".site_url($action)."'  class='btn btn-danger'>Bersihkan</a>&nbsp;";?>
+                                <?php echo "<a href='".site_url('ksw_siswa/cadangkandata')."'  class='btn btn-warning'>Cadangkan</a>&nbsp;&nbsp;";?>
           				            </th>
           				         </tr>
     		                </table>

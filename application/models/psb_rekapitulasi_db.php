@@ -31,6 +31,7 @@ Class psb_rekapitulasi_db extends CI_Model {
             AND cs.replidsiswa is null
 						AND ok.status<>'CC'
             GROUP BY d.departemen
+            ORDER BY d.urutan
             ";
       $data['cpdblmdp']=$this->dbx->data($sql);
 
@@ -42,6 +43,7 @@ Class psb_rekapitulasi_db extends CI_Model {
             LEFT JOIN calonsiswa cs ON cs.replid=ok.idcalon AND cs.keu_up=1 AND cs.aktif=1
             AND cs.replidsiswa is null
             GROUP BY d.departemen
+            ORDER BY d.urutan
             ";
       $data['cpddp']=$this->dbx->data($sql);
 
@@ -53,6 +55,7 @@ Class psb_rekapitulasi_db extends CI_Model {
             LEFT JOIN calonsiswa cs ON cs.replid=ok.idcalon AND cs.keu_up=1 AND cs.aktif=1
             AND cs.replidsiswa is not null
             GROUP BY d.departemen
+            ORDER BY d.urutan
             ";
       $data['cpdsiswa']=$this->dbx->data($sql);
 

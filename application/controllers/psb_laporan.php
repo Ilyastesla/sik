@@ -38,5 +38,13 @@ parent::__construct();
 			$data['action']='psb_laporan';
 			$this->load->view('psb_laporan_v', $data);
 	}
+
+	public function printthis($excel="") {
+		$data= $this->psb_laporan_db->data();
+		$data['form']='Laporan Data Calon Peserta Didik';
+		$data['form_small']='Cetak';
+		$data['excel']=$excel;
+		$this->load->view('psb_laporan_print_v',$data);
+	}
 }//end of class
 ?>

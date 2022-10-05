@@ -38,5 +38,13 @@ parent::__construct();
 			$data['view']='index';
 			$this->load->view('ksw_rekapitulasi_v', $data);
 	}
+
+	public function printthis($excel="") {
+		$data= $this->ksw_rekapitulasi_db->data();
+		$data['form']='BERITA ACARA INVENTARIS';
+		$data['form_small']='Cetak';
+		$data['excel']=$excel;
+		$this->load->view('ksw_rekapitulasi_print_v',$data);
+	}
 }//end of class
 ?>

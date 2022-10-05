@@ -278,6 +278,7 @@
 							</div>
 		        		</div>
 		            </th></tr>
+					<!--
 			        <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Formula</label>
@@ -304,20 +305,7 @@
 							</div>
 		        		</div>
 		            </th></tr>
-                <tr>
-		            <th align="left">
-		        		<label class="control-label" for="minlengthfield">Tampilan K13</label>
-		        		<div class="control-group">
-							<div class="controls">:
-		                	<?php
-		                		$arridmatpelkelompokraport13='data-rule-required=true id="idmatpelkelompokraport13"';
-		                		echo form_dropdown('idmatpelkelompokraport13',$idmatpelkelompokraport_opt,$isi->idmatpelkelompokraport13,$arridmatpelkelompokraport13);
-		                	?>
-		                	<?php //echo  <p id="message"></p> ?>
-							</div>
-		        		</div>
-		            </th></tr>
-		            <tr>
+					<tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Persentase</label>
 		        		<div class="control-group">
@@ -330,6 +318,24 @@
 							</div>
 		        		</div>
 		            </th></tr>
+					-->
+                <tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Tampilan K13</label>
+		        		<div class="control-group">
+							<div class="controls">:
+								<input type='hidden' name='idmatpelkelompok' id='idmatpelkelompok' value='<?php echo $isi->idmatpelkelompok ?>'>
+								<input type='hidden' name='idmatpelkelompokraport' id='idmatpelkelompokraport' value='<?php echo $isi->idmatpelkelompokraport ?>'>
+								<input type='hidden' name='idmatpelkelompokpersentase' id='idmatpelkelompokpersentase' value='<?php echo $isi->idmatpelkelompokpersentase ?>'>
+		                	<?php
+		                		$arridmatpelkelompokraport13='data-rule-required=true id="idmatpelkelompokraport13"';
+		                		echo form_dropdown('idmatpelkelompokraport13',$idmatpelkelompokraport_opt,$isi->idmatpelkelompokraport13,$arridmatpelkelompokraport13);
+		                	?>
+		                	<?php //echo  <p id="message"></p> ?>
+							</div>
+		        		</div>
+		            </th></tr>
+		            
                 <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Group</label>

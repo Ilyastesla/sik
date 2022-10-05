@@ -78,18 +78,23 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
         $data['idtahunajaran_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',tahunajaran) as nama FROM tahunajaran WHERE idcompany='".$this->input->post('idcompany')."' AND departemen='".$this->input->post('iddepartemen')."' ORDER BY aktif DESC ,nama DESC ",'up');
 
 				//iddepartemen=(SELECT departemen FROM tahunajaran WHERE replid='".$this->input->post("idtahunajaran")."')
-		$sqlproses="SELECT replid,CONCAT('[',iddepartemen,'] ',prosestipe,' ',keterangan, ' (',IF(aktif=1,'A','T'),')') as nama,iddepartemen
-								FROM ns_prosestipe
-								WHERE replid IN (SELECT DISTINCT(idprosestipe) FROM ns_pembelajaranjadwal WHERE idtahunajaran='".$this->input->post('idtahunajaran')."')
-								ORDER BY aktif DESC,nama ASC ";
+		$sqlproses="SELECT pt.replid,CONCAT('[',pt.iddepartemen,'] ',pt.prosestipe,' ',pt.keterangan, ' (',IF(pt.aktif=1,'A','T'),')') as nama,pt.iddepartemen
+								FROM ns_prosestipe pt
+								INNER JOIN ns_pembelajaranjadwal pj ON pj.idprosestipe=pt.replid
+								WHERE pj.idtahunajaran='".$this->input->post('idtahunajaran')."' 
+								ORDER BY pt.aktif DESC,nama ASC ";
       	$data['idprosestipe_opt'] = $this->dbx->opt($sqlproses,'up');
 
-
+		
         //KELAS
         //-----------------------------------------------------------------------------------------------
 				//AND replid IN (".$this->session->userdata('kelas').")
-				$data['idkelas_opt'] = $this->dbx->opt("SELECT k.replid,CONCAT(t.tingkat,' - ',k.kelas) as nama FROM kelas k INNER JOIN tingkat t ON k.idtingkat=t.replid
-        												WHERE k.aktif=1 AND k.idtahunajaran='".$this->input->post("idtahunajaran")."'
+				$data['idkelas_opt'] = $this->dbx->opt("SELECT k.replid,CONCAT(t.tingkat,' - ',k.kelas) as nama 
+														FROM kelas k 
+														INNER JOIN tingkat t ON k.idtingkat=t.replid
+														INNER JOIN ns_pembelajaranjadwal pj ON pj.idkelas=k.replid
+														WHERE pj.idtahunajaran='".$this->input->post('idtahunajaran')."' 
+        												AND k.aktif=1 AND k.idtahunajaran='".$this->input->post("idtahunajaran")."'
         												ORDER BY t.tingkat,k.kelas",'up');
 
         //Region
@@ -102,17 +107,22 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
         //Matpel
         //-----------------------------------------------------------------------------------------------
 		//iddepartemen=(SELECT departemen FROM tahunajaran WHERE replid='".$this->input->post("idtahunajaran")."')
-		$sqlmatpel="SELECT replid,CONCAT('[',iddepartemen,'] ',REPLACE(REPLACE(matpel,'</i>',''),'<i>',''), ' (',IF(aktif=1,'A','T'),')') as nama
-        										FROM ns_matpel
-														WHERE replid IN (SELECT DISTINCT(idmatpel) FROM ns_pembelajaranjadwal WHERE idtahunajaran='".$this->input->post('idtahunajaran')."')
-        										ORDER BY aktif DESC, iddepartemen ASC, matpel ASC";
+		$sqlmatpel="SELECT DISTINCT mp.replid,CONCAT('[',mp.iddepartemen,'] ',REPLACE(REPLACE(mp.matpel,'</i>',''),'<i>',''),' ',mp.keterangan, ' (',IF(mp.aktif=1,'A','T'),') ') as nama
+        										FROM ns_matpel mp
+												INNER JOIN ns_pembelajaranjadwal pj ON pj.idmatpel=mp.replid
+												WHERE pj.idtahunajaran='".$this->input->post('idtahunajaran')."'
+        										ORDER BY mp.aktif DESC, mp.iddepartemen ASC, mp.matpel ASC";
       	$data['idmatpel_opt'] = $this->dbx->opt($sqlmatpel,'up');
 
 
         $data['idperiode_opt'] = $this->dbx->opt("SELECT replid,periode as nama
         											FROM ns_periode ORDER BY nama");
-        $data['created_by_opt'] = $this->dbx->opt("SELECT replid,nama as nama
-        											FROM pegawai ORDER BY nama",'up');
+
+        $data['created_by_opt'] = $this->dbx->opt("SELECT p.replid,p.nama as nama
+        											FROM pegawai p 
+													INNER JOIN ns_pembelajaranjadwal pj ON pj.created_by=p.replid
+													WHERE pj.idtahunajaran='".$this->input->post('idtahunajaran')."'
+													ORDER BY p.nama",'up');
 
 				//echo var_dump($data['created_by_opt']);
 		$companyrow=$this->session->userdata('idcompany');
