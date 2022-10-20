@@ -41,7 +41,7 @@ $CI =& get_instance();
 																echo "<td align='center'>";
 																//echo $no."---".($no % 2)."<br/>";
 																echo "<table style='border-collapse:collapse;border-color:black;' border='1' width='350'>";
-																echo "<tr><td align='center' rowspan='6' width='75'><img src='".base_url()."images/logokpp.png' height='35'></td></tr>";
+																echo "<tr><td align='center' rowspan='6' width='75'><img src='".base_url()."images/".$row->logo."' height='35'></td></tr>";
 																echo "<tr><th align='left' width='75'>No. Inventaris</th><td>&nbsp;&nbsp;<b>".$row->kode_inventaris."</b></td><tr>";
 																echo "<tr><th align='left'>Material</th><td>&nbsp;&nbsp;".strtoupper($row->kelompokbarangtext).' - '.strtoupper($row->materialtext)."</td></tr>";
 																echo "<tr><th align='left'>Perusahaan</th><td>&nbsp;&nbsp;".strtoupper($row->companytext)."</td></tr>";

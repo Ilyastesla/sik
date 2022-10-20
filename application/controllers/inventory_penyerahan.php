@@ -182,6 +182,7 @@ public function __construct() {
 		$data['form_small']='Lihat';
 		$data['edit']=0;
 		$data['excel']=$excel;
+		$data['idpenyerahan']=$idpenyerahan;
 		$data= $this->inventory_penyerahan_db->view_db($id,$data,$idpenyerahan);
 		$this->load->view('inventory_penyerahan_print_v',$data);
 	}

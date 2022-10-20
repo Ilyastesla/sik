@@ -80,6 +80,79 @@ class menu {
         return $html_out;
     }
 
+    function build_menu_new()
+    {
+        if ($this->ci->uri->total_segments()>4){
+            //urldecode($this->uri->segment(4));
+        }
+
+        $html_out="";
+        //echo $this->ci->session->userdata('role_id');
+        //die;
+
+        /*
+        $html_out .= "<li><a href='".site_url("main/menu/main/1")."'>
+                            <i class='fa fa-dashboard'></i> <span>BERANDA</span>
+                        </a></li>";
+        */
+
+        if ($this->ci->session->userdata('role_id')<>""){$xrole=$this->ci->session->userdata('role_id');}else{$xrole='NULL';}
+
+        $sql="SELECT DISTINCT md.replid,md.pages,md.icon,md.nama from hrm_modul md
+        		INNER JOIN hrm_menu mn ON mn.modul_id=md.replid
+        		INNER JOIN hrm_role_map rm ON rm.submenu_id=mn.replid
+        		WHERE rm.role_id IN (".$xrole.") AND mn.aktif=1 AND md.aktif=1 ORDER BY md.no_urut";
+        $query = $this->ci->db->query($sql);
+
+        foreach($query->result() as $row)
+        {
+        	$tv="";
+        	$sql2="SELECT DISTINCT mn.replid,mn.pages,mn.nama
+        			FROM hrm_menu mn
+	        		INNER JOIN hrm_role_map rm ON rm.submenu_id=mn.replid
+	        		WHERE rm.role_id IN (".$xrole.") AND mn.modul_id=".$row->replid." AND mn.aktif=1
+	        		ORDER BY mn.no_urut,mn.nama";
+        	$query2 = $this->ci->db->query($sql2);
+            /*
+        	if ($query2->num_rows() > 0){
+        		if (trim($row->replid==$this->ci->session->userdata('head_menu'))){
+	        		$tv="class='treeview active'";
+	        	}else {$tv="class='treeview'";}
+	        	$t="<i class='fa fa-angle-left pull-right'></i>";
+        	}else {$tv="";$t="";}
+            */
+            
+        	if ($query2->num_rows() > 0){
+        		if (trim($row->replid==$this->ci->session->userdata('head_menu'))){
+	        		$tv="class='nav-item menu-open'";
+	        	}else {$tv="class='nav-item'";}
+	        	$t="<i class='right fa fa-angle-left'></i>";
+        	}else {$tv="";$t="";}
+            //$html_out .= "<li ".$tv."><a href='".site_url("main/menu/".$row->pages."/".$row->replid)."'>
+            $html_out .= "<li ".$tv."><a href='#' class='nav-link'>
+                            <i class='nav-icon ".$row->icon."'></i> <p>".strtoupper($row->nama)."
+                            ".$t."</p>
+                        </a>";
+             if ($query2->num_rows() > 0) {
+	             //$html_out .= "<ul class='treeview-menu'>";
+                 $html_out .= "<ul class='nav nav-treeview'>";
+	             foreach($query2->result() as $row2)
+	             {
+
+		           //$html_out .= "<li><a href='".site_url("main/menu/".$row2->pages."/".$row->replid)."'>
+               $html_out .= "<li class='nav-item'><a href='".site_url($row2->pages)."' class='nav-link'>
+                            <i class='fa fa-angle-double-right'></i> <span>".$row2->nama."</span>
+                        </a>";
+	             }
+	             $html_out .= "</ul>";
+             }
+            $html_out .= "</li>";
+         }
+
+                  //$html_out .= $this->get_childs($id);
+        return $html_out;
+    }
+
     function build_pegawai(){
       $sqltotcon="show status where `variable_name` = 'Threads_connected';";
       $querytotcon = $this->ci->db->query($sqltotcon);

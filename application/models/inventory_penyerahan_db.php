@@ -93,9 +93,12 @@ parent::__construct();
 						$penyerahanfilter=" AND pm.idmaterial IN (SELECT idmaterial FROM inventory_penyerahan_barang_mat pb WHERE pb.idinventory_penyerahan='".$idpenyerahan."' AND  pb.idpermintaanbarang='".$id."') ";
 				}
 
-
+		$fil_idinventory_penyerahan="";
+		if($idpenyerahan<>""){
+			$fil_idinventory_penyerahan=" AND idinventory_penyerahan='".$idpenyerahan."'";
+		}
         $sql="SELECT pm.*,CONCAT('[',im.kode,'] ',' ',im.nama) as materialtext,pm.idmaterial,u.unit as idunit,im.stock,im.inventaris,CONCAT(mf.nama,' [',mf.kode,']') as kodefiskaltext,k.idfiskal,im.idkelompok,k.nama as kelompokbarangtext
-        			,(SELECT SUM(jml_serah) FROM inventory_penyerahan_barang_mat WHERE pm.idpermintaan_barang=idpermintaanbarang AND idmaterial=pm.idmaterial AND idpermintaan_mat=pm.replid) as total_serah
+        			,(SELECT SUM(jml_serah) FROM inventory_penyerahan_barang_mat WHERE pm.idpermintaan_barang=idpermintaanbarang AND idmaterial=pm.idmaterial AND idpermintaan_mat=pm.replid ".$fil_idinventory_penyerahan.") as total_serah
         		FROM inventory_permintaan_barang_mat pm
         		LEFT JOIN inventory_material im ON pm.idmaterial=im.replid
         		LEFT JOIN inventory_unit u ON pm.idunit=u.replid
@@ -119,7 +122,7 @@ parent::__construct();
 
 	public function material_stiker_print_db($data,$idinventaris) {
         $sql="SELECT pm.*,CONCAT('[',im.kode,'] ',' ',im.nama) as materialtext, c.nama as companytext,d.departemen as departementext
-		,k.nama as kelompokbarangtext
+		,k.nama as kelompokbarangtext,c.logo 
         		FROM inventory_penyerahan_barang_mat pm
         		LEFT JOIN inventory_material im ON pm.idmaterial=im.replid
 				LEFT JOIN inventory_kelompok k ON k.replid=im.idkelompok
@@ -178,7 +181,13 @@ parent::__construct();
 			
 		}
 
-		$data['idpegawai_opt'] = $this->dbx->opt("select replid,CONCAT(nama,' [',nip,']') as nama FROM pegawai WHERE aktif=1 AND idcompany='".$data['permintaan']->idcompany."' ORDER BY nama","up");
+		if($data['permintaan']->idcompany<>14){
+			$sqlpeg="select replid,CONCAT(nama,' [',nip,']') as nama FROM pegawai WHERE aktif=1 AND idcompany='".$data['permintaan']->idcompany."' ORDER BY nama";
+		}else{
+			$sqlpeg="select replid,CONCAT(nama,' [',nip,']') as nama FROM pegawai WHERE aktif=1 ORDER BY nama";
+		}
+
+		$data['idpegawai_opt'] = $this->dbx->opt($sqlpeg,"up");
 		return $data;
 	}
 
@@ -210,7 +219,14 @@ parent::__construct();
         //echo $sql;die;
         $data['isi'] = $this->dbx->rows($sql);
 		
-		$data['idpj_opt'] = $this->dbx->opt("select replid,CONCAT(nama,' [',nip,']') as nama FROM pegawai WHERE aktif=1 AND idcompany='".$data['isi']->idcompany."' ORDER BY nama","up");
+		if($data['isi']->idcompany<>14){
+			$sqlpeg="select replid,CONCAT(nama,' [',nip,']') as nama FROM pegawai WHERE aktif=1 AND idcompany='".$data['isi']->idcompany."' ORDER BY nama";
+		}else{
+			$sqlpeg="select replid,CONCAT(nama,' [',nip,']') as nama FROM pegawai WHERE aktif=1 ORDER BY nama";
+		}
+		$data['idpj_opt'] = $this->dbx->opt($sqlpeg,"up");
+
+
         $data['kelompok_inventaris_opt'] = $this->dbx->opt("SELECT replid,reff_nama as nama FROM inventory_reff WHERE grup='inventaris' ORDER BY reff_nama",'up');
         $data['ruang_opt'] = $this->dbx->opt("SELECT replid, nama FROM inventory_ruang ORDER BY nama",'up');
         $data['unit_opt'] = $this->dbx->opt("SELECT im.replid,im.unit as nama FROM inventory_unit im ORDER BY im.unit",'up');
@@ -276,17 +292,25 @@ parent::__construct();
 	    }
     }
 
-    public function noinventaris_db($id,$idmat,$idpermintaan_mat){
+    public function noinventaris_db($id,$idmat,$idpermintaan_mat,$idinventory_penyerahan=''){
+		$fil_idinventory_penyerahan="";
+		if($idinventory_penyerahan<>""){
+			$fil_idinventory_penyerahan=" AND idinventory_penyerahan='".$idinventory_penyerahan."'";
+		}
 	    $sql="SELECT pb.*,u.unit,ki.reff_nama as kelompok_inventaris
 	    			,ir.nama as ruangan,ipb.kode_transaksi as kode_pembelian
-						,pyb.kode_transaksi as kodepenyerahan
+						,pyb.kode_transaksi as kodepenyerahan,d.departemen as departementext,c.logo , c.nama as companytext,k.nama as kelompokbarangtext
 	    		FROM inventory_penyerahan_barang_mat pb
+				LEFT JOIN inventory_material im ON pb.idmaterial=im.replid
+        		LEFT JOIN inventory_kelompok k ON k.replid=im.idkelompok
 	    		LEFT JOIN inventory_reff ki ON pb.idkelompok_inventaris=ki.replid AND ki.grup='inventaris'
 	    		LEFT JOIN inventory_unit u ON pb.idunit=u.replid
 	    		LEFT JOIN inventory_ruang ir ON pb.idruang=ir.replid
-					LEFT JOIN inventory_pembelian ipb ON pb.idinventory_pembelian=ipb.replid
-					LEFT JOIN inventory_penyerahan_barang pyb ON pyb.replid=pb.idinventory_penyerahan
-	    		WHERE pb.idpermintaanbarang='".$id."' AND pb.idmaterial='".$idmat."' AND idpermintaan_mat='".$idpermintaan_mat."'
+				LEFT JOIN inventory_pembelian ipb ON pb.idinventory_pembelian=ipb.replid
+				LEFT JOIN inventory_penyerahan_barang pyb ON pyb.replid=pb.idinventory_penyerahan
+				LEFT JOIN hrm_company c ON pb.idcompany=c.replid
+				LEFT JOIN hrm_departemen d ON pb.iddepartemen=d.replid
+	    		WHERE pb.idpermintaanbarang='".$id."' AND pb.idmaterial='".$idmat."' AND idpermintaan_mat='".$idpermintaan_mat."' ".$fil_idinventory_penyerahan."
 	    		ORDER BY pb.kode_inventaris";
         //echo $sql."<br/>";//die;
         $rowpdv=$this->dbx->data($sql);

@@ -8,13 +8,13 @@ Class ns_rapottipe_db extends CI_Model {
 
     // Read data from database to show data in admin page
     public function data() {
-				$cari="";$departemencari="";
-				if ($this->input->post('iddepartemen')<>""){
-					$cari=$cari." AND rt.iddepartemen='".$this->input->post('iddepartemen')."' ";
-					$departemencari=" AND rt.iddepartemen='".$this->input->post('iddepartemen')."' ";
-				}
+				$cari="";
 
-				if ($this->input->post('iddepartemen')<>""){
+				//if ($this->input->post('iddepartemen')<>""){
+					$cari=$cari." AND rt.iddepartemen='".$this->input->post('iddepartemen')."' ";
+				//}
+
+				if ($this->input->post('idrapottipe')<>""){
 					$cari=$cari." AND rt.tipe='".$this->input->post('idrapottipe')."' ";
 				}
 
@@ -24,14 +24,17 @@ Class ns_rapottipe_db extends CI_Model {
 				if ($this->input->post('idcompany')<>""){
 					$cari=$cari." AND rt.replid IN (SELECT idvariabel FROM ns_reff_company WHERE idcompany='".$this->input->post('idcompany')."' AND tipe='ns_rapottipe' ) ";
 				}
-
+				
+				if ($this->input->post('katakunci')<>""){
+					$cari=$cari." AND (rt.rapottipe='".$this->input->post('katakunci')."' OR rt.keterangan='".$this->input->post('katakunci')."') ";
+				}
 
       	$sql="SELECT rt.*,CONCAT(rt.rapottipe,' ',rt.keterangan) as rapottipe
 										,(SELECT COUNT(r.replid) FROM ns_rapot r
 										INNER JOIN tahunajaran ta ON r.idtahunajaran=ta.replid
 										WHERE rt.replid=r.idrapottipe AND ta.aktif<>1) as pakai
 								FROM ns_rapottipe rt
-								WHERE rt.iddepartemen IN (SELECT departemen FROM departemen WHERE replid IN (".$this->session->userdata('dept')."))
+								WHERE rt.replid>0 
 								".$cari."
 								ORDER BY rapottipe";
 				//echo $sql;die;

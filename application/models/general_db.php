@@ -45,7 +45,7 @@ parent::__construct();
               , DATE_FORMAT(c.tgl_berlaku2, '%d %M %Y') as tgl_berlaku2
               ,c.administrasisiswa
               ,c. sekolahjenjang,t2.tingkat as tingkat_asaltext
-			  ,com.nama as companytext,com.city as citytext,com.cap as captext,com.logo as logotext,ta.idkepsek
+			  ,com.nama as companytext,com.city as citytext,com.cap as captext,com.logo as logotext,ta.idkepsek,com.formal
             FROM siswa c
 				LEFT JOIN calonsiswa cs ON cs.replidsiswa=c.replid
               LEFT JOIN kondisisiswa ks on ks.replid = c.kondisi

@@ -11,6 +11,10 @@ Class ns_prosestipe_db extends CI_Model {
 				if ($this->input->post('iddepartemen')<>""){
 					$cari=$cari." AND pt.iddepartemen='".$this->input->post('iddepartemen')."' ";
 				}
+				if ($this->input->post('katakunci')<>""){
+					$cari=$cari." AND (pt.prosestipe='".$this->input->post('katakunci')."' OR pt.keterangan='".$this->input->post('katakunci')."') ";
+				}
+				
 				if ($this->input->post('idcompany')<>""){
 					$cari=$cari." AND pt.replid IN (SELECT idvariabel FROM ns_reff_company WHERE idcompany='".$this->input->post('idcompany')."' AND tipe='ns_prosestipe' ) ";
 				}
@@ -25,6 +29,7 @@ Class ns_prosestipe_db extends CI_Model {
 				$data['show_table']=$this->dbx->data($sql);
 				$data['iddepartemen_opt'] = $this->dbx->opt("SELECT departemen as replid,departemen as nama FROM departemen WHERE aktif=1 AND replid IN (".$this->session->userdata('dept').") ORDER BY urutan",'up');
 				$data['idcompany_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM hrm_company ORDER BY nama",'up');
+				$data['aktif_opt'] =array('1'=>'Aktif','2'=>'Tidak Aktif','3'=>'Semuanya');
       	return $data;
     }
 

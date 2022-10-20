@@ -2,93 +2,76 @@
 <head>
 	<!--META-->
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<title><?php echo $this->config->item('app_name')?></title>
 	<link rel="shortcut icon" href="<?php echo base_url(); ?>images/appicon.png" type="image/x-icon">
 
 	<!--STYLESHEETS-->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 	<link href="<?php echo base_url(); ?>/css/stylelogin.css" rel="stylesheet" type="text/css" />
-
+	<!-- Ionicons -->
+	<link href="<?php echo base_url(); ?>css/ionicons.min.css" rel="stylesheet" type="text/css" />
 	<!--SCRIPTS-->
 	<script type="text/javascript" src="<?php echo base_url(); ?>/js/jquery.min.js"></script>
 	<!--Slider-in icons-->
-	<script type="text/javascript">
-	$(document).ready(function() {
-		$(".username").focus(function() {
-			$(".user-icon").css("left","-48px");
-		});
-		$(".username").blur(function() {
-			$(".user-icon").css("left","0px");
-		});
 
-		$(".password").focus(function() {
-			$(".pass-icon").css("left","-48px");
-		});
-		$(".password").blur(function() {
-			$(".pass-icon").css("left","0px");
-		});
-	});
-	</script>
 </head>
-<body>
-<!--WRAPPER-->
-<div id="wrapper">
+<body id="page-top">
+<div class="limiter">
+				<div class="container-login100">
+					<div class="login100-more">
+						<div class="signup-img-content" >
+							<img src="<?php echo site_url("../images/logopt.png") ?>" >
+                            <h4><?php echo $this->config->item('app_name')?></h4>
+                            <!--
+                            <p>Pendaftaran masih dibuka!</p>-->
+                        </div>
+					</div>
 
-	<!--SLIDE-IN ICONS-->
-    <div class="user-icon"></div>
-    <div class="pass-icon"></div>
-    <!--END SLIDE-IN ICONS-->
+					<div class="wrap-login100 p-l-50 p-r-50 p-t-72 p-b-50">
+						<?php
+							$attributes = array('class' => 'login100-form form-validate', 'id' => 'form', 'method' => 'POST');
+							echo form_open($action,$attributes);
+						?>
+							<span class="login100-form-title p-b-59">
+								<?php
+								echo strtoupper($form)." ".strtoupper($this->config->item('app_name2'))."<br/>".strtoupper($this->config->item('company'));
+								echo "<br/><h4><a href='".site_url('')."' class=''>".$this->config->item('app_name')."</a></h4>";
+								?>
+							</span>
+							<?php if ($this->session->flashdata('error_message')<>"") { ?>
+							<span class="label-input100 labelerror">Perhatian!</b> <?php echo $this->session->flashdata('error_message') ?>..</span>
+							<?php } ?>
+							<div class="wrap-input100 borderbottom validate-input" data-validate="Name is required">
+								<span class="label-input100">NIK</span>
+									<div class="controls">
+                                        <?php
+                                            echo form_input(array('class' => 'input100', 'id' => 'username','name'=>'username','value'=>"",'data-rule-required'=>'true' ,'data-rule-maxlength'=>'100', 'data-rule-minlength'=>'5' ,'placeholder'=>'Isi dengan NIK kamu','autocomplete'=>'off'));
+                                        ?><span class="focus-input100"></span>
+							        </div>
+                            </div>
+                            <div class="wrap-input100 borderbottom validate-input" data-validate="Name is required">
+								<span class="label-input100">Kata Sandi</span>
+									<div class="controls">
+                                        <?php
+                                            echo form_input(array('type'=>"password",'class' => 'input100', 'id' => 'password','name'=>'password','value'=>"",'data-rule-required'=>'true' ,'data-rule-maxlength'=>'100', 'data-rule-minlength'=>'5' ,'placeholder'=>'Isi Kata Sandi','autocomplete'=>'off'));
+                                        ?><span class="focus-input100"></span>
+							        </div>
+                            </div>
 
-<!--LOGIN FORM-->
-	<?php
-		$attributes = array('class' => 'login-form', 'id' => 'login-form','name' => 'login-form');
-		echo form_open('user_authentication/user_login_process',$attributes);
-	?>
+							<div class="container-login100-form-btn ">
+								<div class="wrap-login100-form-btn">
+									<button class="form-btn btn-default">
+										Masuk
+									</button>
+								</div>
 
-	<!--HEADER-->
-    <div class="header">
-    	<h1>Masuk</h1>
-    <!--DESCRIPTION--><span><?php echo $this->config->item('app_name')?>
-			 <!-- <br/> Ver. <?php echo $this->config->item('version')?> -->
-    	<br/><?php echo $this->config->item('company')?></span>
-    </div>
-    <!--END HEADER-->
-
-	<!--CONTENT-->
-
-    <div class="content" align='center'>
-		<input name="username" type="text" placeholder="Isi dengan NIK kamu" class="input username" value=""/>
-		<input name="password" type="password" placeholder="Isi Kata Sandi" class="input password " value=""/>
-    <?php
-	/*
-		$arridcompany='data-rule-required=true class="input password"';
-		echo form_dropdown('idcompany',$idcompany_opt,'',$arridcompany);
-    echo "<div class='error_msg'><br/>";
-    echo $this->session->flashdata('error_message');
-    echo validation_errors();
-    echo "</div>";
-	*/
-    ?>
-
-
-
-    </div>
-    <!--END CONTENT-->
-
-    <!--FOOTER-->
-    <div class="footer">
-    <!--LOGIN BUTTON--><input type="submit" name="submit" value="Login" class="button" /><!--END LOGIN BUTTON-->
-
-    <!--REGISTER BUTTON <input type="submit" name="submit" value="Register" class="register" /> END REGISTER BUTTON-->
-    </div>
-    <!--END FOOTER-->
-
-<?php echo form_close(); ?>
-<!--END LOGIN FORM-->
-
-</div>
-<!--END WRAPPER-->
-
-<!--GRADIENT--><div class="gradient"></div><!--END GRADIENT-->
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 
 </body>
 </html>

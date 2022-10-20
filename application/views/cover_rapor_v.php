@@ -408,7 +408,27 @@
 			</td>
 			<td rowspan='4' width='200px'>&nbsp;</td>
 			<td width='300px'><?php echo $isi->citytext; ?>, <?php echo $CI->p_c->tgl_indo($isi->tgl_masuk) ?>
-				<br/><?php echo ucwords(strtolower("Kepala Akademik"))?> <?php echo strtoupper($isi->departemen)?>
+			<?php
+				echo "<br>";
+				switch ($isi->departemen) {
+					case 'SD': $paket='A';
+						break;
+					case 'SMP': $paket='B';
+						break;
+					case 'SMA': $paket='C';
+						break;
+					default:
+						$paket='';
+						break;
+				}
+				if ($isi->formal<>1){
+						echo "Kepala Akademik Paket ".strtoupper($paket);
+				}else{
+					//echo "Kepala Sekolah ".$isi->departemen;
+					echo "Kepala Sekolah ";
+				}
+				?>
+				
 			</td>
 		</tr>
 		<tr>

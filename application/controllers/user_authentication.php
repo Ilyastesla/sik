@@ -31,6 +31,8 @@ public function index()
 		$this->load->view('maintenance_v',$data);
 	}else{
 		$data['idcompany_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM hrm_company WHERE aktif=1 ORDER BY kodecabang",'up',1);
+		$data['form']='Masuk';
+		$data['action']='user_authentication/user_login_process';
 		if( $this->session->userdata('logged_in') ) redirect('/main');
 		else $this->load->view('user_authentication_v',$data);
 	}

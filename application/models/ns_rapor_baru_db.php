@@ -240,7 +240,7 @@ Class ns_rapor_baru_db extends CI_Model {
 				,rt.nilaimurni,rt.absensi,rt.grafik,rt.gruppengembangandiri,rt.lpd,rt.rapottipe
 				,rt.skk as skkon,rt.avg as avgon,rt.paketkompetensi as paketkompetension,rt.kkm as kkmon,rt.predikat as predikaton,rt.kalimatrapor as kalimatraporon,rt.kopsurat
 				,rt.besarfont,rt.portraitview,rt.jumlahdata,rt.namajenjang,rt.predikattipe,rt.psikologon,rt.tipe,rt.batasnilai,rt.konseloron
-				,rt.sikap,rt.catatan_wk,rt.prestasi,rt.fisik,rt.kesehatan,rt.program as programon,rt.kelastexton,rt.formal,rt.modular,rt.satutabel,rt.matpeldeskripsi as matpeldeskripsion, rt.jenjangkode
+				,rt.sikap,rt.catatan_wk,rt.prestasi,rt.fisik,rt.kesehatan,rt.program as programon,rt.kelastexton,com.formal,rt.modular,rt.satutabel,rt.matpeldeskripsi as matpeldeskripsion, rt.jenjangkode
 				,rt.nonakademik as nonakademikon
       			,ks.kelompok as kelompoksiswa
       			,s.replid as replidsiswa,s.tmplahir,s.tgllahir,s.nomorpeserta

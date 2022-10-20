@@ -51,13 +51,40 @@
         				                		<div class="control-group">
                 											<div class="controls">:
             						                	<?php
-                                          $arridcompany="data-rule-required=true id=idcompany onchange='javascript:this.form.submit();'";
+                                          $arridcompany="data-rule-required=false id=idcompany onchange='javascript:this.form.submit();'";
                                           echo form_dropdown('idcompany',$idcompany_opt,$this->input->post('idcompany'),$arridcompany);
                                         ?>
                 											</div>
               				              </div>
               						         </th>
+											   
     			                  </tr>
+								  <tr>
+                                  <th align="left">
+                                    <label class="control-label" for="minlengthfield">Status</label>
+                                    <div class="control-group">
+                                      <div class="controls">:
+                                          <?php
+                                            $arraktif='data-rule-required=false onchange=javascript:this.form.submit();';
+                                            echo form_dropdown('aktif',$aktif_opt,$this->input->post('aktif'),$arraktif);
+                                          ?>
+                                          <?php //echo  <p id="message"></p> ?>
+                                      </div>
+                                    </div>
+                                   </th>
+								   <th align="left">
+      				                		<label class="control-label" for="minlengthfield">Kata Kunci</label>
+      				                		<div class="control-group">
+              											<div class="controls">:
+          						                	<?php
+                                               		echo form_input(array('class' => '','style'=>'margin: 0px 0px 5px; width: 300px;', 'id' => 'katakunci','name'=>'katakunci','value'=>$this->input->post('katakunci'),'data-rule-required'=>'false' ,'data-rule-maxlength'=>'500', 'data-rule-minlength'=>'3' ,'placeholder'=>'Masukkan 1-100 Karakter'));
+          						                	?>
+          						                	<?php //echo  <p id="message"></p> ?>
+              											</div>
+            				              </div>
+            						         </th>
+
+          			                  </tr>
     		                </table>
   		            <?php
   			            echo form_close();

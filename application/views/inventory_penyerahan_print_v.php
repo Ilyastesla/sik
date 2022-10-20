@@ -88,7 +88,7 @@ if ($excel==1){
 											    echo "<tr>";
 											    echo "<td align=''>&nbsp;</td>";
 
-											    $noinventaris=$CI->inventory_penyerahan_db->noinventaris_db($row->idpermintaan_barang,$row->idmaterial,$row->replid);
+											    $noinventaris=$CI->inventory_penyerahan_db->noinventaris_db($row->idpermintaan_barang,$row->idmaterial,$row->replid,$idpenyerahan);
 											    echo "<td colspan='9'>";
 											    ?>
 											    <table class="tablecontent tablecontent_">
@@ -137,9 +137,9 @@ if ($excel==1){
     <br/>
     <table class="tablecontent">
             <tr><td align='right' colspan=2><?php echo $isi->citycompanytext.', '.$CI->p_c->tgl_indo($isi->tglprint) ?></td></tr>
-            <tr align='center'><td width="50%">Penerima</td><td>Staff Pengadaan dan Gudang</td></tr>
+            <tr align='center'><td width="50%">Penerima</td><td>Yang Menyerahkan</td></tr>
             <tr><td  height='80px'></td><td></td></tr>
-            <tr align='center'><td><b><?php echo $CI->dbx->getpegawai($penyerahan_head->idpjheadpenyerahan)?></b><hr/>Staff Pengadaan dan Gudang</td><td><b><?php echo $CI->dbx->getpegawai($penyerahan_head->idstaffgudang)?></b><hr/>Manajer Umum</td></tr>
+            <tr align='center'><td><b><?php echo $CI->dbx->getpegawai($penyerahan_head->idpjheadpenyerahan)?></b><hr/>Staff <?php echo ucwords(strtolower($isi->company)) ?></td><td><b><?php echo $CI->dbx->getpegawai($penyerahan_head->idstaffgudang)?></b><hr/>Staff Pengadaan dan Gudang</td></tr>
         </table>
    </center>
 </body>

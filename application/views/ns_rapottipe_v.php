@@ -36,7 +36,7 @@
 				            <td align="left">
                       <div class="control-group">
 				            	<?php
-			                		$arriddepartemen="data-rule-required=true id=iddepartemen  onchange='javascript:this.form.submit();' ";
+			                		$arriddepartemen="data-rule-required=false id=iddepartemen  onchange='javascript:this.form.submit();' ";
 			                		echo form_dropdown('iddepartemen',$iddepartemen_opt,$this->input->post('iddepartemen'),$arriddepartemen);
 			                	?>
                       </div>
@@ -45,7 +45,7 @@
 				            <td align="left">
                       <div class="control-group">
 				            	<?php
-		                		$arridrapottipe="data-rule-required=true id=idrapottipe onchange='javascript:this.form.submit();'";
+		                		$arridrapottipe="data-rule-required=false id=idrapottipe onchange='javascript:this.form.submit();'";
 		                		echo form_dropdown('idrapottipe',$idrapottipe_opt,$this->input->post('idrapottipe'),$arridrapottipe);
 		                	?>
                     </div>
@@ -56,7 +56,7 @@
                   <td align="left">
                     <div class="control-group">
                     <?php
-                      $arrk13="data-rule-required=true id=k13 onchange='javascript:this.form.submit();'";
+                      $arrk13="data-rule-required=false id=k13 onchange='javascript:this.form.submit();'";
                       echo form_dropdown('k13',array("1"=>"Ya",""=>"Semua"),$this->input->post('k13'),$arrk13);
                     ?>
                   </div>
@@ -65,12 +65,24 @@
                   <td align="left">
                     <div class="control-group">
                     <?php
-                      $arridcompany="data-rule-required=true id=idcompany onchange='javascript:this.form.submit();'";
+                      $arridcompany="data-rule-required=false id=idcompany onchange='javascript:this.form.submit();'";
                       echo form_dropdown('idcompany',$idcompany_opt,$this->input->post('idcompany'),$arridcompany);
                     ?>
                   </div>
                   </td>
                 </tr>
+                <tr>
+                <td align="left" width="150">Kata Kunci</td>
+									  <td align="left">
+      				                		<div class="control-group">
+          						                	<?php
+                                               		echo form_input(array('class' => '','style'=>'margin: 0px 0px 5px; width: 300px;', 'id' => 'katakunci','name'=>'katakunci','value'=>$this->input->post('katakunci'),'data-rule-required'=>'false' ,'data-rule-maxlength'=>'500', 'data-rule-minlength'=>'3' ,'placeholder'=>'Masukkan 1-100 Karakter'));
+          						                	?>
+          						                	<?php //echo  <p id="message"></p> ?>
+              											</div>
+            						         </td>
+
+          			                  </tr>
 			            <tr>
 				            <th align="left" colspan="4">
 				            	<button class='btn btn-primary' name='filter' value="1">Filter</button>
@@ -159,13 +171,13 @@
                             echo "KKM: ".($CI->p_c->cekaktif($row->kkm))."<br/>";
                             echo "Besar Font: ".$row->besarfont."<br/>";
                             echo "Jumlah Data: ".$row->jumlahdata."<br/>";
-                            echo "Absensi: ".($CI->p_c->cekaktif($row->absensi))."<br/>";
                             echo "Predikat: ".($CI->p_c->cekaktif($row->predikat))."<br/>";
                             echo "Huruf: ".($CI->p_c->cekaktif($row->kalimatrapor))."<br/>";
                             echo "Kop Surat: ".($CI->p_c->cekaktif($row->kopsurat))."<br/>";
                             echo "Nama Jenjang: ".($CI->p_c->cekaktif($row->namajenjang))."<br/>";
                             echo "Psikolog: ".($CI->p_c->cekaktif($row->psikologon))."<br/>";
-                            echo "Modular :<a href=javascript:void(window.open('".site_url('ns_rapottipe/ubahmodular/'.$row->replid.'/'.!($row->modular))."')) >".$CI->p_c->cekaktif($row->modular)."</a><br/>";
+                            echo "Konselor: ".($CI->p_c->cekaktif($row->konseloron))."<br/>";
+                            //echo "Modular :<a href=javascript:void(window.open('".site_url('ns_rapottipe/ubahmodular/'.$row->replid.'/'.!($row->modular))."')) >".$CI->p_c->cekaktif($row->modular)."</a><br/>";
                           echo "</td>";
                           //echo "<td align='center'>".$row->predikattipe."</td>";
                           echo "<td align='center'>".strtoupper($row->keterangan)."</td>";
@@ -429,6 +441,18 @@
   							<div class="controls">:
   		                	<?php
   		                		echo form_checkbox('psikologon', '1', $isi->psikologon);
+  		                	?>
+  		                	<?php //echo  <p id="message"></p> ?>
+  							</div>
+  		        		</div>
+  		            </th></tr>
+                  <tr>
+  				    <th align="left">
+  		        		<label class="control-label" for="minlengthfield">Konselor</label>
+  		        		<div class="control-group">
+  							<div class="controls">:
+  		                	<?php
+  		                		echo form_checkbox('konseloron', '1', $isi->konseloron);
   		                	?>
   		                	<?php //echo  <p id="message"></p> ?>
   							</div>

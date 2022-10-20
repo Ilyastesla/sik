@@ -10,11 +10,11 @@ Class ns_matpel_db extends CI_Model {
     public function data() {
 			//echo $this->session->userdata('dept');die;
 			$cari="";
-			if($this->input->post('iddepartemen')<>""){
+			//if($this->input->post('iddepartemen')<>""){
 				$cari=$cari." AND pv.iddepartemen= '".$this->input->post('iddepartemen')."'";
-			}else{
-				$cari=$cari." AND pv.iddepartemen IN (".$this->dbx->sessionjenjangtext($this->session->userdata('dept')).") ";
-			}
+			//}else{
+			//	$cari=$cari." AND pv.iddepartemen IN (".$this->dbx->sessionjenjangtext($this->session->userdata('dept')).") ";
+			//}
 
 			if($this->input->post('idmatpelkelompok')<>""){
 				$cari=$cari." AND pv.idmatpelkelompokraport= '".$this->input->post('idmatpelkelompok')."'";
@@ -29,6 +29,10 @@ Class ns_matpel_db extends CI_Model {
 
 			if ($this->input->post('idpredikattipe')<>""){
 				$cari=$cari." AND pv.idpredikattipe='".$this->input->post('idpredikattipe')."' ";
+			}
+
+			if ($this->input->post('katakunci')<>""){
+				$cari=$cari." AND (pv.matpel='".$this->input->post('katakunci')."' OR pv.keterangan='".$this->input->post('katakunci')."') ";
 			}
 
 			switch ($this->input->post('aktif')) {

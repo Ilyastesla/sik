@@ -406,7 +406,10 @@ function cetakterima(id) {
 										<th>Inventaris</th>
                                         <th>Jumlah</th>
                                         <th>Total Serah</th>
-                                        <th>Sisa Serah</th>
+										<?php 
+											if ($idpenyerahan==""){ echo "<th>Sisa Serah</th>";}
+										?>
+                                        
                                         <th>Unit</th>
 
                                         <!--<th width="50">Kelompok Inventaris</th>-->
@@ -443,7 +446,9 @@ function cetakterima(id) {
 											echo "<td align='center'>".$CI->p_c->cekaktif($row->inventaris)."</td>";
 											echo "<td align='center'>".$row->jumlah."</td>";
 										    echo "<td align='center'>".$total_serah."</td>";
-										    echo "<td align='center' ".$bg.">".$sisaserah."</td>";
+											if ($idpenyerahan==""){
+										    	echo "<td align='center' ".$bg.">".$sisaserah."</td>";
+											}
 										    echo "<td align='center'>".$row->idunit."</td>";
 
 										    if(($edit) and ($idpenyerahan<>"")){
@@ -473,7 +478,7 @@ function cetakterima(id) {
 											    echo "<tr>";
 											    echo "<td align=''>&nbsp;</td>";
 
-											    $noinventaris=$CI->inventory_penyerahan_db->noinventaris_db($row->idpermintaan_barang,$row->idmaterial,$row->replid);
+											    $noinventaris=$CI->inventory_penyerahan_db->noinventaris_db($row->idpermintaan_barang,$row->idmaterial,$row->replid,$idpenyerahan);
 											    echo "<td colspan='9'>";
 											    ?>
 											    <table class="table table-bordered table-striped">

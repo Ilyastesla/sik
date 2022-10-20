@@ -22,12 +22,28 @@ if ($excel==1){
 	width: 85% !important;
 }
 -->
+<?php if(($digital==1) OR ($isi->kopsurat==1)){?>
+	<style>
+		.sectionrapot{
+			display:inline-block;
+			margin-top:50px;
+		}
+	</style>
+<?php } else {?>
+	<style>
+		.sectionrapot{
+			display:inline-block;
+			margin-top:150px;
+		}
+	</style>
+<?php } ?>
 <style>
 	table,p {
 		font-family:'Source Sans Pro', sans-serif;
 		font-size:<?php echo $isi->besarfont?>pt;
 		width: 85% !important;
 		border-color: black;
+		margin-top:10px !important;
 	}
 	.tablecontent {
 		border-collapse:collapse;
@@ -55,6 +71,7 @@ if ($excel==1){
 		text-align:left;
 		width: 85% !important;
 	}
+	
 	#divcontent{
 		font-family:'Source Sans Pro', sans-serif;
 		font-size:<?php echo $isi->besarfont?>pt;
@@ -77,15 +94,22 @@ if ($excel==1){
 		font-size:<?php echo $isi->besarfont?>pt;
 	}
 
-	.divketeranganhead{
+	.divheaderpd{
+		font-family:'Source Sans Pro', sans-serif;
+		text-align:left;
+		width: 85% !important;
 		font-family: 'Source Sans Pro', sans-serif;
     	font-size: 8.5pt;
 		width:85%;
-		display: block;
+		display: inline-block;
 		word-wrap:normal;
 		text-align:left;
-		margin-top:15mm;
 	}
+	.divheaderpd img{
+		margin-bottom:25px;
+	}
+
+
 	.divketerangan{
 		display: inline-block;
 		width:19% !important;
@@ -107,6 +131,20 @@ if ($excel==1){
 		font-weight:bold;
 	}
 
+	#sample{
+		position: fixed;
+		margin:0 auto;
+		width:96%;
+		height:97%;
+		border: 10px solid black;
+		opacity:1;
+		display: block;
+		z-index:-9999;
+	}
+
+	#sementara{
+		position: fixed;margin:0 auto;top:400px;color: grey;font-size: 40pt !important;text-align: center;width:100%;height:150px;border: 0px solid grey;opacity:0.5;display: block;
+	}
 	
 
 	@page {
@@ -144,9 +182,9 @@ if ($excel==1){
 }
 </style>
 <?php if($digital){?>
-<div id="sample" style="position: fixed;margin:0 auto;width:96%;height:97%;border: 10px solid black;opacity:1;display: block;z-index:-3;">
+<div id="sample">&nbsp;
 </div>
-<div id="sample" style="position: fixed;margin:0 auto;top:400px;color: grey;font-size: 40pt !important;text-align: center;width:100%;height:150px;border: 0px solid grey;opacity:0.5;display: block;">
+<div id="sementara">
 	<center>
 		<?php
 		if($isi->departemen=="PENSUS"){
@@ -158,30 +196,6 @@ if ($excel==1){
 <?php } ?>
 
 <center >
-	<?php
- if (($isi->kopsurat==1) OR ($digital==1)){
-	 echo "";
- }else{
-	 if (($isi->tipe=='Murni') or ($isi->tipe=='SKL')){
-		 ?>
- 			<style>
- 				body {
- 					 margin-top: 35mm;
- 					}
- 			</style>
- 	 <?php
-	 }else{
-	 	?>
-			<style>
-				#tableheader {
-					 margin-top: 35mm;
-					}
-			</style>
-	 <?php
-  }
-}
-	?>
-
 <?php
 	switch ($isi->departemen) {
 		case 'SD': $paket='A';
@@ -194,9 +208,8 @@ if ($excel==1){
 			$paket='';
 			break;
 	}
-	$headerrapot="<div class='divheader'>";
+	$headerrapot='';
 	if ($isi->tipe<>'SKL'){
-		$headerrapot=$headerrapot. "<div class='divketeranganhead'>";
 		$headerrapot=$headerrapot. "<div class='divketerangan'>Alamat Satuan Pendidikan</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->alamatrapor."</div>";
 		if($isi->kelastexton==1){
 			$headerrapot=$headerrapot. "<div class='divketerangan'>Kelas</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->kelastext."</div>";
@@ -224,44 +237,47 @@ if ($excel==1){
 		}
 		$headerrapot=$headerrapot. "<div class='divketerangan'>Tahun Pelajaran</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($tahunajarantext))."</div>";
 		if($isi->programon=='1'){
-			$headerrapot=$headerrapot. "<div class='divketerangan'>Program</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($isi->kelompoksiswa))."</div>";
+			$headerrapot=$headerrapot. "<div class='divketerangan'>Program</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".($isi->kelompoksiswa)."</div>";
 		}
-		$headerrapot=$headerrapot. "</div>";
-		//echo $headerrapot."<br/>";
 	}
 ?>
-</div>
 <body>
 <section id="content">
 	
 <?php 
+	$judulrapot="";
 	if (($isi->kopsurat==1) OR ($digital==1)){
-		echo "<center><img src='".base_url()."images/".$isi->logotext."' width='190' style='margin-top:15mm'/></center>";
+		$judulrapot.= "<center><img src='".base_url()."images/".$isi->logotext."' width='190' /></center>";
 	}
-
+	
 	if ($isi->tipe=='SKL'){
-		//$headerrapot= $headerrapot."<b>".$isi->companytext."</b>";
-		$headerrapot= $headerrapot."<br/><b>Ujian Pendidikan Kesetaraan Paket ".$paket." (Setara ".$isi->departemen.")"."</b>";
+		//$judulrapot= $judulrapot."<b>".$isi->companytext."</b>";
+		$judulrapot= $judulrapot."<br/><b>Ujian Pendidikan Kesetaraan Paket ".$paket." (Setara ".$isi->departemen.")"."</b>";
 		if($isi->jurusantext<>""){
-			$headerrapot= $headerrapot. "<br/><b>Program Studi ".ucwords(strtolower($isi->jurusantext))."</b>";
+			$judulrapot= $judulrapot. "<br/><b>Program Studi ".ucwords(strtolower($isi->jurusantext))."</b>";
 		}
-		$headerrapot= $headerrapot."<br/><b>Tahun Pelajaran ".$isi->tahunajaran."</b>";
-		$headerrapot= $headerrapot."<br/><b>Nomor: ".$isi->nomordokumen."</b>";
-		//$headerrapot= $headerrapot."<br/><br/>";
+		$judulrapot= $judulrapot."<br/><b>Tahun Pelajaran ".$isi->tahunajaran."</b>";
+		$judulrapot= $judulrapot."<br/><b>Nomor: ".$isi->nomordokumen."</b>";
+		//$judulrapot= $judulrapot."<br/><br/>";
 	}else{
-		echo "<h1 style='margin-bottom:-10mm'>".ucwords(strtolower($isi->rapottipe))."</b>";
+		$judulrapot.= "<h1>".ucwords(strtolower($isi->rapottipe))."</b>";
 		if ($isi->tipe=='Murni'){
 			if($isi->paketkompetension=="1"){
-				echo "<br/>Paket Kompetensi ".ucwords(strtolower($isi->paketkompetensitext));
+				$judulrapot.= "<br/>Paket Kompetensi ".ucwords(strtolower($isi->paketkompetensitext));
 			}else{
-				echo "<br/>Semester ".ucwords(strtolower($isi->periode));
+				$judulrapot.= "<br/>Semester ".ucwords(strtolower($isi->periode));
 			}
 		}
-		echo "<br/>".ucwords(strtolower($isi->companytext));
-		echo "</h1>";
+		$judulrapot.= "<br/>".ucwords(strtolower($isi->companytext));
+		$judulrapot.= "</h1>";
 	}
 
-	echo $headerrapot;
+	echo "<div class='sectionrapot'>".$judulrapot."<div class='divheaderpd'>".$headerrapot.'</div></div>';
+	if (($isi->kopsurat==1) OR ($digital==1)){
+		$headerrapot="<div class='divheaderpd'><center><img src='".base_url()."images/".$isi->logotext."' width='190' /></center>".$headerrapot.'</div>';
+	}else{
+		$headerrapot="<div class='divheaderpd'>".$headerrapot.'</div>';
+	}
 	
 		
 		//$headerrapot= $headerrapot."<b>". " MODUL ".$isi->idmodultipe."</b>";		
@@ -570,7 +586,7 @@ if ($excel==1){
 						</tfoot>
 				</table>
 				<?php
-				if ($totalmatpel>10){
+				if ($totalmatpel>15){
 					echo "<table border='0' id='breaktable'>";
 				}else{
 					echo "<table border='0'>";
@@ -1192,7 +1208,7 @@ if ($excel==1){
 							//echo var_dump($keterampilanmp13);die;
 							if($isi->satutabel<>1){
 								if($excel<>1){
-									echo $headerrapot."<br/>";
+									echo "<div class='sectionrapot'>".$headerrapot.'</div>';
 								}
 							?>
 
@@ -1363,7 +1379,7 @@ if ($excel==1){
 									<?php
 									if ($kelompok2<>NULL){
 										if($excel<>1){
-											echo $headerrapot."<br/>";
+											echo "<div class='sectionrapot'>".$headerrapot.'</div>';
 										}
 										
 									?>
@@ -1537,7 +1553,7 @@ if ($excel==1){
 
 <?php
 }else{
-echo $headerrapot."<br/>"; ?>
+echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 <div id="divheader">
 	<font><b><?php echo $header_count++ ?>. Pengetahuan Dan Keterampilan</b></font>
 </div>
@@ -1759,7 +1775,7 @@ echo $headerrapot."<br/>"; ?>
 	?>
 											<?php
 											if($excel<>1){
-												echo $headerrapot."<br/>";
+												echo "<div class='sectionrapot'>".$headerrapot.'</div>';
 											}
 											?>
 											<div id="divheader">
@@ -1804,7 +1820,7 @@ echo $headerrapot."<br/>"; ?>
 																				echo "</table><br/><br/><br/>";
 																				//echo $nonakademik->matpel;
 																				if($excel<>1){
-																					echo $headerrapot."<br/>";
+																					echo "<div class='sectionrapot'>".$headerrapot.'</div>';
 																				}
 																				echo "<table class='table tablecontent nonakademik'>";
 																				echo "<thead>";
@@ -1836,7 +1852,7 @@ echo $headerrapot."<br/>"; ?>
 																		echo "</table><br/><br/><br/>";
 																		//echo $nonakademik->matpel;
 																		if($excel<>1){
-																			echo $headerrapot."<br/>";
+																			echo "<div class='sectionrapot'>".$headerrapot.'</div>';
 																		}
 																		echo "<table class='table tablecontent nonakademik'>";
 																		echo "<thead>";
@@ -1895,11 +1911,11 @@ echo $headerrapot."<br/>"; ?>
 													</div>
 	<?php
 	if($excel<>1){
-		echo $headerrapot."<br/>";
+		echo "<div class='sectionrapot'>".$headerrapot.'</div>';
 	}
 } else { // $isi->nonakademikon
 		?>
-											<?php echo $headerrapot."<br/>"; ?>
+											<?php echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 											<div id="divheader">
 												<font><b><?php echo $header_count++ ?>. Ekstra Kurikuler</b></font>
 											</div>
@@ -2051,7 +2067,7 @@ echo $headerrapot."<br/>"; ?>
 												<?php
 												echo "<div id='divcontent'></div>";
 												if($excel<>1){
-													echo $headerrapot."<br/>";
+													echo "<div class='sectionrapot'>".$headerrapot.'</div>';
 												}
 											} ?>
 												<?php if ($isi->catatan_wk=="1"){ ?>
@@ -2153,8 +2169,8 @@ echo $headerrapot."<br/>"; ?>
 												echo "<td align='center' width=".$width."><b>Kepala Sekolah";
 												if ($isi->namajenjang==1){
 													echo $isi->departemenpanjang;
-												}else if ($isi->jenjangkode==1){
-													echo $isi->jenjangkode.$isi->departemen;
+												}else {
+													echo $isi->departemen;
 												}
 												echo "</b></td>";
 											}

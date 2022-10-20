@@ -5,7 +5,7 @@
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <link rel="shortcut icon" href="<?php echo base_url(); ?>images/appicon.png" type="image/x-icon">
         <link href="<?php echo base_url(); ?>css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>fonts/font-awesome-4.7.0/css/font-awesome.min.css">
         <!-- Ionicons -->
         <link href="<?php echo base_url(); ?>css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- DATA TABLES -->
@@ -259,11 +259,51 @@
         <link type="text/css" rel="stylesheet" media="all" href="<?php echo base_url(); ?>css/chat/chat.css" />
         <link type="text/css" rel="stylesheet" media="all" href="<?php echo base_url(); ?>css/chat/screen.css" />
         <script type="text/javascript" src="<?php echo base_url(); ?>js/chat/chat.js"></script>
+        <style>
+          .whatsappchat{
+  position: fixed;
+  overflow:hidden;
+  z-index:99;
+  right: 22px;
+  bottom: 15px;
+}
+          .whatsappchat .popup-section {
+            background-color: #45be55;
+            border-radius: 50px;
+            white-space: nowrap;
+            padding: 6px 12px;
+            outline: 0;       
+            cursor: pointer;
+            box-shadow: 0 1px 6px 0 rgb(0 0 0 / 6%), 0 2px 32px 0 rgb(0 0 0 / 16%);
+            margin: 0;
+            display: inline-block;
+
+          }
+          .popup-section a{
+            color: #ffffff !important;
+            font-size:12px;  
+            text-decoration: none;
+          }
+          .popup-section a:hover{
+            font-size:20px; 
+          }
+        </style>
 
     </head>
 
 
     <body class="skin-blue">
+    <div id="helpdesk" class="whatsappchat">
+      <div class="popup-section">
+				<div class="popup">
+						
+            <a href="https://wa.me/+6281295700809" id='whatsappbutton' target="_blank">
+            <span class="fa fa-whatsapp">&nbsp;</span>
+              Butuh Bantuan?
+            </a>
+				</div>
+			  </div>
+    </div>
         <header class="header">
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">

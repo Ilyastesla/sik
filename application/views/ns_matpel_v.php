@@ -114,6 +114,20 @@
                                    </th>
 
           			                  </tr>
+									  <tr>
+									  <th align="left">
+      				                		<label class="control-label" for="minlengthfield">Kata Kunci</label>
+      				                		<div class="control-group">
+              											<div class="controls">:
+          						                	<?php
+                                               		echo form_input(array('class' => '','style'=>'margin: 0px 0px 5px; width: 300px;', 'id' => 'katakunci','name'=>'katakunci','value'=>$this->input->post('katakunci'),'data-rule-required'=>'false' ,'data-rule-maxlength'=>'500', 'data-rule-minlength'=>'3' ,'placeholder'=>'Masukkan 1-100 Karakter'));
+          						                	?>
+          						                	<?php //echo  <p id="message"></p> ?>
+              											</div>
+            				              </div>
+            						         </th>
+
+          			                  </tr>
     		                </table>
   		            <?php
   			            echo form_close();
