@@ -185,7 +185,7 @@ function cetakexcel() {
 				    echo "<td align='center'>".$no++."</td>";
 				    echo "<td align='left'>".ucwords(strtolower($rowkelompok->matpel))."</td>";
             echo "<td align='left'>".ucwords(strtolower($rowkelompok->prosessubvariabel))." (".$rowkelompok->persentasemurnisv."%)"."</td>";
-				    echo "<td align='center'>".ucwords(strtolower($rowkelompok->pengembangandirivariabel))." (".$rowkelompok->persentasemurni."%)"."</td>";
+				    echo "<td align='center'>".ucwords(strtolower($rowkelompok->pengembangandirivariabel))." [".$rowkelompok->idpengembangandirivariabel."] (".$rowkelompok->persentasemurni."%)"."</td>";
 				    echo "<td align='center'>".$rowkelompok->tabelhitung."</td>";
 					echo "<td align='center'>".$rowkelompok->nilai."</td>";
 				    echo "</tr>";

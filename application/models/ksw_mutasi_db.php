@@ -12,20 +12,28 @@ Class ksw_mutasi_db extends CI_Model {
 
 			$cari="";
 			$cari=$cari." AND ta.idcompany='".$this->input->post('idcompany')."' ";
-      $cari=$cari." AND k.idtahunajaran='".$this->input->post('idtahunajaran')."' ";
-
-			 if ($this->input->post('idkelas')<>""){
+      		$cari=$cari." AND k.idtahunajaran='".$this->input->post('idtahunajaran')."' ";
+			if ($this->input->post('idtingkat')<>""){
+				$cari=$cari." AND k.idtingkat='".$this->input->post('idtingkat')."' ";
+			}
+			if ($this->input->post('idkelas')<>""){
 				$cari=$cari." AND s.idkelas='".$this->input->post('idkelas')."' ";
 			}
 
-				//,(select replid from calonsiswa where replidsiswa=s.replid) replidcalon
 				$sql = "SELECT s.*
 							,k.kelas as kelastext,jm.jenismutasi as jenismutasitext
-							,ms.tglmutasi,ms.keterangan as ketmutasi
+							,ms.tglmutasi,ms.keterangan as ketmutasi 
 						FROM siswa s
 						LEFT JOIN kelas k ON s.idkelas = k.replid
 						LEFT JOIN tahunajaran ta ON ta.replid = k.idtahunajaran
-						LEFT JOIN mutasisiswa ms ON ms.idsiswa=s.replid 
+						LEFT JOIN (SELECT * FROM mutasisiswa AS t1
+					INNER JOIN
+					(
+					SELECT MAX(modified_date) AS maxDate
+					FROM mutasisiswa
+					GROUP BY idsiswa
+					) AS t2  ON t1.modified_date = t2.maxDate 
+					GROUP BY t1.idsiswa) ms  ON ms.idsiswa=s.replid 
 						LEFT JOIN jenismutasi jm ON jm.replid=ms.jenismutasi 
 						WHERE s.idkelas = k.replid  ".$cari."
 						ORDER BY s.nama ";
@@ -54,7 +62,7 @@ Class ksw_mutasi_db extends CI_Model {
 
 		//TAMBAH
 	 public function tambah_db($id='',$data) {
-			 $sql="SELECT ms.*,s.nama,s.nis,k.kelas as kelastext, ta.tahunajaran as tahunajarantext
+			 $sql="SELECT ms.*,s.nama,s.nis,k.kelas as kelastext, ta.tahunajaran as tahunajarantext, ta.idcompany
 					 FROM siswa s
            LEFT JOIN kelas k ON k.replid=s.idkelas
            LEFT JOIN tahunajaran ta ON ta.replid=k.idtahunajaran
@@ -62,8 +70,11 @@ Class ksw_mutasi_db extends CI_Model {
 					 WHERE s.replid='".$id."'";
 			 $data['isi'] = $this->dbx->rows($sql);
 
-       $data['jenismutasi_opt'] = $this->dbx->opt("SELECT replid as replid,jenismutasi as nama FROM jenismutasi WHERE aktif=1 ORDER BY jenismutasi");
-
+       	$data['jenismutasi_opt'] = $this->dbx->opt("SELECT replid as replid,jenismutasi as nama FROM jenismutasi WHERE aktif=1 ORDER BY jenismutasi");
+		$sqlcompany="SELECT replid,nama as nama FROM hrm_company
+		   			WHERE aktif=1 AND ppdb=1 AND replid<>'".$data['isi']->idcompany."'
+		   			ORDER BY nama";
+		$data['idcompany_opt'] = $this->dbx->opt($sqlcompany,'up');
 			 return $data;
  }
 }

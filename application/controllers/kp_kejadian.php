@@ -66,6 +66,8 @@ parent::__construct();
                 ,'idtempat' => $this->input->post('idtempat')
                 ,'idprioritas' => $this->input->post('idprioritas')
                 ,'latarbelakang' => str_replace('&nbsp;', ' ', $this->input->post('latarbelakang'))
+				,'idjenispelapor' => $this->input->post('idjenispelapor')
+				,'idpelapor' => $this->input->post('idpelapor')
                 ,'status'=>1
                 );
         

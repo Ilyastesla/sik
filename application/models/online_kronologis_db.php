@@ -29,6 +29,10 @@ Class online_kronologis_db extends CI_Model {
         $cari=$cari." AND ok.jenjang='".$this->input->post('iddepartemen')."' ";
       }
 
+	  if ($this->input->post('idtahunajaran')<>""){
+		$cari=$cari." AND ta.replid='".$this->input->post('idtahunajaran')."' ";
+	}
+
       if ($this->input->post('idproses')<>""){
         //$cari=$cari." AND ks.idproses='".$this->input->post('idproses')."' ";
       }
@@ -69,6 +73,7 @@ Class online_kronologis_db extends CI_Model {
 				//echo $sql;
 		$data['iddepartemen_opt'] = $this->dbx->opt("SELECT departemen as replid,departemen as nama FROM departemen WHERE aktif=1 AND replid IN (".$this->session->userdata('dept').") ORDER BY urutan",'up');
         $data['tahunmasuk_opt'] = $this->dbx->opt("SELECT DISTINCT tahunmasuk as replid, tahunmasuk as nama FROM calonsiswa ORDER BY tahunmasuk DESC",'up');
+		$data['idtahunajaran_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',tahunajaran) as nama FROM tahunajaran WHERE idcompany='".$this->input->post('idcompany')."' AND departemen='".$this->input->post('iddepartemen')."' ORDER BY aktif DESC ,nama DESC ",'up');
 		$data['idproses_opt'] = $this->dbx->opt("SELECT replid,proses as nama FROM prosespenerimaansiswa WHERE departemen='".$this->input->post('iddepartemen')."' ORDER BY proses",'up');
         $data['idkelompok_opt'] = $this->dbx->opt("SELECT replid,kelompok as nama FROM kelompokcalonsiswa WHERE aktif=1 AND idproses='".$this->input->post('idproses')."' ORDER BY kelompok",'up');
 		$data['jeniscari_opt'] = array("ok.namacalon"=>"Nama CPD","ok.namaortu"=>"Nama Orangtua/Wali CPD","ok.emailortu"=>"Email Orangtua");

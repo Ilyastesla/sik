@@ -95,6 +95,7 @@ parent::__construct();
 	//-------------------------------------------------------------------------------------------
 	public function hapus($id) {
 		$result = $this->dbx->hapusdata('tahunajaran','replid',$id)  ;
+		//echo $this->db->last_query();die;
 		if ($result == TRUE) {
 			?><script>
 					window.opener.location.reload();

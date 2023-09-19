@@ -7,7 +7,7 @@ Class keu_administrasi_calon_db extends CI_Model {
 	}
 
     // Read data from database to show data in admin page
-    public function data() {
+    public function data($data) {
 			$cari="";$cari2="";
 
 			if (($this->input->post('periode1')<>"") AND ($this->input->post('periode2')=="")){
@@ -22,6 +22,11 @@ Class keu_administrasi_calon_db extends CI_Model {
 			if ($this->input->post('nama')<>""){
 				$cari2=$cari2." AND c.nama like '%".$this->input->post('nama')."%' ";
 			}
+			
+			if ($data['hanyapusat']<>2){
+				$cari=$cari." AND k.kelompok_siswa='".$this->input->post('idprogramsiswa')."' ";
+			}
+			
 
 			//if ($cari2==""){
 				//$cari=$cari." AND MONTH(c.tanggal_daftar)=MONTH(CURRENT_DATE()) AND YEAR(c.tanggal_daftar)=YEAR(CURRENT_DATE()) ";
@@ -61,19 +66,25 @@ Class keu_administrasi_calon_db extends CI_Model {
 								LEFT OUTER JOIN tingkat t ON c.tingkat=t.replid
 								LEFT OUTER JOIN kondisisiswa ks ON ks.replid=c.kondisi
 								LEFT OUTER JOIN regional r ON r.replid=c.region
-								WHERE c.replid IS NOT NULL  ".$cari." ".$cari2." ".$order;
+								WHERE c.replid IS NOT NULL ".$cari." ".$cari2." ".$order;
 			  //echo $sql;die;
 				$data['show_table']=$this->dbx->data($sql);
 
 			$data['iddepartemen_opt'] = $this->dbx->opt("SELECT departemen as replid,departemen as nama FROM departemen WHERE aktif=1 AND replid IN (".$this->session->userdata('dept').") ORDER BY urutan",'up');
 			//$data['tahunmasuk_opt'] = $this->dbx->opt("SELECT DISTINCT tahunmasuk as replid,tahunmasuk as nama FROM calonsiswa ORDER BY tahunmasuk DESC",'up');
 			$data['idproses_opt'] = $this->dbx->opt("SELECT replid,proses as nama FROM prosespenerimaansiswa WHERE departemen='".$this->input->post('iddepartemen')."' ORDER BY aktif DESC","up");
-			$data['idprogram_opt'] = $this->dbx->opt("SELECT replid,kelompok as nama FROM kelompokcalonsiswa WHERE idproses='".$this->input->post('idproses')."' AND aktif=1 ORDER BY kelompok DESC","up");
+			
+			//$data['idprogram_opt'] = $this->dbx->opt("SELECT replid,kelompok as nama FROM kelompokcalonsiswa WHERE idproses='".$this->input->post('idproses')."' AND aktif=1 ORDER BY kelompok DESC","up");
+
+			$data['idprogramsiswa_opt'] = $this->dbx->opt("SELECT replid,kelompok as nama FROM kelompoksiswa WHERE departemen='".$this->input->post('iddepartemen')."' AND aktif=1 AND hanyapusat='".$data['hanyapusat']."' ORDER BY kelompok DESC","up");
 			$data['idtahunajaran_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',tahunajaran) as nama FROM tahunajaran WHERE idcompany='".$this->input->post('idcompany')."' AND departemen='".$this->input->post('iddepartemen')."' ORDER BY aktif DESC ,nama DESC ",'up');
-			$companyrow=$this->session->userdata('idcompany');
+			$companyrow="";
+			if ($data['hanyapusat']<>1){
+				$companyrow=" AND replid IN (".$this->session->userdata('idcompany').")";
+			}
 			$sqlcompany="SELECT replid,nama as nama
 									FROM hrm_company
-									WHERE replid IN (".$companyrow.") AND aktif=1
+									WHERE aktif=1 ".$companyrow."
 									ORDER BY nama";
 			$data['idcompany_opt'] = $this->dbx->opt($sqlcompany,'up');
 			return $data;

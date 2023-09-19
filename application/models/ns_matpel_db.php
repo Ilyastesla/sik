@@ -32,7 +32,7 @@ Class ns_matpel_db extends CI_Model {
 			}
 
 			if ($this->input->post('katakunci')<>""){
-				$cari=$cari." AND (pv.matpel='".$this->input->post('katakunci')."' OR pv.keterangan='".$this->input->post('katakunci')."') ";
+				$cari=$cari." AND (pv.matpel LIKE '%".$this->input->post('katakunci')."%' OR pv.keterangan LIKE '%".$this->input->post('katakunci')."%') ";
 			}
 
 			switch ($this->input->post('aktif')) {
@@ -47,15 +47,17 @@ Class ns_matpel_db extends CI_Model {
 					break;
 			}
       	$sql="SELECT pv.*,CONCAT(ps.matpelkelompok,' ',ps.keterangan) as matpelkelompok
-									,CONCAT(ps2.matpelkelompok,' ',ps2.keterangan) as matpelkelompok2
-									,CONCAT(ps13.matpelkelompok,' ',ps13.keterangan) as matpelkelompok13
-											,CONCAT(ps3.matpelkelompok,' ',ps3.keterangan) as matpelkelompokpersentase
-											,CONCAT(ps4.matpelkelompok,' ',ps4.keterangan) as grouptext
-															,(SELECT COUNT(pj.replid) FROM ns_pembelajaranjadwal pj
-																			INNER JOIN tahunajaran ta ON pj.idtahunajaran=ta.replid
-																			WHERE pv.replid=pj.idmatpel AND ta.aktif<>1) as pakai
+					,CONCAT(ps2.matpelkelompok,' ',ps2.keterangan) as matpelkelompok2
+					,CONCAT(ps13.matpelkelompok,' ',ps13.keterangan) as matpelkelompok13
+					,CONCAT(ps3.matpelkelompok,' ',ps3.keterangan) as matpelkelompokpersentase
+					,CONCAT(ps4.matpelkelompok,' ',ps4.keterangan) as grouptext
+					,pv2.matpel as matpelgrouptext 
+					,(SELECT COUNT(pj.replid) FROM ns_pembelajaranjadwal pj
+									INNER JOIN tahunajaran ta ON pj.idtahunajaran=ta.replid
+									WHERE pv.replid=pj.idmatpel AND ta.aktif<>1) as pakai
       			FROM ns_matpel pv
-      			LEFT JOIN ns_matpelkelompok ps ON ps.replid=pv.idmatpelkelompok
+      			LEFT JOIN ns_matpel pv2 ON pv2.replid=pv.matpelgroup 
+				LEFT JOIN ns_matpelkelompok ps ON ps.replid=pv.idmatpelkelompok
       			LEFT JOIN ns_matpelkelompok ps2 ON ps2.replid=pv.idmatpelkelompokraport
 						LEFT JOIN ns_matpelkelompok ps13 ON ps13.replid=pv.idmatpelkelompokraport13
       			LEFT JOIN ns_matpelkelompok ps3 ON ps3.replid=pv.idmatpelkelompokpersentase
@@ -148,7 +150,7 @@ Class ns_matpel_db extends CI_Model {
 								FROM kelas k
 								INNER JOIN tahunajaran ta ON ta.replid= k.idtahunajaran
 								INNER JOIN tingkat t ON t.replid=k.idtingkat
-								LEFT JOIN jurusan j ON j.replid=k.jurusan
+								LEFT JOIN jurusan j ON j.replid=k.jurusan AND j.aktif=1 
 								WHERE ta.aktif=1 AND k.aktif=1 AND ta.departemen='".$data['isi']->iddepartemen."' 
 								GROUP BY k.idtingkat,k.jurusan ORDER BY t.departemen,t.tingkat,j.jurusan";
 		//echo $sql;die;

@@ -61,18 +61,6 @@
                                </th>
     			                  </tr>
                             <tr>
-              						       <th align="left">
-        				                		<label class="control-label" for="minlengthfield">Tampilan</label>
-        				                		<div class="control-group">
-                											<div class="controls">:
-            						                	<?php
-            						                		$arridmatpelkelompok='data-rule-required=false onchange=javascript:this.form.submit();';
-            						                		echo form_dropdown('idmatpelkelompok',$idmatpelkelompok_opt,$this->input->post('idmatpelkelompok'),$arridmatpelkelompok);
-            						                	?>
-            						                	<?php //echo  <p id="message"></p> ?>
-                											</div>
-              				              </div>
-              						         </th>
                                    <th align="left">
           				                		<label class="control-label" for="minlengthfield">Tampilan K13</label>
           				                		<div class="control-group">
@@ -85,6 +73,18 @@
                   											</div>
                 				              </div>
                 						         </th>
+												 <th align="left">
+        				                		<label class="control-label" for="minlengthfield">Tampilan KTSP</label>
+        				                		<div class="control-group">
+                											<div class="controls">:
+            						                	<?php
+            						                		$arridmatpelkelompok='data-rule-required=false onchange=javascript:this.form.submit();';
+            						                		echo form_dropdown('idmatpelkelompok',$idmatpelkelompok_opt,$this->input->post('idmatpelkelompok'),$arridmatpelkelompok);
+            						                	?>
+            						                	<?php //echo  <p id="message"></p> ?>
+                											</div>
+              				              </div>
+              						         </th>
       			                  </tr>
 									<tr>
 											
@@ -145,13 +145,14 @@
                                                 echo "<th  width='25'>No.</th>";
                                                 echo "<th width='*'>Jenjang</th>";
                                                 echo "<th width='100px'>Mata Pelajaran</th>";
-                                                echo "<th>KTSP</th>";
+                                                //echo "<th>KTSP</th>";
                                                 echo "<th>K13</th>";
                                                 echo "<th>KKM</th>";
 												echo "<th>Tipe Predikat</th>";
                                                 echo "<th>Keterangan</th>";
                                                 echo "<th>No. Urut</th>";
                                                 echo "<th>Tampilan</th>";
+												echo "<th>Grup</th>";
                                                 echo "<th>Lokasi Sekolah</th>";
                                                 echo "<th width='*'>aktif</th>";
                                                 echo "<th width='80'>Aksi</th>";
@@ -164,13 +165,15 @@
 											foreach((array)$show_table as $row) {
 											    echo "<tr>";
 											    echo "<td align='center'>".$no++."</td>";
-											    echo "<td align=''>".strtoupper($row->iddepartemen)."</td>";
+											    echo "<td align=''>".$row->iddepartemen."</td>";
                           echo "<td align=''><a href=javascript:void(window.open('".site_url('ns_matpel/tingkat/'.$row->replid)."/0')) >".$row->matpel."</a></td>";
+						  /*
                           echo "<td align=''>";
                               echo "Formula: ".$row->matpelkelompok."<br/>";
                               echo "Tampilan: ".$row->matpelkelompok2."<br/>";
                               echo "Persentase: ".$row->matpelkelompokpersentase."<br/>";
                           echo "</td>";
+						  */
                           echo "<td align=''>";
                               echo "Tampilan: ".$row->matpelkelompok13."<br/>";
                               echo "Group: ".$row->grouptext."<br/>";
@@ -184,11 +187,12 @@
                           echo "<br/>Hitung Nilai :".$CI->p_c->cekaktif($row->hitungnilai);
                           echo "<br/>Eksternal :".$CI->p_c->cekaktif($row->external);
                           echo "</th>";
+						  echo "<td align=''>".$row->matpelgrouptext."</td>";
                           echo "<td align='center'>".$CI->dbx->variabel_company('ns_matpel',$row->replid)."</td>";
                           echo "<td align='center'>";
-											    echo "<a href=javascript:void(window.open('".site_url('ns_matpel/ubahaktif/'.$row->replid.'/'.!($row->aktif))."'))>".$CI->p_c->cekaktif($row->aktif)."</a>";
+						  	echo "<a href=javascript:void(window.open('".site_url('ns_matpel/ubahaktif/'.$row->replid.'/'.!($row->aktif))."'))>".$CI->p_c->cekaktif($row->aktif)."</a>";
                           echo "</td>";
-											    echo "<td align='center'>";
+						echo "<td align='center'>";
                           if ($row->pakai<1){
 											    		echo "<a href=javascript:void(window.open('".site_url('ns_matpel/ubah/'.$row->replid)."')) class='btn btn-xs btn-warning fa fa-check-square' ></a>&nbsp;&nbsp;";
                           }else{

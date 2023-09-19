@@ -213,7 +213,7 @@
     $("#iddepartemen").change(function(){
       var value=$(this).val();
       $.ajax({
-        data:{modul:'idtahunajarancompany',id:value,idcompany:$("#idcompany").val()},
+        data:{modul:'idtahunajaranmutasi',id:value,idunitbisnis:$("#idcompany").val()},
         success: function(respond){
           $("#idtahunajaran").html(respond);
         }

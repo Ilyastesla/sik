@@ -95,6 +95,7 @@ if ($excel==1){
 				                                <thead>
 				                                    <tr>
 				                                    	<th width='50'>No.</th>
+														<th>Sumber Dana</th>
 														                     <?php if ($row->inventaris) { ?>
 				                                        <th>No. Inventaris</th>
 				                                        <th>Kelompok Inventaris</th>
@@ -114,6 +115,7 @@ if ($excel==1){
 											    foreach((array)$noinventaris as $rownoinventaris) {
 												    echo "<tr>";
 												    echo "<td>".$no2++."</td>";
+													echo "<td align='center'>".$rownoinventaris->sumberdanatext."</td>";
 												    if ($row->inventaris) {
 												    	echo "<td>".$rownoinventaris->kode_inventaris."</td>";
 												    	echo "<td>".$rownoinventaris->kelompok_inventaris."</td>";

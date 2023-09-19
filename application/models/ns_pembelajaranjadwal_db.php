@@ -9,6 +9,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
     // Read data from database to show data in admin page
     public function index_table() {
     	$cari="";$data['show_table']=NULL;
+		$carimp="";$carikls="";
 		if ($this->input->post('filter')<>1){
     		$cari=$cari." AND pv.idtahunajaran IN (SELECT distinct ta.replid FROM tahunajaran ta, departemen d WHERE ta.departemen=d.departemen AND ta.aktif=1 AND d.replid IN (".$this->session->userdata('dept').")) AND pv.created_by='".$this->session->userdata('idpegawai')."' ";
     	}else{
@@ -17,6 +18,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 				//}
 				if ($this->input->post('idkelas')<>""){
 					$cari=$cari." AND pv.idkelas='".$this->input->post('idkelas')."' ";
+					$carimp=$carimp." AND pj.idkelas='".$this->input->post('idkelas')."' ";
 				}
 
 				//if ($this->input->post('idperiode')<>""){
@@ -36,6 +38,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 			*/
 				if ($this->input->post('idmatpel')<>""){
 					$cari=$cari." AND pv.idmatpel='".$this->input->post('idmatpel')."' ";
+					$carikls=$carikls." AND pj.idmatpel='".$this->input->post('idmatpel')."' ";
 				}
 
 				if ($this->input->post('created_by')<>""){
@@ -55,17 +58,17 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 		$cari=$cari." AND ta.idcompany='".$this->input->post('idcompany')."' ";
 
 				//,(SELECT COUNT(DISTINCT(idsiswa)) FROM ns_pengembangandirinilai WHERE idpembelajaranjadwal=pv.replid) jmlsiswa
-      	$sql="SELECT pv.*,CONCAT('[',ps.iddepartemen,'] ',ps.prosestipe) as prosestipe,mp.matpel,mp.iddepartemen,ta.tahunajaran,k.kelas,p.periode
+      	$sql="SELECT pv.*,CONCAT('[',ps.iddepartemen,'] ',ps.prosestipe) as prosestipe,CONCAT(mp.matpel,' ',mp.keterangan) as matpel,mp.iddepartemen,ta.tahunajaran,k.kelas,p.periode
       				 ,ta.aktif as aktiftahunajaran,ps.nilaiwali,k.idwali
 							 ,(SELECT COUNT(replid) FROM siswa WHERE idkelas=k.replid AND aktif=1) as jmlsiswa
-							 ,(SELECT COUNT(idsiswa) FROM view_siswapembelajaranjadwal WHERE idpembelajaranjadwal=pv.replid) as jmlsiswajadwal
+							
       			FROM ns_pembelajaranjadwal pv
       			LEFT JOIN ns_prosestipe ps ON ps.replid=pv.idprosestipe
       			LEFT JOIN ns_matpel mp ON mp.replid=pv.idmatpel
       			LEFT JOIN tahunajaran ta ON ta.replid=pv.idtahunajaran
       			LEFT JOIN kelas k ON k.replid=pv.idkelas
       			LEFT JOIN ns_periode p ON p.replid=pv.idperiode
-      			WHERE pv.replid IS NOT NULL ".$cari.
+      			WHERE ps.replid=pv.idprosestipe ".$cari.
       			"ORDER BY pv.tanggalkegiatan";
 			  //echo $sql;die;
 		//echo $this->input->post('filter');
@@ -75,7 +78,12 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 
 				//Tahun Ajaran
         //---------------------------------------------------------------------------------------------
-        $data['idtahunajaran_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',tahunajaran) as nama FROM tahunajaran WHERE idcompany='".$this->input->post('idcompany')."' AND departemen='".$this->input->post('iddepartemen')."' ORDER BY aktif DESC ,nama DESC ",'up');
+        $data['idtahunajaran_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',tahunajaran) as nama FROM tahunajaran 
+														WHERE replid IN (
+															SELECT idtahunajaran FROM ns_pembelajaranjadwal
+														) AND idcompany='".$this->input->post('idcompany')."' 
+														AND departemen='".$this->input->post('iddepartemen')."' 
+														ORDER BY aktif DESC ,nama DESC ",'up');
 
 				//iddepartemen=(SELECT departemen FROM tahunajaran WHERE replid='".$this->input->post("idtahunajaran")."')
 		$sqlproses="SELECT pt.replid,CONCAT('[',pt.iddepartemen,'] ',pt.prosestipe,' ',pt.keterangan, ' (',IF(pt.aktif=1,'A','T'),')') as nama,pt.iddepartemen
@@ -95,6 +103,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 														INNER JOIN ns_pembelajaranjadwal pj ON pj.idkelas=k.replid
 														WHERE pj.idtahunajaran='".$this->input->post('idtahunajaran')."' 
         												AND k.aktif=1 AND k.idtahunajaran='".$this->input->post("idtahunajaran")."'
+														".$carikls." 
         												ORDER BY t.tingkat,k.kelas",'up');
 
         //Region
@@ -107,10 +116,12 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
         //Matpel
         //-----------------------------------------------------------------------------------------------
 		//iddepartemen=(SELECT departemen FROM tahunajaran WHERE replid='".$this->input->post("idtahunajaran")."')
+		//".$carimp." 
 		$sqlmatpel="SELECT DISTINCT mp.replid,CONCAT('[',mp.iddepartemen,'] ',REPLACE(REPLACE(mp.matpel,'</i>',''),'<i>',''),' ',mp.keterangan, ' (',IF(mp.aktif=1,'A','T'),') ') as nama
         										FROM ns_matpel mp
 												INNER JOIN ns_pembelajaranjadwal pj ON pj.idmatpel=mp.replid
 												WHERE pj.idtahunajaran='".$this->input->post('idtahunajaran')."'
+												
         										ORDER BY mp.aktif DESC, mp.iddepartemen ASC, mp.matpel ASC";
       	$data['idmatpel_opt'] = $this->dbx->opt($sqlmatpel,'up');
 
@@ -128,7 +139,9 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 		$companyrow=$this->session->userdata('idcompany');
 		$sqlcompany="SELECT replid,nama as nama
 								FROM hrm_company
-								WHERE replid IN (".$companyrow.") AND aktif=1
+								WHERE replid IN (".$companyrow.") AND aktif=1 AND replid IN (
+									SELECT distinct idcompany FROM tahunajaran
+								)
 								ORDER BY nama";
 		$data['idcompany_opt'] = $this->dbx->opt($sqlcompany,'up');
 		$data['iddepartemen_opt'] = $this->dbx->opt("SELECT departemen as replid,departemen as nama FROM departemen WHERE aktif=1 AND replid IN (".$this->session->userdata('dept').") ORDER BY urutan",'up');
@@ -138,31 +151,36 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
      //TAMBAH
     public function tambah_db($id='',$data) {
     	$data['id']=$id;
-      	$sql="SELECT pj.*,ta.departemen as iddepartemen,ta.idcompany 
+      	$sql="SELECT pj.*,ta.departemen as iddepartemen,ta.idcompany,k.kurikulumkode
       			FROM ns_pembelajaranjadwal pj
 				LEFT JOIN tahunajaran ta ON ta.replid=pj.idtahunajaran
+				LEFT JOIN kelas k ON k.replid=pj.idkelas
       			WHERE pj.replid='".$id."'";
         $data['isi'] = $this->dbx->rows($sql);
+		
 
         if ($data['isi']== NULL ) {
 					unset($data['isi']);
-					$sql="SELECT ".$this->dbx->tablecolumn('ns_pembelajaranjadwal').",1 as aktif, 0 as idcompany,0 as iddepartemen ";
-        	$data['isi']=$this->dbx->rows($sql);
+					$sql="SELECT ".$this->dbx->tablecolumn('ns_pembelajaranjadwal').",1 as aktif, 0 as idcompany,0 as iddepartemen,'' as kurikulumkode ";
+					
+			$data['isi']=$this->dbx->rows($sql);
         }
-
+		
 		$companyrow=$this->session->userdata('idcompany');
 		$sqlcompany="SELECT replid,nama as nama
 								FROM hrm_company
-								WHERE replid IN (".$companyrow.") AND aktif=1
+								WHERE replid IN (".$companyrow.") AND aktif=1 AND replid IN (
+									SELECT distinct idcompany FROM tahunajaran
+								)
 								ORDER BY nama";
 		$data['idcompany_opt'] = $this->dbx->opt($sqlcompany,'up');
 		$data['iddepartemen_opt'] = $this->dbx->opt("SELECT departemen as replid,departemen as nama FROM departemen WHERE aktif=1 AND replid IN (".$this->session->userdata('dept').") ORDER BY urutan",'up');
 		//Tahun Ajaran
         //-----------------------------------------------------------------------------------------------
 		$data['idtahunajaran_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',tahunajaran) as nama
-																									FROM tahunajaran WHERE aktif=1 AND idcompany='".$data["isi"]->idcompany."' 
-																									AND departemen='".$data["isi"]->iddepartemen."'
-																									ORDER BY aktif DESC ,nama DESC  ",'up');
+													FROM tahunajaran WHERE aktif=1 AND idcompany='".$data["isi"]->idcompany."' 
+													AND departemen='".$data["isi"]->iddepartemen."' 
+													ORDER BY aktif DESC ,nama DESC  ",'up');
 		$data['idmodultipe_opt']=array(''=>'Pilih..','1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6','7'=>'7','8'=>'8','9'=>'9','10'=>'10','11'=>'11','12'=>'12','13'=>'13','14'=>'14','15'=>'15','16'=>'16','17'=>'17','18'=>'18');
 		$departemencari="";
 		if ($data["isi"]->idtahunajaran<>""){
@@ -176,7 +194,10 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
         //-----------------------------------------------------------------------------------------------
 				$data['idkelas_opt'] = $this->dbx->opt("SELECT replid,kelas as nama FROM kelas
         												WHERE aktif=1 AND
-        												idtahunajaran='".$data["isi"]->idtahunajaran."'
+        												idtahunajaran='".$data["isi"]->idtahunajaran."' 
+														AND replid IN (
+															SELECT DISTINCT idkelas FROM siswa 
+														)
         												ORDER BY idtingkat",'up');
 				//AND replid IN (".$this->session->userdata('kelas').")
 
@@ -216,12 +237,14 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 
 				$data['idperiode_opt'] = $this->dbx->opt("SELECT replid,periode as nama
         											FROM ns_periode ORDER BY nama");
-
+				/*
 				$sqlrapot="SELECT rt.replid,CONCAT('[',rt.iddepartemen,'] ',rt.rapottipe,' ',rt.keterangan, ' (',IF(rt.aktif=1,'A','T'),')') as nama,(SELECT 1 FROM ns_pembelajaranjadwalrapottipe WHERE idpembelajaranjadwal='".$data["isi"]->replid."' AND idrapottipe=rt.replid) as checked
 							FROM ns_rapottipe rt
 							INNER JOIN ns_reff_company rc ON rc.idvariabel=rt.replid
-							WHERE rc.tipe='ns_rapottipe' AND rc.idcompany='".$data["isi"]->idcompany."' AND rt.aktif=1 AND rt.iddepartemen='".$data["isi"]->iddepartemen."' ORDER BY rt.iddepartemen,rt.rapottipe";
+							WHERE rc.tipe='ns_rapottipe' AND rc.idcompany='".$data["isi"]->idcompany."' AND rt.aktif=1 AND rt.iddepartemen='".$data["isi"]->iddepartemen."' AND rt.kurikulumkode='".$data["isi"]->kurikulumkode."' 
+							ORDER BY rt.iddepartemen,rt.rapottipe";
         $data['idrapottipe_opt'] = $this->dbx->data($sqlrapot);
+		*/
         return $data;
   }
 
@@ -287,11 +310,13 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
       	$sql="SELECT pv.*,CONCAT('[',ps.iddepartemen,'] ',ps.prosestipe,' ',ps.keterangan) as prosestipe,mp.matpel
 										,mp.iddepartemen,ta.tahunajaran,k.kelas,p.periode,ta.aktif as aktiftahunajaran, mp.kkm,ta.aktif as aktiftahunajaran
 										,ps.nilaiwali,ps.iddepartemen,k.idwali
-									,(SELECT COUNT(*) FROM ns_pengembangandirinilai WHERE idpembelajaranjadwal=pv.replid) as jmlsiswakelas
+										,com.nama as companytext 
+									,(SELECT COUNT(*) FROM ns_pengembangandirinilai WHERE idpembelajaranjadwal=pv.replid) as jmlsiswakelas,k.kurikulumkode 
       			FROM ns_pembelajaranjadwal pv
       			LEFT JOIN ns_prosestipe ps ON ps.replid=pv.idprosestipe
       			LEFT JOIN ns_matpel mp ON mp.replid=pv.idmatpel
       			LEFT JOIN tahunajaran ta ON ta.replid=pv.idtahunajaran
+				  LEFT JOIN hrm_company com ON com.replid=ta.idcompany 
       			LEFT JOIN kelas k ON k.replid=pv.idkelas
       			LEFT JOIN ns_periode p ON p.replid=pv.idperiode
       			WHERE pv.replid='".$id."'";
@@ -311,7 +336,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 									$idrapottipe_sql="SELECT rt.replid,CONCAT('[',rt.iddepartemen,'] ',rt.rapottipe,' ',rt.keterangan, ' (',IF(rt.aktif=1,'A','T'),')') as nama
 					        											,(SELECT 1 FROM ns_pembelajaranjadwalrapottipe WHERE idpembelajaranjadwal='".$id."' AND idrapottipe=rt.replid) as 'checked'
 					        											FROM ns_rapottipe rt
-																				WHERE aktif=1 AND iddepartemen IN (SELECT departemen FROM departemen WHERE replid IN (".$this->session->userdata('dept').")) AND iddepartemen='".$data["isi"]->iddepartemen."' ORDER BY rt.rapottipe";
+																				WHERE aktif=1 AND iddepartemen IN (SELECT departemen FROM departemen WHERE replid IN (".$this->session->userdata('dept').")) AND iddepartemen='".$data["isi"]->iddepartemen."' AND rt.kurikulumkode='".$data["isi"]->kurikulumkode."' ORDER BY rt.rapottipe";
 
 									/*
 									$siswa_sql="SELECT s.*,(s.tgl_masuk<='".$data['isi']->tanggalkegiatan."') as dftr
@@ -379,7 +404,7 @@ Class ns_pembelajaranjadwal_db extends CI_Model {
 				}
 				//echo $pengembangandirivariabel_sql;die;
 				//echo $siswa_sql;die;
-				$data['idrapottipe_opt'] = $this->dbx->data($idrapottipe_sql);
+				//$data['idrapottipe_opt'] = $this->dbx->data($idrapottipe_sql);
       			$data['siswa']=$this->dbx->data($siswa_sql);
 				//echo $pengembangandirivariabel_sql;die;
 				$data['pengembangandirivariabel']=$this->dbx->data($pengembangandirivariabel_sql);

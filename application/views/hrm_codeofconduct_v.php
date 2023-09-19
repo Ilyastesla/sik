@@ -16,14 +16,7 @@
                         <?php echo $form ?>
                         <small>List Data</small>
                     </h1>
-                    <!--
-                        <li><a href="#"><i class="fa fa-file-text"></i>Cetak</a></li>
-                        <li><a href="#"><i class="fa fa-file-excel-o"></i>Excel</a></li>
-                        -->
-                    <ol class="breadcrumb">
-                        <li><a href="javascript:void(window.open('<?php echo site_url('hrm_codeofconduct/tambah'); ?>'))"><i class="fa fa-plus-square"></i> Tambah</a></li>
-
-                    </ol>
+                   
                 </section>
 
 
@@ -36,14 +29,12 @@
                                     <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th width="50">No.</th>
-                                                <th width="200">Subjek</th>
-                                                <th width="200">Tipe</th>
-                                                <th>Isi hrm_codeofconduct</th>
+                                                <th width="50">No. Surat</th>
+                                                <th width="200">Kebijakan</th>
+                                                <th>Garis Besar Kebijakan</th>
+												<th width="200">Departemen</th>
                                                 <th>Tanggal Dibuat</th>
                                                 <th>Tanggal Diubah</th>
-                                                <th>Aktif</th>
-                                                <th width="80">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -61,11 +52,7 @@
 											    echo "<td align='center'>".strtoupper($CI->p_c->tgl_indo($row->created_date))."</td>";
 											    echo "<td align='center'>".strtoupper($CI->p_c->tgl_indo($row->modified_date))."</td>";
 											    echo "<td align='center'>".$CI->p_c->cekaktif($row->aktif)."</td>";
-											    echo "<td align='center'>
-											    		<a href=javascript:void(window.open('".site_url('hrm_codeofconduct/ubah/'.$row->replid)."')) class='btn btn-xs btn-warning fa fa-check-square'></a>&nbsp;&nbsp;
-											    		<a href=javascript:void(window.open('".site_url('hrm_codeofconduct/hapus/'.$row->replid)."')) class='btn btn-xs btn-danger fa fa-minus-square'></a>
-											    		</td>";
-											    echo "</tr>";
+											    
 											}
 											?>
 

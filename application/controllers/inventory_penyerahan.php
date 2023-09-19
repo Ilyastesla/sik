@@ -93,6 +93,7 @@ public function __construct() {
 		$idmat=$this->input->post("idmaterial");
 		$kodecabang=$this->input->post("kodecabang");
 		$kodedepartemen=$this->input->post("kodedepartemen");
+		$idsumberdana=$this->input->post("idsumberdana");
 		$idkelompok_inventaris=$this->input->post("idkelompok_inventaris");
 		$kodematerial=$this->input->post("kodematerial");
 
@@ -124,6 +125,7 @@ public function __construct() {
 					"idinventory_pembelian"=> $this->input->post("idinventory_pembelian"),
 					"hpp"=>( $rows_pembelian->hargatotal/ $rows_pembelian->jumlah),
 					"idunit"=> $this->input->post("idunit"),
+					"idsumberdana"=> $idsumberdana,
 					"idkelompok_inventaris"=> $idkelompok_inventaris,
 					"idruang"=> $idruang,
 					"idunit"=> $idunit,
@@ -146,6 +148,7 @@ public function __construct() {
 					"tanggalserah"=> $tanggalserah,
 					"jml_serah"=> $jumlah,
 					"idunit"=> $this->input->post("idunit"),
+					"idsumberdana"=> $idsumberdana,
 					"idkelompok_inventaris"=> $idkelompok_inventaris,
 					"idruang"=> $idruang,
 					"idunit"=> $idunit,
@@ -157,6 +160,7 @@ public function __construct() {
 			$result=$this->inventory_penyerahan_db->tambah_inventaris_db($data);
 
 		}
+		//echo $this->db->last_query();die;
 		if ($result == TRUE) {
 			//$this->ubahstatus_p($id);
 			$this->inventory_penyerahan_db->ubahstatuspermintaan($id);

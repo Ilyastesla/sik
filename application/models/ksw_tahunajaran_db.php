@@ -16,7 +16,11 @@ Class ksw_tahunajaran_db extends CI_Model {
 				//	$cari=$cari." WHERE ta.departemen IN (".$this->dbx->sessionjenjangtext().") ";
 				//}
 
-      	$sql = "SELECT c.nama as companytext,ta.*,(SELECT 1 FROM kelas WHERE idtahunajaran=ta.replid LIMIT 1) as pakai
+      	$sql = "SELECT c.nama as companytext,ta.*
+									,(SELECT COUNT(replid) FROM kelas WHERE idtahunajaran=ta.replid) jmlkelas
+									,(SELECT COUNT(replid) FROM calonsiswa WHERE idtahunajaran=ta.replid) jmlcpd
+									,(SELECT COUNT(s.replid) FROM siswa s INNER JOIN kelas k ON k.replid=s.idkelas WHERE k.idtahunajaran=ta.replid AND s.aktif=1) jmlpd
+									,(SELECT COUNT(replid) FROM ns_pembelajaranjadwal WHERE idtahunajaran=ta.replid) jmljadwalbelajar
 								FROM tahunajaran ta
 								INNER JOIN hrm_company c ON c.replid=ta.idcompany
 								WHERE ta.idcompany='".$this->input->post('idcompany')."' ".$cari."

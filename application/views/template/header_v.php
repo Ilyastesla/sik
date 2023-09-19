@@ -1,5 +1,8 @@
 <?php
 $CI =& get_instance();
+if($this->config->item('maintenance')==1){
+   redirect('/main/maintenance');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

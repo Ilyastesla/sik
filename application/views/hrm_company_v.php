@@ -54,7 +54,8 @@
                                         	$no=1;
 											foreach((array)$show_table as $row) {
 											    echo "<tr>";
-											    echo "<td align='center'>".$no++."</td>";
+											    //echo "<td align='center'>".$no++."</td>";
+                                                echo "<td align='center'>".$row->replid."</td>";
 											    echo "<td align='center'>".strtoupper($row->company_code)."</td>";
 											    echo "<td align='center'>".strtoupper($row->kodecabang)."</td>";
 											    echo "<td align='center'>".strtoupper($row->organizationcode)."</td>";

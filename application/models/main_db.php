@@ -55,22 +55,36 @@ Class main_db extends CI_Model {
                   AND cs.aktif=1 AND cs.replidsiswa is NULL ";
       $data['jumlahcs']=$this->dbx->singlerow($sql);
       */
-      $sql="SELECT COUNT(cs.replid) as isi
+      $filjenjang="";
+      if ($this->session->userdata('dept')<>""){
+            $filjenjang.=" AND d.replid IN (".$this->session->userdata('dept').")";
+      }
+      $sql="SELECT COUNT(cs.replid) as isi, com.nama as companytext
               FROM calonsiswa cs
               INNER JOIN online_kronologis ok ON ok.idcalon=cs.replid
+              INNER JOIN hrm_company com ON com.replid=ok.idunitbisnis
+              INNER JOIN departemen d ON d.departemen=ok.jenjang
               WHERE  ok.idunitbisnis IN (".$sqlcompany.")
-                    AND YEAR (ok.created_date) = YEAR (CURRENT_DATE())
-                    AND cs.aktif=1
-              AND cs.replidsiswa is not null ";
-      $data['jumlahsiswabaru']=$this->dbx->singlerow($sql);
+                    AND YEAR (cs.tanggal_masuk) = YEAR (CURRENT_DATE())
+                    AND cs.aktif=1 AND cs.lulus=1
+              AND cs.replidsiswa IS NOT NULL ".$filjenjang."
+              GROUP BY ok.idunitbisnis
+              ORDER BY com.nama";
+      //echo $sql;
+      $data['jumlahsiswabaru']=$this->dbx->data($sql);
       
-      $sql="SELECT COUNT(s.replid) as isi
+      //YEAR(tglmulai)=YEAR(CURRENT_DATE())
+      $sql="SELECT COUNT(s.replid) as isi, com.nama as companytext
             FROM siswa s
             INNER JOIN kelas k ON k.replid=s.idkelas
             INNER JOIN tahunajaran ta ON ta.replid=k.idtahunajaran
+            INNER JOIN hrm_company com ON com.replid=ta.idcompany
+            INNER JOIN departemen d ON d.departemen=ta.departemen
             WHERE ta.idcompany IN (".$sqlcompany.") 
-                  AND s.aktif=1 AND YEAR(tglmulai)=YEAR(CURRENT_DATE()) ";
-      $data['jumlahsiswa']=$this->dbx->singlerow($sql);
+                  AND s.aktif=1 AND ta.aktif=1 ".$filjenjang."
+            GROUP BY ta.idcompany
+            ORDER BY com.nama ";
+      $data['jumlahsiswa']=$this->dbx->data($sql);
       
       /*
       $sql="SELECT COUNT(replid) as isi
@@ -80,10 +94,11 @@ Class main_db extends CI_Model {
       */
 
       //WHERE MONTH(p.tgllahir)=MONTH(current_date) AND p.aktif=1
-      $sql="SELECT p.*
+      $sql="SELECT p.*,c.nama as companytext
             FROM pegawai p
-            WHERE p.tgllahir=current_date() AND p.aktif=1
-            ORDER BY day(p.tgllahir) ASC";
+            INNER JOIN hrm_company c ON c.replid=p.idcompany
+            WHERE DATE_FORMAT(p.tgllahir,'%m-%d')=DATE_FORMAT(CURRENT_DATE(),'%m-%d') AND p.aktif=1
+            ORDER BY companytext,p.nama ASC";
       //echo $sql;die;
       $data['pegawaiultah']=$this->dbx->data($sql);
       //echo $sql;die;

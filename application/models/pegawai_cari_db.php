@@ -23,7 +23,6 @@ Class pegawai_cari_db extends CI_Model {
 			if ($this->input->post('filter')<>1){
 				$data['show_table']=NULL;
 			}else{
-				//,(select replid from calonsiswa where replidsiswa=s.replid) replidcalon
 				$sql = "SELECT DISTINCT p.*
                 ,(TIMESTAMPDIFF(YEAR, p.tgllahir, CURDATE())) as umur
                 ,log.aktif as loginaktif,log.replid as replidlogin

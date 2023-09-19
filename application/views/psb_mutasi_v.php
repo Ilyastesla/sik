@@ -263,7 +263,7 @@
           }
         });
         $.ajax({
-          data:{modul:'idkelompokmutasi',id:0,idproses:0,idtahunajaran:0},
+          data:{modul:'idkelompokmutasi',id:value,idproses:$("#idproses").val(),idtahunajaran:$("#idtahunajaran").val()},
           success: function(respond){
             $("#idkelompok").html(respond);
           }
@@ -273,7 +273,7 @@
     $("#idproses").change(function(){
       var value=$(this).val();
         $.ajax({
-          data:{modul:'idkelompokmutasi',id:$("#idproses").val(),idproses:value,idtahunajaran:$("#idtahunajaran").val()},
+          data:{modul:'idkelompokmutasi',id:$("#tingkat").val(),idproses:value,idtahunajaran:$("#idtahunajaran").val()},
           success: function(respond){
             $("#idkelompok").html(respond);
           }

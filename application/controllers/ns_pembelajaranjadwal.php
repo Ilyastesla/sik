@@ -62,6 +62,7 @@ parent::__construct();
 				'keterangan' => $this->input->post('keterangan'),
 				'nonreguler' => $this->input->post('nonreguler'),
 				'aktif' => $this->input->post('aktif'),
+				'raports' => $this->input->post('raports'),
 				"idperiode" => $this->input->post("idperiode"),
 				"tanggalkegiatan"=> $this->p_c->tgl_db($this->input->post('tanggalkegiatan')),
 				"modified_date"=> $this->dbx->cts(),
@@ -78,6 +79,7 @@ parent::__construct();
 
 
 		if($id<>""){
+			/*
 			$idrapottipe=$this->input->post("idrapottipe");
 			$result = $this->ns_pembelajaranjadwal_db->hapusrapottipe_db($id);
 			if ($result == TRUE) {
@@ -91,6 +93,7 @@ parent::__construct();
 					unset($datarapottipe);
 				}
 			}
+			*/
 
 		}
 
@@ -142,6 +145,7 @@ parent::__construct();
 		$this->ns_pembelajaranjadwal_db->hapusnilai_pdb($id);
 		$rs=preg_split("/[\s,]+/", $this->input->post("rs"));
 		$pdv=preg_split("/[\s,]+/", $this->input->post("pdv"));
+		
 		//"idkelas" => $this->input->post("idkelas"),
 		foreach((array)$pdv as $rowpdv) {
 			foreach((array)$rs as $rowrs) {
@@ -169,6 +173,13 @@ parent::__construct();
 				//}
 			} // for rs
 		} //for rdv
+		$datapj=array(
+						"jumlahpd"=>count($rs),
+						"modified_date"=> $this->dbx->cts(),
+						"modified_by"=> $this->session->userdata('idpegawai')
+					);
+		$result = $this->dbx->ubahdata('ns_pembelajaranjadwal',$datapj,'replid',$id) ;
+
 		//echo $result;die;
 		if ($result == TRUE) {
 			redirect('ns_pembelajaranjadwal/penilaian/'.$id.'/0');
@@ -195,9 +206,29 @@ parent::__construct();
 	//Hapus
 	//-------------------------------------------------------------------------------------------
 	public function hapus($id) {
-		$result = $this->ns_pembelajaranjadwal_db->hapusrapottipe_db($id);
-		$result = $this->ns_pembelajaranjadwal_db->hapusnilai_pdb($id) ;
-		$result = $this->ns_pembelajaranjadwal_db->hapus_pdb($id) ;
+		//$result = $this->ns_pembelajaranjadwal_db->hapusrapottipe_db($id);
+		//$result = $this->ns_pembelajaranjadwal_db->hapusnilai_pdb($id) ;
+		//$result = $this->ns_pembelajaranjadwal_db->hapus_pdb($id) ;
+		$datahapus=array(
+			"deletethis"=>1,
+			"modified_date"=> $this->dbx->cts(),
+			"modified_by"=> $this->session->userdata('idpegawai')
+		);
+		$result = $this->dbx->ubahdata('ns_pembelajaranjadwal',$datahapus,'replid',$id) ;
+		if ($result == TRUE) {
+			?><script>
+					window.opener.location.reload();
+					window.close();
+				</script>
+			<?php
+		}
+	}
+
+	public function hapustotal($id) {
+		//$result = $this->dbx->hapusdata($table,$row,$id) ;
+		$result = $this->dbx->hapusdata('ns_pengembangandirinilai',idrapot,$id) ;
+		$result = $this->dbx->hapusdata('ns_pembelajaranjadwalrapottipe',idrapot,$id) ;
+		$result = $this->dbx->hapusdata('ns_pembelajaranjadwal',replid,$id) ;
 		if ($result == TRUE) {
 			redirect('ns_pembelajaranjadwal');
 		}

@@ -22,7 +22,6 @@ Class ksw_siswa_cari_db extends CI_Model {
 			if ($this->input->post('filter')<>1){
 				$data['show_table']=NULL;
 			}else{
-				//,(select replid from calonsiswa where replidsiswa=s.replid) replidcalon
 				$sql = "SELECT s.*,DAY(s.tgllahir),MONTH(s.tgllahir)
 								,YEAR(s.tgllahir),ks.kondisi as kondisi_nm
 								,cs.replid as replidcalon
@@ -35,7 +34,7 @@ Class ksw_siswa_cari_db extends CI_Model {
 								LEFT JOIN tahunajaran ta ON ta.replid = k.idtahunajaran
 								LEFT JOIN angkatan akt ON akt.replid=s.idangkatan
 								LEFT JOIN regional r ON r.replid=s.region
-								LEFT JOIN calonsiswa cs ON cs.replidsiswa=s.replid
+								LEFT JOIN calonsiswa cs ON cs.replid=s.replidcalon
 								WHERE ta.idcompany='".$this->input->post('idcompany')."' ".$cari."
 								ORDER BY s.nama ";
 			  //echo $sql;die;

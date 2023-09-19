@@ -116,7 +116,7 @@ function __construct(){
 	function idtingkat($variabel){
 
 		$idtingkattext="<option selected='selected' value=''>Pilih...</pilih>";
-		$idtingkatdata= $this->dbx->data("SELECT replid,CONCAT('[',departemen,'] ',tingkat)  as nama FROM tingkat WHERE departemen='".$variabel."' ORDER BY CAST(tingkat AS SIGNED) ASC");
+		$idtingkatdata= $this->dbx->data("SELECT replid,CONCAT('[',departemen,'] ',tingkat)  as nama FROM tingkat WHERE departemen='".$variabel."' AND aktif=1 ORDER BY CAST(tingkat AS SIGNED) ASC");
 		foreach((array)$idtingkatdata as $data) {
 			$idtingkattext.= "<option value='".$data->replid."'>".$data->nama."</option>";
 		}
@@ -141,12 +141,31 @@ function __construct(){
 
 		$idkelastext="<option selected='selected' value=''>Pilih...</pilih>";
 		$sql="SELECT replid,kelas as nama FROM kelas
-														WHERE aktif=1 AND
+														WHERE aktif=1 AND replid IN (
+															SELECT DISTINCT idkelas FROM siswa 
+														) AND
 														idtahunajaran='".$variabel."'
 														ORDER BY idtingkat,kelas ";
 
 		//AND replid IN (".$this->session->userdata('kelas').")
+		//echo $sql;
+		$idkelasdata= $this->dbx->data($sql);
+		foreach((array)$idkelasdata as $data) {
+			$idkelastext.= "<option value='".$data->replid."'>".$data->nama."</option>";
+		}
+		return $idkelastext;
+	}
 
+	function idkelastingkat($idtahunajaran,$idtingkat){
+
+		$idkelastext="<option selected='selected' value=''>Pilih...</pilih>";
+		$sql="SELECT replid,kelas as nama FROM kelas
+														WHERE aktif=1 AND
+														idtahunajaran='".$idtahunajaran."'
+														AND idtingkat='".$idtingkat."'
+														ORDER BY idtingkat,kelas ";
+
+		//AND replid IN (".$this->session->userdata('kelas').")
 		$idkelasdata= $this->dbx->data($sql);
 		foreach((array)$idkelasdata as $data) {
 			$idkelastext.= "<option value='".$data->replid."'>".$data->nama."</option>";
@@ -159,8 +178,10 @@ function __construct(){
 		$idprosestipetext="<option selected='selected' value=''>Pilih...</pilih>";
 		$sql="SELECT pt.replid,CONCAT('[',pt.iddepartemen,'] ',pt.prosestipe,' ',pt.keterangan, ' (',IF(pt.aktif=1,'A','T'),')') as nama
 									FROM ns_prosestipe pt
+									INNER JOIN kelas k ON k.kurikulumkode=pt.kurikulumkode 
+									INNER JOIN tingkat t ON t.replid=k.idtingkat AND t.departemen=pt.iddepartemen
 									INNER JOIN ns_reff_company rc ON rc.idvariabel=pt.replid
-									WHERE rc.tipe='ns_prosestipe' AND rc.idcompany='".$idcompany."' AND pt.aktif=1 AND pt.iddepartemen IN (SELECT departemen FROM tahunajaran  WHERE replid='".$variabel."')
+									WHERE k.replid='".$variabel."' AND rc.tipe='ns_prosestipe' AND rc.idcompany='".$idcompany."' AND pt.aktif=1 
 									ORDER BY pt.aktif DESC,nama ASC ";
 		//echo $sql;
 		$idprosestipedata= $this->dbx->data($sql);
@@ -197,9 +218,11 @@ function __construct(){
 		$idrapottipetext="";
 		$sql="SELECT rt.replid,CONCAT('[',rt.iddepartemen,'] ',rt.rapottipe,' ',rt.keterangan, ' (',IF(rt.aktif=1,'A','T'),')') as nama,0 as checked
 					FROM ns_rapottipe rt
+					INNER JOIN kelas k ON k.kurikulumkode=rt.kurikulumkode 
+					INNER JOIN tingkat t ON t.replid=k.idtingkat AND t.departemen=rt.iddepartemen
 					INNER JOIN ns_reff_company rc ON rc.idvariabel=rt.replid
-					WHERE rc.tipe='ns_rapottipe' AND rc.idcompany='".$idcompany."'
-					AND rt.aktif=1 AND rt.iddepartemen IN (SELECT departemen FROM tahunajaran  WHERE replid='".$variabel."') ORDER BY rt.iddepartemen,rt.rapottipe";
+					WHERE k.replid='".$variabel."' AND rc.tipe='ns_rapottipe' AND rc.idcompany='".$idcompany."' AND rt.aktif=1  
+					ORDER BY rt.iddepartemen,rt.rapottipe";
 		//echo $sql;
 		$idrapottipedata= $this->dbx->data($sql);
 		foreach((array)$idrapottipedata as $data) {
@@ -226,10 +249,12 @@ function __construct(){
 		$idrapottipe13text="<option selected='selected' value=''>Pilih...</pilih>";
 		$sql="SELECT rt.replid,CONCAT('[',rt.iddepartemen,'] ',rt.rapottipe,' ',rt.keterangan, ' (',IF(rt.aktif=1,'A','T'),')') as nama,0 as checked
 					FROM ns_rapottipe rt
-					WHERE k13=1 AND aktif=1
-					AND iddepartemen='".$variabel."'
-					AND replid IN (SELECT idvariabel FROM ns_reff_company WHERE idcompany='".$idcompany."' AND tipe='ns_rapottipe' )
+					INNER JOIN kelas k ON k.kurikulumkode=rt.kurikulumkode 
+					INNER JOIN tingkat t ON t.replid=k.idtingkat AND t.departemen=rt.iddepartemen
+					INNER JOIN ns_reff_company rc ON rc.idvariabel=rt.replid
+					WHERE k.replid='".$variabel."'AND rt.k13=1 AND rt.aktif=1  AND rc.idcompany='".$idcompany."' AND rc.tipe='ns_rapottipe'
 					ORDER BY rt.iddepartemen,rt.rapottipe";
+		//echo $sql;
 		$idrapottipe13data= $this->dbx->data($sql);
 		foreach((array)$idrapottipe13data as $data) {
 			$idrapottipe13text.= "<option value='".$data->replid."'>".$data->nama."</option>";
@@ -239,7 +264,9 @@ function __construct(){
 
 	function idsiswa($variabel){
 		$idsiswatext="<option selected='selected' value=''>Pilih...</pilih>";
-		$sql="SELECT replid,CONCAT(nama,' [ ',nis,' ]') as nama FROM siswa WHERE  (idkelas='".$variabel."' OR kelasstatus='".$variabel."' ) AND aktif=1 ORDER bY nama ";
+		$sql="SELECT replid,CONCAT(nama,' [ ',nis,' ]') as nama 
+				FROM siswa 
+				WHERE  (idkelas='".$variabel."' OR kelasstatus='".$variabel."' ) AND aktif=1 ORDER bY nama ";
 		//echo $sql;
 		$idsiswadata= $this->dbx->data($sql);
 		foreach((array)$idsiswadata as $data) {
@@ -247,6 +274,23 @@ function __construct(){
 		}
 		return $idsiswatext;
 	}
+
+	
+
+	function idsiswatingkat($idtahunajaran,$idtingkat){
+		$idsiswatext="<option selected='selected' value=''>Pilih...</pilih>";
+		$sql="SELECT s.replid,CONCAT(s.nama,' [ ',s.nis,' ] - ',k.kelas) as nama FROM siswa s
+				INNER JOIN kelas k ON k.replid=s.idkelas
+				WHERE s.aktif=1 AND k.idtahunajaran='".$idtahunajaran."' AND k.idtingkat='".$idtingkat."'
+				ORDER BY s.nama";
+		//echo $sql;
+		$idsiswadata= $this->dbx->data($sql);
+		foreach((array)$idsiswadata as $data) {
+			$idsiswatext.= "<option value='".$data->replid."'>".$data->nama."</option>";
+		}
+		return $idsiswatext;
+	}
+
 	function idsiswacompany($idcompany,$iddepartemen){
 		$idsiswatext="<option selected='selected' value=''>Pilih...</pilih>";
 		$sql="SELECT s.replid,CONCAT(s.nama,' [ ',nis,' ]') as nama FROM siswa s
@@ -352,6 +396,7 @@ function __construct(){
 
 	function idtahunajaranmutasi($variabel,$idunitbisnis){
 		$sql="SELECT replid,CONCAT('[',departemen,'] ',tahunajaran) as nama FROM tahunajaran WHERE  aktifdaftar=1 AND departemen='".$variabel."' AND idcompany='".$idunitbisnis."' ORDER BY aktif DESC ,nama DESC";
+		//echo $sql;
 		$idtahunajarantext="<option selected='selected' value=''>Pilih...</pilih>";
 		$idtahunajarandata= $this->dbx->data($sql);
 		foreach((array)$idtahunajarandata as $data) {
@@ -475,5 +520,93 @@ function __construct(){
 			$text.= "<option value='".$data->replid."'>".$data->nama."</option>";
 		}
 		return $text;
+	}
+
+	function idtahunajarankompetensi($variabel,$idcompany){
+
+		$idtahunajarantext="<option selected='selected' value=''>Pilih...</pilih>";
+		$sql="SELECT DISTINCT ta.replid,CONCAT('[',ta.departemen,'] ',ta.tahunajaran) as nama 
+				FROM tahunajaran ta 
+				INNER JOIN ns_pembelajaranjadwal pj ON pj.idtahunajaran=ta.replid
+				WHERE ta.idcompany='".$idcompany."' AND ta.departemen='".$variabel."' AND pj.created_by='".$this->session->userdata('idpegawai')."' 
+				ORDER BY YEAR(ta.tglmulai) DESC ";
+		//echo $sql;
+		$idtahunajarandata= $this->dbx->data($sql);
+		foreach((array)$idtahunajarandata as $data) {
+			$idtahunajarantext.= "<option value='".$data->replid."'>".$data->nama."</option>";
+		}
+		return $idtahunajarantext;
+	}
+
+	function idtingkatkompetensi($variabel){
+
+		$idtingkattext="<option selected='selected' value=''>Pilih...</pilih>";
+		$sql="SELECT DISTINCT t.replid,CONCAT('[',t.departemen,'] ',t.tingkat)  as nama 
+				FROM tingkat t
+				INNER JOIN kelas k ON k.idtingkat=t.replid
+				INNER JOIN ns_pembelajaranjadwal pj ON pj.idkelas=k.replid
+				WHERE pj.idtahunajaran='".$variabel."' AND pj.created_by='".$this->session->userdata('idpegawai')."' 
+				ORDER BY CAST(t.tingkat AS SIGNED) ASC";
+		//echo $sql;
+		$idtingkatdata= $this->dbx->data($sql);
+		foreach((array)$idtingkatdata as $data) {
+			$idtingkattext.= "<option value='".$data->replid."'>".$data->nama."</option>";
+		}
+		return $idtingkattext;
+	}
+
+	function idmatpelkompetensi($variabel,$idtahunajaran){
+
+		$idmatpeltext="<option selected='selected' value=''>Pilih...</pilih>";
+		//$sql="SELECT replid,CONCAT('[',iddepartemen,'] ',matpel) as nama
+		$sql="SELECT DISTINCT mp.replid,CONCAT(mp.matpel,' ',mp.keterangan) as nama
+				FROM ns_pembelajaranjadwal pj
+				INNER JOIN ns_matpel mp ON mp.replid=pj.idmatpel
+				INNER JOIN kelas k ON k.replid=pj.idkelas 
+				INNER JOIN tingkat t ON t.replid=k.idtingkat
+				WHERE pj.created_by='".$this->session->userdata('idpegawai')."' AND pj.idtahunajaran='".$idtahunajaran."' AND t.replid='".$variabel."'
+				ORDER BY mp.iddepartemen, mp.matpel";
+		//AND replid IN (".$this->session->userdata('matpel').")
+		//echo $sql;
+		$idmatpeldata= $this->dbx->data($sql);
+		foreach((array)$idmatpeldata as $data) {
+			$idmatpeltext.= "<option value='".$data->replid."'>".$data->nama."</option>";
+		}
+		return $idmatpeltext;
+	}
+
+	function idsiswakompetensi($variabel,$idtahunajaran){
+
+		$idmatpeltext="<option selected='selected' value=''>Pilih...</pilih>";
+		//$sql="SELECT replid,CONCAT('[',iddepartemen,'] ',matpel) as nama
+		$sql="SELECT DISTINCT s.replid,CONCAT(s.nis,' ',s.nama) as nama
+				FROM ns_pembelajaranjadwal pj
+				INNER JOIN ns_pengembangandirinilai pdn ON pdn.idpembelajaranjadwal=pj.replid
+				INNER JOIN siswa s ON s.replid=pdn.idsiswa
+				INNER JOIN kelas k ON k.replid=pj.idkelas 
+				INNER JOIN tingkat t ON t.replid=k.idtingkat
+				WHERE pj.created_by='".$this->session->userdata('idpegawai')."' AND pj.idtahunajaran='".$idtahunajaran."' AND t.replid='".$variabel."'
+				ORDER BY s.nama";
+		//AND replid IN (".$this->session->userdata('matpel').")
+		//echo $sql;
+		$idmatpeldata= $this->dbx->data($sql);
+		foreach((array)$idmatpeldata as $data) {
+			$idmatpeltext.= "<option value='".$data->replid."'>".$data->nama."</option>";
+		}
+		return $idmatpeltext;
+	}
+
+	function idprojek($variabel,$idcompany){
+		$idprosestext="<option selected='selected' value=''>Pilih...</pilih>";
+		$sqlprojek="SELECT DISTINCT p.replid,p.projektext as nama FROM ns_p5_projek p 
+					INNER JOIN tingkat t ON t.fase=p.fase 
+					INNER JOIN kelas k ON k.idtingkat=t.replid 
+					WHERE t.replid='".$variabel."' AND p.idcompany='".$idcompany."' ";
+		//echo $sqlprojek;
+		$idprosesdata= $this->dbx->data($sqlprojek);
+		foreach((array)$idprosesdata as $data) {
+			$idprosestext.= "<option value='".$data->replid."'>".strtoupper($data->nama)."</option>";
+		}
+		return $idprosestext;
 	}
 }

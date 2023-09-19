@@ -453,7 +453,9 @@ function cetakterima(id) {
 
 										    if(($edit) and ($idpenyerahan<>"")){
 											    echo "<td>";
-											    if (($stock>=$sisaserah) and ($sisaserah>0)){
+												//echo $stock." xx ".$sisaserah;
+											    //if (($stock>=$sisaserah) and ($sisaserah>0)){
+												if (($stock>0) and ($sisaserah>0)){
 													if ($row->inventaris){
 														if ($row->idfiskal<>""){
 															echo "<a href=".site_url('inventory_penyerahan/penyerahan_material/'.$row->replid.'/'.$idpenyerahan)." class='btn btn-warning'>Penyerahan</a>";
@@ -474,7 +476,7 @@ function cetakterima(id) {
 
 										    echo "</tr>";
 										    //------------------------------------------------------------------------------------
-										    if ($total_serah>0){
+											if (($total_serah>0)){
 											    echo "<tr>";
 											    echo "<td align=''>&nbsp;</td>";
 
@@ -487,6 +489,7 @@ function cetakterima(id) {
 				                                    	<th width='50'>No.</th>
 														<th>Kode Penyerahan</th>
 				                                    	<th>Tgl. Serah</th>
+														<th>Sumber Dana</th>
 				                                         <?php if ($row->inventaris) { ?>
 				                                        <th>No. Inventaris</th>
 				                                        <th>Kelompok Inventaris</th>
@@ -512,6 +515,7 @@ function cetakterima(id) {
 												    echo "<td>".$no2++."</td>";
 														echo "<td align='center'>".$rownoinventaris->kodepenyerahan."</td>";
 														echo "<td align='center'>".strtoupper($CI->p_c->tgl_indo($rownoinventaris->tanggalserah))."</td>";
+														echo "<td align='center'>".$rownoinventaris->sumberdanatext."</td>";
 												    if ($row->inventaris) {
 												    	echo "<td><a href=javascript:void(window.open('".site_url('inventory_penyerahan/material_stiker_print/'.$rownoinventaris->replid)."')) >".$rownoinventaris->kode_inventaris."</a></td>";
 												    	echo "<td>".$rownoinventaris->kelompok_inventaris."</td>";
@@ -698,6 +702,21 @@ function cetakterima(id) {
 							</div>
 		        		</div>
 		            </th></tr>
+					<tr>
+			            <th align="left">
+	                		<label class="control-label" for="minlengthfield">Sumber Dana</label>
+	                		<div class="control-group">
+								<div class="controls">:
+			                	<?php
+			                		$arridsumberdana='data-rule-required=true';
+									echo form_dropdown('idsumberdana',$idsumberdana_opt,$isi->idsumberdana,$arridsumberdana);			                	?>
+			                	<?php //echo  <p id="message"></p> ?>
+								</div>
+	                		</div>
+			            </th>
+			         </tr>
+
+					<tr>
 			            <th align="left">
 	                		<label class="control-label" for="minlengthfield">Kelompok Inventaris</label>
 	                		<div class="control-group">
@@ -710,6 +729,7 @@ function cetakterima(id) {
 	                		</div>
 			            </th>
 			         </tr>
+
 			         <tr>
 			            <th align="left">
 	                		<label class="control-label" for="minlengthfield">Ruangan</label>
@@ -724,6 +744,19 @@ function cetakterima(id) {
 			            </th>
 			         </tr>
 			         <?php }else{ ?><input type="hidden" name="idkelompok_inventaris" value=""><?php } ?>
+					 <tr>
+			            <th align="left">
+	                		<label class="control-label" for="minlengthfield">Sumber Dana</label>
+	                		<div class="control-group">
+								<div class="controls">:
+			                	<?php
+			                		$arridsumberdana='data-rule-required=true';
+									echo form_dropdown('idsumberdana',$idsumberdana_opt,$isi->idsumberdana,$arridsumberdana);			                	?>
+			                	<?php //echo  <p id="message"></p> ?>
+								</div>
+	                		</div>
+			            </th>
+			         </tr>
 			         <tr>
 				            <th align="left">
 		                		<label class="control-label" for="minlengthfield">Jumlah</label>

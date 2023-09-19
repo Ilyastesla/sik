@@ -61,6 +61,7 @@ parent::__construct();
 										"idtingkat" => $this->input->post("idtingkat"),
 										"kelompok_siswa" => $this->input->post("kelompok_siswa"),
 										"jurusan" => $this->input->post("jurusan"),
+										"kurikulumkode" => $this->input->post("kurikulumkode"),
 										"modified_date" => $this->dbx->cts(),
 										"modified_by" => $this->session->userdata('idpegawai'),
 								);

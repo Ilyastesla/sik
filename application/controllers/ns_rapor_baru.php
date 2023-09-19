@@ -33,7 +33,7 @@ parent::__construct();
 	public function index()
 	{
 			$data= $this->ns_rapor_baru_db->data();
-			$data['form']='Laporan Pembelajaran K13 dan IKM';
+			$data['form']='Laporan Pembelajaran Sekolah Kak Seto';
 			$data['view']='index';
 			$data['action']='ns_rapor_baru';
 			$this->load->view('ns_rapor_baru_v', $data);
@@ -42,7 +42,7 @@ parent::__construct();
 	// TAMBAH
 	//-------------------------------------------------------------------------------------------
 	public function tambah($id="") {
-		$data['form']='Laporan Pembelajaran K13 dan IKM';
+		$data['form']='Laporan Pembelajaran Sekolah Kak Seto';
 		$data['form_small']='Tambah Data';
 		$data['view']='tambah';
 		$data['indeks']='1';
@@ -52,7 +52,7 @@ parent::__construct();
 	}
 
 	public function tambah2($id="") {
-		$data['form']='Laporan Pembelajaran K13 dan IKM';
+		$data['form']='Laporan Pembelajaran Sekolah Kak Seto';
 		$data['form_small']='Tambah Data';
 		$data['view']='tambah';
 		$data['indeks']='2';
@@ -75,16 +75,16 @@ parent::__construct();
 					'idsiswa' => $this->input->post('idsiswa'),
 					'idrapottipe' => $this->input->post('idrapottipe'),
 					"tanggalkegiatan"=> $this->p_c->tgl_db($this->input->post('tanggalkegiatan')),
-					'idtahunajaranrapot'=>$this->input->post('idtahunajaranrapot'),
+					"modified_date"=> $this->dbx->cts(),
+					"modified_by"=> $this->session->userdata('idpegawai'));
+		}else if($indeks=="2"){
+			$data = array(
+				'idtahunajaranrapot'=>$this->input->post('idtahunajaranrapot'),
 					'external'=>$this->input->post('external'),
 					'nomordokumen'=>$this->input->post('nomordokumen'),
 					'tampilna' => $this->input->post('tampilna'),
 					'idnaikkelas' => $this->input->post('idnaikkelas'),
 					'idnaiktingkat' => $this->input->post('idnaiktingkat'),
-					"modified_date"=> $this->dbx->cts(),
-					"modified_by"=> $this->session->userdata('idpegawai'));
-		}else if($indeks=="2"){
-			$data = array(
 					'keterangan' => $this->input->post('keterangan'),
 					'idpredikatspiritual' => $this->input->post('idpredikatspiritual'),
 					'spiritualtext' => $this->input->post('spiritualtext'),
@@ -182,9 +182,10 @@ parent::__construct();
 	// Rapot
 	//-------------------------------------------------------------------------------------------
 	public function rapot($id) {
-		$data['form']='Laporan Pembelajaran K13 dan IKM';
+		$data['form']='Laporan Pembelajaran Sekolah Kak Seto';
 		$data['form_small']='Rapor';
 		$data['view']='rapot';
+		$data['printrapot']='0';
 		$data['id']=$id;
 		$data['action']='ns_rapor_baru/tambahnilai_p/'.$id;
 		$data= $this->ns_rapor_baru_db->view_db($id,$data);
@@ -194,7 +195,7 @@ parent::__construct();
 	// DETAIL Rapot MATPEL
 	//-------------------------------------------------------------------------------------------
 	public function ns_rapor_baru_detailmatpel($id,$idmatpel="") {
-		$data['form']='Laporan Pembelajaran K13 dan IKM';
+		$data['form']='Laporan Pembelajaran Sekolah Kak Seto';
 		$data['form_small']='Rapor Detail Per Mata Pelajaran';
 		$data['action']='ns_rapor_baru/tambahnilai_p/'.$id;
 		$data['id']=$id;
@@ -247,24 +248,46 @@ parent::__construct();
 	//-------------------------------------------------------------------------------------------
 	public function hapus($id) {
 		// $result = $this->ns_rapor_baru_db->hapusnilai_pdb($id) ;
-		$result = $this->ns_rapor_baru_db->hapus_rapot($id) ;
+		//$result = $this->ns_rapor_baru_db->hapus_rapot($id) ;
 		/*
 		if ($result == TRUE) {
 			redirect('ns_rapor_baru');
 		}
 		*/
+		$datahapus=array(
+			"deletethis"=>1,
+			"modified_date"=> $this->dbx->cts(),
+			"modified_by"=> $this->session->userdata('idpegawai')
+		);
+		$result = $this->dbx->ubahdata('ns_rapot',$datahapus,'replid',$id) ;
+		if ($result == TRUE) {
 		?><script>
 				window.opener.location.reload();
 				window.close();
 			</script>
 		<?php
+		}
+	}
+
+	//Hapus
+	//-------------------------------------------------------------------------------------------
+	public function hapustotal($id) {
+		//$result = $this->dbx->hapusdata($table,$row,$id) ;
+		$result = $this->dbx->hapusdata('ns_rapotprestasi',idrapot,$id) ;
+		$result = $this->dbx->hapusdata('ns_rapotmatpeldeskripsi',idrapot,$id) ;
+		$result = $this->dbx->hapusdata('ns_rapotekstrakurikuler',idrapot,$id) ;
+		$result = $this->dbx->hapusdata('ns_rapot',replid,$id) ;
+		if ($result == TRUE) {
+			redirect('ns_rapor_baru');
+		}
 	}
 
 	public function printrapot($id,$excel="")
 	{
-		$data['form']='Laporan Pembelajaran K13 dan IKM';
+		$data['form']='Laporan Pembelajaran Sekolah Kak Seto';
 		$data['form_small']='Rapot';
 		$data['view']='rapot';
+		$data['printrapot']='1';
 		$data['excel']=$excel;
 		$data['digital']=0;
 		$data['modular']=1;
@@ -274,9 +297,10 @@ parent::__construct();
 
 	public function digitalrapot($id)
 	{
-		$data['form']='Laporan Pembelajaran K13 dan IKM';
+		$data['form']='Laporan Pembelajaran Sekolah Kak Seto';
 		$data['form_small']='Rapot';
 		$data['view']='rapot';
+		$data['printrapot']='1';
 		$data['excel']=0;
 		$data['digital']=1;
 		$data['modular']=1;
@@ -286,10 +310,11 @@ parent::__construct();
 
 	public function printrapotavg($id,$excel="")
 	{
-		$data['form']='Laporan Pembelajaran K13 dan IKM';
+		$data['form']='Laporan Pembelajaran Sekolah Kak Seto';
 		$data['form_small']='Rapot';
 		$data['view']='rapot';
 		$data['excel']=$excel;
+		$data['printrapot']='1';
 		$data['digital']=0;
 		$data['modular']=0;
 		$data= $this->ns_rapor_baru_db->view_db($id,$data);
@@ -298,14 +323,42 @@ parent::__construct();
 
 	public function digitalrapotavg($id)
 	{
-		$data['form']='Laporan Pembelajaran K13 dan IKM';
+		$data['form']='Laporan Pembelajaran Sekolah Kak Seto';
 		$data['form_small']='Rapot';
 		$data['view']='rapot';
+		$data['printrapot']='1';
 		$data['excel']=0;
 		$data['digital']=1;
 		$data['modular']=0;
 		$data= $this->ns_rapor_baru_db->view_db($id,$data);
 		$this->load->view('ns_rapor_baru_print_v',$data);
+	}
+
+	public function duplikasi($replid) {
+		$sqlrapor="SELECT * FROM ns_rapot WHERE replid='".$replid."'";
+		$datarapor=$this->dbx->rows($sqlrapor);
+		$data = array(
+				'idtahunajaran' => $datarapor->idtahunajaran,
+				'idperiode' => $datarapor->idperiode,
+				'idkelas' => $datarapor->idkelas,
+				'idregion' => $datarapor->idregion,
+				'idsiswa' => $datarapor->idsiswa,
+				'idrapottipe' => $datarapor->idrapottipe,
+				'tanggalkegiatan' => $datarapor->tanggalkegiatan,
+				'tampilna' => $datarapor->tampilna,
+				'idnaikkelas' => $datarapor->idnaikkelas,
+				'nomordokumen' => $datarapor->nomordokumen,
+				"modified_date"=> $this->dbx->cts(),
+				"modified_by"=> $this->session->userdata('idpegawai'),
+				"created_date"=> $this->dbx->cts(),
+				"created_by"=> $this->session->userdata('idpegawai')
+			);
+			$replidnew = $this->dbx->tambahdata('ns_rapot',$data) ;
+			if ($replidnew<>""){$result=TRUE;}
+
+		if ($result == TRUE) {
+			redirect('ns_rapor_baru/tambah/'.$replidnew);
+		}
 	}
 
 }//end of class

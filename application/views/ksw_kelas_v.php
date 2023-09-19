@@ -45,6 +45,18 @@
                     </div>
                   </div>
                 </th>
+                <th align="left">
+        				                		<label class="control-label" for="minlengthfield">Tingkat</label>
+        				                		<div class="control-group">
+                											<div class="controls">:
+            						                	<?php
+            						                		$arridtingkat='data-rule-required=false onchange=javascript:this.form.submit();';
+            						                		echo form_dropdown('idtingkat',$idtingkat_opt,$this->input->post('idtingkat'),$arridtingkat);
+            						                	?>
+            						                	<?php //echo  <p id="message"></p> ?>
+                											</div>
+              				              </div>
+              						         </th>
             </tr>
     	                    <tr>
             						       <th align="left">
@@ -59,7 +71,21 @@
               											</div>
             				              </div>
             						         </th>
-                                  <th align="left">
+                                 <th align="left">
+                                     <label class="control-label" for="minlengthfield">Kelompok Siswa</label>
+                                     <div class="control-group">
+                                       <div class="controls">:
+                                           <?php
+                                             $arrkelompok_siswa='data-rule-required=false onchange=javascript:this.form.submit();';
+                                             echo form_dropdown('kelompok_siswa',$kelompok_siswa_opt,$this->input->post('kelompok_siswa'),$arrkelompok_siswa);
+                                           ?>
+                                           <?php //echo  <p id="message"></p> ?>
+                                       </div>
+                                     </div>
+                                    </th>
+    			                  </tr>
+                            <tr>
+                            <th align="left">
           				                		<label class="control-label" for="minlengthfield">Tahun Pelajaran</label>
           				                		<div class="control-group">
                   											<div class="controls">:
@@ -71,28 +97,15 @@
                   											</div>
           				                		</div>
           						            </th>
-    			                  </tr>
-                            <tr>
-              						       <th align="left">
-        				                		<label class="control-label" for="minlengthfield">Tingkat</label>
-        				                		<div class="control-group">
-                											<div class="controls">:
-            						                	<?php
-            						                		$arridtingkat='data-rule-required=false onchange=javascript:this.form.submit();';
-            						                		echo form_dropdown('idtingkat',$idtingkat_opt,$this->input->post('idtingkat'),$arridtingkat);
-            						                	?>
-            						                	<?php //echo  <p id="message"></p> ?>
-                											</div>
-              				              </div>
-              						         </th>
+              						       
                                    <th align="left">
-                                     <label class="control-label" for="minlengthfield">Kelompok Siswa</label>
+                                     <label class="control-label" for="minlengthfield">Kurikulum</label>
                                      <div class="control-group">
                                        <div class="controls">:
-                                           <?php
-                                             $arrkelompok_siswa='data-rule-required=false onchange=javascript:this.form.submit();';
-                                             echo form_dropdown('kelompok_siswa',$kelompok_siswa_opt,$this->input->post('kelompok_siswa'),$arrkelompok_siswa);
-                                           ?>
+                                       <?php
+                                          $arrkurikulumkode="id='kurikulumkode' data-rule-required=false onchange=javascript:this.form.submit();";
+                                          echo form_dropdown('kurikulumkode',$kurikulumkode_opt,$this->input->post('kurikulumkode'),$arrkurikulumkode);
+                                        ?>
                                            <?php //echo  <p id="message"></p> ?>
                                        </div>
                                      </div>
@@ -126,11 +139,13 @@
                                               echo "<th>Kelas</th>";
                                               echo "<th>Jurusan</th>";
                                               echo "<th>Wali Kelas</th>";
+                                              echo "<th>Keterangan</th>";
                                               echo "<th>Kapasitas</th>";
                                               echo "<th>Jml PD</th>";
                                               echo "<th>Jml PD ABK</th>";
                                               //echo "<th>Keterangan</th>";
                                               echo "<th>Kelompok Siswa</th>";
+                                              echo "<th>Kurikulum</th>";
                                               echo "<th>Aktif</th>";
                                               echo "<th width='100'>Aksi</th>";
                                               ?>
@@ -147,11 +162,13 @@
                           echo "<td align='center'>".($row->kelas)."</td>";
                           echo "<td align='center'>".($row->jurusantext)."</td>";
                           echo "<td align='center'>".$CI->dbx->getpegawai($row->idwali,0,1)."</td>";
-											    echo "<td align='center'>".strtoupper($row->kapasitas)."</td>";
+											    echo "<td align='center'>".$row->keterangan."</td>";
+                          echo "<td align='center'>".strtoupper($row->kapasitas)."</td>";
                           echo "<td align='center'>".strtoupper($row->jmlsiswa )."</td>";
                           echo "<td align='center'>".strtoupper($row->jmlsiswaabk )."</td>";
                           //echo "<td align='center'>".strtoupper($row->keterangan)."</td>";
                           echo "<td align='center'>".strtoupper($row->kelompok_siswatext)."</td>";
+                          echo "<td align='center'>".strtoupper($row->kurikulumtext)."</td>";
                           echo "<td align='center'>";
                           echo "<a href=javascript:void(window.open('".site_url('ksw_kelas/ubahaktif/'.$row->replid.'/'.!($row->aktif))."'))>".$CI->p_c->cekaktif($row->aktif)."</a>";
                           //$CI->p_c->cekaktif($row->aktif).
@@ -310,33 +327,7 @@
                 </div>
               </th>
             </tr>
-		    		<tr>
-		            <th align="left">
-	                		<label class="control-label" for="minlengthfield">Nama Kelas</label>
-	                		<div class="control-group">
-								<div class="controls">:
-			                	<?php
-			                		 echo form_input(array('class' => '','style'=>'margin: 0px 0px 5px; width: 687px;', 'id' => 'kelas','name'=>'kelas','value'=>$isi->kelas,'data-rule-required'=>'true' ,'data-rule-maxlength'=>'500', 'data-rule-minlength'=>'1' ,'placeholder'=>'Masukkan 1-100 Karakter'));
-			                	?>
-			                	<?php //echo  <p id="message"></p> ?>
-								</div>
-	                		</div>
-			            </th></tr>
-                  <tr>
-                    <th align="left">
-                      <label class="control-label" for="minlengthfield">Wali Kelas</label>
-                      <div class="control-group">
-                          <div class="controls">:
-                            <?php
-                              $arridwali='data-rule-required=true';
-                              echo form_dropdown('idwali',$idwali_opt,$isi->idwali,$arridwali);
-                            ?>
-                                  <?php //echo  <p id="message"></p> ?>
-                          </div>
-                      </div>
-                    </th>
-                  </tr>
-                  <tr>
+            <tr>
                     <th align="left">
                       <label class="control-label" for="minlengthfield">Kelompok Siswa</label>
                       <div class="control-group">
@@ -358,6 +349,48 @@
                             <?php
                               $arrjurusan="id='jurusan' data-rule-required=false";
                               echo form_dropdown('jurusan',$jurusan_opt,$isi->jurusan,$arrjurusan);
+                            ?>
+                                  <?php //echo  <p id="message"></p> ?>
+                          </div>
+                      </div>
+                    </th>
+                  </tr>
+		    		<tr>
+		            <th align="left">
+	                		<label class="control-label" for="minlengthfield">Nama Kelas</label>
+	                		<div class="control-group">
+								<div class="controls">:
+			                	<?php
+                          echo "Format Penamaan: [Romawi Tingkat]-[Kelompok Pesdik]-[Jurusan]-[Program], Contoh:XII-A-IPA-KOM";
+			                		 echo form_input(array('class' => '','style'=>'margin: 0px 0px 5px; width: 687px;', 'id' => 'kelas','name'=>'kelas','value'=>$isi->kelas,'data-rule-required'=>'true' ,'data-rule-maxlength'=>'500', 'data-rule-minlength'=>'1' ,'placeholder'=>'Format Penamaan: [Romawi Tingkat]-[Kelompok Pesdik]-[Jurusan]-[Program]'));
+			                	?>
+			                	<?php //echo  <p id="message"></p> ?>
+								</div>
+	                		</div>
+			            </th></tr>
+                  <tr>
+                    <th align="left">
+                      <label class="control-label" for="minlengthfield">Wali Kelas</label>
+                      <div class="control-group">
+                          <div class="controls">:
+                            <?php
+                              $arridwali='data-rule-required=true';
+                              echo form_dropdown('idwali',$idwali_opt,$isi->idwali,$arridwali);
+                            ?>
+                                  <?php //echo  <p id="message"></p> ?>
+                          </div>
+                      </div>
+                    </th>
+                  </tr>
+                  
+                  <tr>
+                    <th align="left">
+                      <label class="control-label" for="minlengthfield">Kurikulum</label>
+                      <div class="control-group">
+                          <div class="controls">:
+                            <?php
+                              $arrkurikulumkode="id='kurikulumkode' data-rule-required=true";
+                              echo form_dropdown('kurikulumkode',$kurikulumkode_opt,$isi->kurikulumkode,$arrkurikulumkode);
                             ?>
                                   <?php //echo  <p id="message"></p> ?>
                           </div>

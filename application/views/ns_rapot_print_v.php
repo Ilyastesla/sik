@@ -18,20 +18,37 @@ if ($excel==1){
 	width: 85% !important;
 }
 -->
+<style>
+	#sample{
+		position: fixed;
+		display: inline-block;
+		width:94vw;
+		height:96vh;
+		border: 10px solid black;
+		opacity:1;
+		z-index:-9999;
+		align:center;
+		left: 2vw;
+		top: 1vh;
+	}
+
+	#sementara{
+		position: fixed;margin:0 auto;top:400px;color: grey;font-size: 40pt !important;text-align: center;width:100%;height:150px;border: 0px solid grey;opacity:0.5;display: block;
+	}
+</style>
 <?php
 	//echo "<br/><br/>";//2019
 if ($digital==1){?>
-	<div id="sample" style="position: fixed;margin:0 auto;width:96%;height:97%;border: 10px solid black;opacity:1;display: block;z-index:-3;">
-	</div>
-	<div id="sample" style="position: fixed;margin:0 auto;top:400px;color: grey;font-size: 40pt !important;text-align: center;width:100%;height:150px;border: 0px solid grey;opacity:0.5;display: block;">
-		<center>
-			<?php
-			if($isi->departemen=="PENSUS"){
-				echo "DOKUMEN SEMENTARA";
-			}
-			?>
-	  </center>
-	</div>
+<div id="sample">&nbsp;</div>
+<div id="sementara">
+	<center>
+		<?php
+		if($isi->departemen=="PENSUS"){
+			echo "DOKUMEN SEMENTARA";
+		}
+		?>
+  </center>
+</div>
 <?php } ?>
 <style>
 	@page {
@@ -78,9 +95,13 @@ if ($digital==1){?>
 	<center >
 	<?php
 		//echo "<br/><br/>";//2019
-	if (($isi->kopsurat==1) OR ($digital==1)){?>
-		<br/><img src="<?php echo base_url().'images/'.$isi->logotext; ?>" width="190" /><br/>
-	<?php
+	if (($isi->kopsurat==1) OR ($digital==1)){
+		echo "<br/>";
+		if ($digital==1){ 
+			echo "<div style='margin-top:10px'>&nbsp;</div>";
+		}
+		echo "<img src='".base_url()."images/".$isi->logotext."' width='190' /><br/>";
+		
 			//$CI->dbx->getHeader("SMA");
 	}else{?>
 		<style>
@@ -288,16 +309,17 @@ if ($digital==1){?>
 		foreach((array)$judultextgraph as $graph) {
 			if ((($x%6)==0) and ($x<>0)){
 			    	echo "</table>";
-			    	echo "<table style='border-collapse:collapse;border-color:black;' border='0' id='breaktable'>";
+					if ($digital==1){ 
+						echo "<div style='padding-top:50px;page-break-before: always !important;'>&nbsp;</div>";
+					}
+			    	echo "<table style='border-collapse:collapse;border-color:black;' border='0' >";
 			    	echo "<tr>";
 
 			}
-			echo "<td align='left' height='200px' width='300px' cellspacing=0 cellpadding=0>";
-				//echo $x.'--'.($x%6);
-			    	//echo "<table style='border-collapse:collapse;border-color:black;' border='1' >";
-				    //	echo "<tr>";
-				    //	echo "<td align='center' height='200px' width='330px' cellspacing=0 cellpadding=0>";
-				    	//echo $tglkeg[$graph];
+			echo "<td align='left' height='200px' width='300px'>";
+				echo "<table style='border:0 !important;width:100%;border-collapse:initial !important; '>";
+				echo "<tr>";
+				echo "<td align='left' height='*' width='50%'>";
 						?>
 						<script src="<?php echo base_url(); ?>js/jquery2.min.js"></script>
 						<script src="https://code.highcharts.com/highcharts.js"></script>
@@ -373,9 +395,9 @@ if ($digital==1){?>
 
 						<div id="container<?php echo $graph; ?>" style="margin:0;width:300px; height:200px;border-collapse:collapse;border-color:black;border:1px solid black;align:left;"></div>
 						<?php
-				    	//echo "</td>";
-				    	//echo "</tr>";
-			    	//echo "</table>";
+				    	echo "</td>";
+						echo "</tr>";
+					echo "</table>";
 		    	echo "</td>";
 
 		    	if (($x%2)==1){
@@ -1132,6 +1154,7 @@ if ($digital==1){?>
 	<?php } ?>
         <br/>
         <?php
+		//$digital=1;
 	        if ($isi->grafik==1){ //grafik
 	        	$width="25%";
 	        	$cs="4";
@@ -1151,6 +1174,7 @@ if ($digital==1){?>
 		        $align="right";
 		        $titik='.........................................';
 	        }
+			$digital=1;
         ?>
         <table border="0" class='breaktable'>
 					<?php if($isi->tipe<>'SKL'){ ?>

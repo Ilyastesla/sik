@@ -158,7 +158,7 @@
                             <div class="box">
                                 <div class="box-body table-responsive">
                                   <?php
-                    			             $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate','onsubmit'=>'return validate()','target'=>'_blank');
+                    			             $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate','onsubmit'=>'return validate()');
                     		    	echo form_open($actionsave,$attributes);
                     		    		?>
                                     <table class="table table-bordered table-striped">

@@ -70,6 +70,7 @@
   							echo "<tr>";
   						}
   						echo "<th><center>";
+              echo "<div style='margin:150 100 100 100;position:absolute;'><img src='".base_url()."images/".$row->capcompany."' style='height:100px !important;' /></div>";
   						echo "<table width='95%' height='95%' border='0' >";
   						echo "<tr>";
   						echo "<td align='center' colspan='3' valign='middle'>";
@@ -119,11 +120,13 @@
   							echo "</tr></table>";
   						}
               echo "</td></tr>";
+              echo "<tr><td align='left' colspan='2' valign='bottom'><br/>".$row->city.", ".$CI->p_c->tgl_indo($settingtryout->tanggal)."<td></tr>";
   						echo "<tr><td align='center' colspan='2' valign='bottom'>";
-              echo "<div style='position:fixed;z-index: 10;padding-left: 20px;'><img src='".base_url()."images/cappkbm.png' width='80px'/></div>";
+              //echo "<div style='position:fixed;z-index: 10;padding-left: 20px;'><img src='".base_url()."images/cappkbm.png' width='150px'/></div>";
               echo "<img src='".base_url()."uploads/ttd/".$CI->dbx->getpegawaittd($row->idkepsek,0,0)."' width='90px'/>";
               echo "<br/>".$CI->dbx->getpegawai($row->idkepsek,0,0)."<hr/>NIK : ".strtoupper($row->nip)."<br/><br/><br/></td></tr>";
   						echo "</table>";
+              
   						echo "</center></th>";
   						if(($no % 2)==1){
   							echo "</tr>";

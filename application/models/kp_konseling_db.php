@@ -137,6 +137,9 @@ Class kp_konseling_db extends CI_Model {
         $data['idprioritas_opt'] = $this->dbx->opt("SELECT replid, prioritas as nama FROM reff_prioritas WHERE aktif=1 ORDER BY no_urut",'none');
         $data['idjenislaporan_opt'] = $this->dbx->opt("SELECT replid, nama FROM reff_konseling WHERE aktif=1 AND type='jenislaporan' ORDER BY nama",'none');
         $data['idtempat_opt'] = $this->dbx->opt("SELECT replid, nama FROM reff_konseling WHERE aktif=1 AND type='tempat' ORDER BY nama",'none');
+        $data['idtempat_opt'] = $this->dbx->opt("SELECT replid, nama FROM reff_konseling WHERE aktif=1 AND type='tempat' ORDER BY nama",'none');
+        $data['idjenispelapor_opt'] = $this->dbx->opt("SELECT replid, nama FROM reff_konseling WHERE aktif=1 AND type='jenispelapor' ORDER BY nama",'none');
+        $data['idpelapor_opt'] = $this->dbx->opt("SELECT p.replid,CONCAT(p.nama,' (',p.nip,')') as nama FROM pegawai p WHERE aktif=1 ORDER BY p.nama",'up');
         return $data;
      }
 
@@ -145,7 +148,7 @@ Class kp_konseling_db extends CI_Model {
                         ,ta.tahunajaran as tahunajarantext,ta.departemen as departementext,c.nama as companytext
                         ,k.kelas as kelastext, CONCAT(p.nip,' ',p.nama ) as namawalitext
                         , CONCAT(p2.nip,' ',p2.nama ) as createdbytext
-                        ,jl.nama as jenislaporantext,t.nama as tempattext,rp.prioritas as prioritastext
+                        ,jl.nama as jenislaporantext,t.nama as tempattext,rp.prioritas as prioritastext,jp.nama as jenispelaportext
                         ,st.status as statustext
                         ,(SELECT 1 FROM kp_konselingreport WHERE idkonseling=r.replid AND fase=1 LIMIT 1) as onproses
                 FROM kp_konseling r
@@ -157,6 +160,7 @@ Class kp_konseling_db extends CI_Model {
                 LEFT JOIN pegawai p2 ON p2.replid=r.created_by  
                 LEFT JOIN reff_konseling jl ON jl.replid=r.idjenislaporan  
                 LEFT JOIN reff_konseling t ON t.replid=r.idtempat
+                LEFT JOIN reff_konseling jp ON jp.replid=r.idjenispelapor
                 LEFT JOIN reff_prioritas rp ON rp.replid=r.idprioritas 
                 LEFT JOIN hrm_status st ON st.node=r.status 
                 WHERE r.replid='".$id."'";

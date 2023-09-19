@@ -26,14 +26,19 @@ Class ns_rapottipe_db extends CI_Model {
 				}
 				
 				if ($this->input->post('katakunci')<>""){
-					$cari=$cari." AND (rt.rapottipe='".$this->input->post('katakunci')."' OR rt.keterangan='".$this->input->post('katakunci')."') ";
+					$cari=$cari." AND (rt.rapottipe like '%".$this->input->post('katakunci')."%' OR rt.keterangan like '%".$this->input->post('katakunci')."%') ";
+				}
+				if ($this->input->post('kurikulumkode')<>""){
+					$cari=$cari." AND rt.kurikulumkode='".$this->input->post('kurikulumkode')."' ";
 				}
 
       	$sql="SELECT rt.*,CONCAT(rt.rapottipe,' ',rt.keterangan) as rapottipe
 										,(SELECT COUNT(r.replid) FROM ns_rapot r
 										INNER JOIN tahunajaran ta ON r.idtahunajaran=ta.replid
 										WHERE rt.replid=r.idrapottipe AND ta.aktif<>1) as pakai
+										,CONCAT(kr.kurikulumkode,' - ',kr.kurikulum) as kurikulumtext
 								FROM ns_rapottipe rt
+								LEFT JOIN ns_kurikulum kr ON kr.kurikulumkode=rt.kurikulumkode
 								WHERE rt.replid>0 
 								".$cari."
 								ORDER BY rapottipe";
@@ -43,8 +48,9 @@ Class ns_rapottipe_db extends CI_Model {
 				$sqldept="SELECT departemen as replid,departemen as nama FROM departemen  WHERE replid IN (".$this->session->userdata('dept').") ORDER BY urutan";
 				$data['iddepartemen_opt']=$this->dbx->opt($sqldept,'up');
 
-				$data['idrapottipe_opt'] = array(''=>'Pilih..','Reguler'=>'Reguler','Grafik'=>'Grafik','LPD'=>'LPD','Evaluasi'=>'Evaluasi','SKL'=>'SKL',"Murni"=>"Murni");
+				$data['idrapottipe_opt'] = array(''=>'Pilih..','Reguler'=>'Reguler','Grafik'=>'Grafik','LPD'=>'LPD','Evaluasi'=>'Evaluasi','SKL'=>'SKL','SKL23'=>'SKL23',"Murni"=>"Murni","Tryout"=>"Tryout","P5"=>"P5");
 				$data['idcompany_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM hrm_company ORDER BY nama",'up');
+				$data['kurikulumkode_opt'] = $this->dbx->opt("SELECT kurikulumkode as replid,CONCAT(kurikulumkode,' - ',kurikulum) as nama FROM ns_kurikulum WHERE aktif=1 ORDER BY kurikulumkode DESC",'up');
 				return $data;
     }
 
@@ -62,10 +68,10 @@ Class ns_rapottipe_db extends CI_Model {
         	$data['isi']=$this->dbx->rows($sql);
         }
 				$data['iddepartemen_opt'] = $this->dbx->opt("SELECT departemen as replid,departemen as nama FROM departemen WHERE aktif=1 AND replid IN (".$this->session->userdata('dept').") ORDER BY urutan",'up');
-				$data['tipe_opt']=array(''=>'Pilih..','Reguler'=>'Reguler','Grafik'=>'Grafik','LPD'=>'LPD','Evaluasi'=>'Evaluasi','SKL'=>'SKL',"Murni"=>"Murni");
+				$data['tipe_opt']=array(''=>'Pilih..','Reguler'=>'Reguler','Grafik'=>'Grafik','LPD'=>'LPD','Evaluasi'=>'Evaluasi','SKL'=>'SKL','SKL23'=>'SKL23',"Murni"=>"Murni","Tryout"=>"Tryout","P5"=>"P5");
 				$data['idcompany_opt'] = $this->dbx->data("SELECT replid,nama as nama FROM hrm_company ORDER BY nama",'up');
 				$data['idreff_company_opt'] = $this->dbx->rowscsv("SELECT idcompany as var FROM ns_reff_company WHERE idvariabel='".$data['isi']->replid."' AND tipe='ns_rapottipe'",'up');
-				//echo $data['idreff_company_opt'];die;
+				$data['kurikulumkode_opt'] = $this->dbx->opt("SELECT kurikulumkode as replid,CONCAT(kurikulumkode,' - ',kurikulum) as nama FROM ns_kurikulum WHERE aktif=1 ORDER BY kurikulumkode DESC",'up');
 				return $data;
   }
 

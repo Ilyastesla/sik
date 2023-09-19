@@ -39,6 +39,7 @@
 */
 
 $route['default_controller'] = "user_authentication";
+//$route['login'] = "sandbox/login";
 $route['404_override'] = '';
 
 

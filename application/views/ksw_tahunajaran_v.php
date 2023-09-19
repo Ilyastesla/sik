@@ -88,12 +88,14 @@
                                                 <th>Departemen</th>
                                                 <th>Tahun Pelajaran</th>
                                                 <th>Kepala Sekolah</th>
-                                                <th>Konselor</th>
-                                                <th>Psikolog</th>
                                                 <th>Tgl. Mulai</th>
                                                 <th>Tgl. Akhir</th>
-                                                <th>Keterangan</th>
-                                                <th>Pendaftaran</th>
+                                                <!--<th>Keterangan</th>-->
+                                                <th>Jml. Kelas</th>
+                                                <th>Jml. CPD</th>
+                                                <th>Jml. PD</th>
+                                                <th>Jml. Belajar</th>
+                                                <th>PPDB</th>
                                                 <th>Aktif</th>
                                                 <th width="80">Aksi</th>
                                             </tr>
@@ -107,12 +109,18 @@
                           echo "<td align=''>".strtoupper($row->companytext)."</td>";
                           echo "<td align=''>".strtoupper($row->departemen)."</td>";
                           echo "<td align=''>".strtoupper($row->tahunajaran)."</td>";
-                          echo "<td align='center'>".strtoupper($CI->dbx->getpegawai($row->idkepsek,0,1))."</td>";
-                          echo "<td align='center'>".strtoupper($CI->dbx->getpegawai($row->idkonselor,0,1))."</td>";
-                          echo "<td align='center'>".strtoupper($CI->dbx->getpegawai($row->idpsikolog,0,1))."</td>";
-                          echo "<td align=''>".($CI->p_c->tgl_indo($row->tglmulai))."</td>";
+                          echo "<td align='left' width='200px'>";
+                          echo "<b>Kepala Sekolah:</b> ".strtoupper($CI->dbx->getpegawai($row->idkepsek,0,1));
+                          echo "<br/><b>Konselor:</b> ".strtoupper($CI->dbx->getpegawai($row->idkonselor,0,1));
+                          echo "<br/><b>Psikolog:</b> ".strtoupper($CI->dbx->getpegawai($row->idpsikolog,0,1));
+                          echo "</td>";
+                         echo "<td align=''>".($CI->p_c->tgl_indo($row->tglmulai))."</td>";
                           echo "<td align=''>".($CI->p_c->tgl_indo($row->tglakhir))."</td>";
-											    echo "<td align=''>".($row->keterangan)."</td>";
+											    //echo "<td align=''>".($row->keterangan)."</td>";
+                          echo "<td align='center'>".($row->jmlkelas)."</td>";
+                          echo "<td align='center'>".($row->jmlcpd)."</td>";
+                          echo "<td align='center'>".($row->jmlpd)."</td>";
+                          echo "<td align='center'>".($row->jmljadwalbelajar)."</td>";
                           echo "<td align='center'>";
                           echo "<a href=javascript:void(window.open('".site_url('ksw_tahunajaran/ubahaktifdaftar/'.$row->replid.'/'.!($row->aktifdaftar))."')) >".$CI->p_c->cekaktif($row->aktifdaftar)."</a>";
                           //$CI->p_c->cekaktif($row->aktif).
@@ -123,7 +131,7 @@
                           echo "</td>";
 											    echo "<td align='center'>";
                           echo "<a href=javascript:void(window.open('".site_url('ksw_tahunajaran/tambah/'.$row->replid)."')) class='btn btn-xs btn-warning fa fa-check-square' ></a>&nbsp;&nbsp;";
-                          if($row->pakai<1){
+                          if($row->jmlkelas<1){
 											      echo "<a href=javascript:void(window.open('".site_url('ksw_tahunajaran/hapus/'.$row->replid)."')) class='btn btn-xs btn-danger fa fa-minus-square' ></a> ";
                           }
                           echo "</td>";

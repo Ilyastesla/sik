@@ -25,6 +25,37 @@
 
                     </ol>
                 </section>
+				<section class="content-header table-responsive">
+                <?php
+  			             $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate','onsubmit'=>'return validate()');
+                     echo form_open($action,$attributes);
+  		    		?>
+                    	<table width="100%" border="0">
+						<tr>
+									  <th align="left">
+      				                		<label class="control-label" for="minlengthfield">Kata Kunci</label>
+      				                		<div class="control-group">
+              											<div class="controls">:
+          						                	<?php
+                                               		echo form_input(array('class' => '','style'=>'margin: 0px 0px 5px; width: 300px;', 'id' => 'katakunci','name'=>'katakunci','value'=>$this->input->post('katakunci'),'data-rule-required'=>'false' ,'data-rule-maxlength'=>'500', 'data-rule-minlength'=>'3' ,'placeholder'=>'Masukkan 1-100 Karakter'));
+          						                	?>
+          						                	<?php //echo  <p id="message"></p> ?>
+              											</div>
+            				              </div>
+            						         </th>
+
+          			                  </tr>
+              		            <tr>
+          				            <th align="left" colspan="4">
+          				            	<button class='btn btn-primary' name='filter' value="1">Filter</button>
+          				            	<?php echo "<a href='".site_url($action)."' class='btn btn-danger'>Bersihkan</a>&nbsp;&nbsp;";?>
+          				            </th>
+          				         </tr>
+    		                </table>
+  		            <?php
+  			            echo form_close();
+  		            ?>
+                </section>
 
 
                 <!-- Main content -->

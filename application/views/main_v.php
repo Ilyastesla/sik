@@ -127,33 +127,39 @@
                                   </div>
                                 </div>
                                 -->
-                                <div class="col-md-6">
-                                    <div class="small-box bg-blue">
-                                      <div class="inner">
-                                        <h3><?php echo $jumlahsiswabaru ?></h3>
+                                <?php 
+                                
+                                foreach((array)$jumlahsiswabaru as $rowjsb){
+                                    echo "<div class='col-md-6'><div class='small-box bg-blue'>";
+                                    echo "<div class='inner'>
+                                            <h5>".$rowjsb->companytext."</h5>
+                                            <h5>".$CI->dbx->departemen_show($this->session->userdata('dept'))."</h5>
+                                            <h3>".$rowjsb->isi."</h3>
+                                            <p>Jumlah Siswa Baru</p>
+                                          </div>
+                                          <div class='icon'>
+                                            <i class='fa fa-book'></i>
+                                          </div>
+                                          <a href='#' class='small-box-footer'>Per Tahun Masuk Siswa Di ".date('Y')."</a>";
+                                  echo "</div></div>";
+                                }
 
-                                        <p>Jumlah Siswa Baru</p>
-                                      </div>
-                                      <div class="icon">
-                                        <i class="fa fa-book"></i>
-                                      </div>
-                                      <a href="#" class="small-box-footer">Per Tahun Pelajaran Aktif</a>
-                                    </div>
-                                  </div>
-                                <!-- ./col -->
-                                <div class="col-md-6">
-                                  <!-- small box -->
-                                  <div class="small-box bg-yellow">
-                                    <div class="inner">
-                                      <h3><?php echo $jumlahsiswa?></h3>
-                                      <p>Jumlah Siswa</p>
-                                    </div>
-                                    <div class="icon">
-                                      <i class="fa fa-graduation-cap"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">Per Tahun Pelajaran Aktif</a>
-                                  </div>
-                                </div>
+                                  foreach((array)$jumlahsiswa as $rowjs){
+                                    echo "<div class='col-md-6'><div class='small-box bg-yellow'>";
+                                    echo "<div class='inner'>
+                                    <h5>".$rowjs->companytext."</h5>
+                                    <h5>".$CI->dbx->departemen_show($this->session->userdata('dept'))."</h5>
+                                            <h3>".$rowjs->isi."</h3>
+
+                                            <p>Jumlah Siswa</p>
+                                          </div>
+                                          <div class='icon'>
+                                            <i class='fa fa-graduation-cap'></i>
+                                          </div>
+                                          <a href='#' class='small-box-footer'></a>";
+                                  echo "</div></div>";
+                                }
+                              ?>
                                 <!-- 
                                 <div class="col-lg-3 col-xs-6">
                                   <div class="small-box bg-red">
@@ -189,18 +195,18 @@
     		                                    <i class="<?php echo $icon ?>"></i>
     		                                    <div class="timeline-item">
                                               <span class="time"><i class="fa fa-birthday-cake"></i></span>
-                                                <h3 class="timeline-header"><?php echo "Selamat Ulang Tahun Di Bulan ".substr($CI->p_c->tgl_indo(date("Y-m-d")),3,-4); ?></h3>
+                                                <h3 class="timeline-header"><?php echo "Selamat Ulang Tahun di ".$CI->p_c->tgl_indo(date("Y-m-d")); ?></h3>
     		                                        <div class="timeline-body">
     		                                           	<?php
                                                     foreach((array)$pegawaiultah as $rowbd) {
-                                                    echo "<b>".strtoupper($rowbd->panggilan).' "'.strtoupper($rowbd->nama." [".$rowbd->nip."]").' "'."</b> Pada tanggal ".substr($CI->p_c->tgl_indo($rowbd->tgllahir),0,-4)."<br/>" ;
+                                                    echo "<b>".strtoupper($rowbd->panggilan).' "'.strtoupper($rowbd->nama." [".$rowbd->nip."]").' "'."</b> Unit Bisnis ".$rowbd->companytext."<br/>" ;
                                                     }
                                                     ?>
                                                     <p align="right"></p>
     		                                        </div>
     		                                    </div>
     		                                </li>
-                            	<?php
+                            	        <?php
                                     } //pegawaiultah
 
                                     $no=1;
@@ -210,7 +216,7 @@
                                       <li>
                                           <i class="<?php echo $icon ?>"></i>
                                           <div class="timeline-item">
-                                            <span class="time"><i class="fa fa-birthday-cake"></i></span>
+                                            <span class="time"><i class="fa fa-puzzle-piece"></i></span>
                                               <h3 class="timeline-header"><?php echo "Selamat Bergabung (".substr($CI->p_c->tgl_indo(date("Y-m-d")),3).")"; ?></h3>
                                               <div class="timeline-body">
                                                    <?php

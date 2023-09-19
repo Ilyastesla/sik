@@ -91,7 +91,7 @@
           				                		<div class="control-group">
                   											<div class="controls">:
               						                	<?php
-              						                		$arridkelas='data-rule-required=true onchange=javascript:this.form.submit();';
+              						                		$arridkelas='data-rule-required=false onchange=javascript:this.form.submit();';
               						                		echo form_dropdown('idkelas',$idkelas_opt,$this->input->post('idkelas'),$arridkelas);
               						                	?>
               						                	<?php //echo  <p id="message"></p> ?>
@@ -157,8 +157,13 @@
                           if($row->aktif==1){
   											    echo "<a href=javascript:void(window.open('".site_url('ksw_mutasi/tambah/'.$row->replid)."')) class='btn btn-xs btn-warning fa fa-check-square' ></a>&nbsp;&nbsp;";
                           }
-                          if($row->aktif<>1){
-  											    echo "<a href=javascript:void(window.open('".site_url('ksw_mutasi/batalmutasi_p/'.$row->replid)."')) class='btn btn-danger' >Batal Mutasi</a>&nbsp;&nbsp;";
+                          if(($row->aktif<>1)){
+                            if ($row->replidmutasi<1){
+                              echo "<a href=javascript:void(window.open('".site_url('ksw_mutasi/batalmutasi_p/'.$row->replid)."')) class='btn btn-danger' >Batal Mutasi</a>&nbsp;&nbsp;";
+                            }else{
+                              echo "<font color='red'><b>Pesdik Sudah Pindah Unit Sekolah</b></font>";
+                            }
+  											    
                           }
                           echo "</td>";
 											    echo "</tr>";
@@ -262,6 +267,20 @@
                         <?php
                           $arrjenismutasi="id='jenismutasi' data-rule-required='true' ";
                           echo form_dropdown('jenismutasi',$jenismutasi_opt,'',$arrjenismutasi);
+                        ?>
+                              <?php //echo  <p id="message"></p> ?>
+                      </div>
+                        </div>
+                        </th></tr>
+                        <tr>
+                        <th align="left">
+                        <label class="control-label" for="minlengthfield">Unit Sekolah</label>
+                        <div class="control-group">
+                      <div class="controls">:
+                        <?php
+                          $arridcompany="id='jenismutasi' data-rule-required='false' ";
+                          echo form_dropdown('idcompany',$idcompany_opt,'',$arridcompany);
+                          
                         ?>
                               <?php //echo  <p id="message"></p> ?>
                       </div>

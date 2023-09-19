@@ -12,26 +12,49 @@ Class ksw_statistik_calon_db extends CI_Model {
 			$join="";$groupby="";$orderby="";$select="*";
 
 			//----------------------------------------------------------------------------------------------
-      if($this->input->post('idfiltercari')=="voting"){
-          $select="rks.reff_kronologis_sub as filtercari";
-          $join= " LEFT JOIN online_kronologis_reff rks ON rks.replid=ok.voting ";
-          $groupby.= "GROUP BY ok.voting ";
-          $orderby="ORDER BY filtercari";
-      }else if($this->input->post('idfiltercari')=="alasan"){
-          $select="rks.reff_kronologis_sub as filtercari";
-          $join= "  INNER JOIN online_kronologis_alasan oka ON oka.idkronologis=ok.replid
-                    LEFT JOIN online_kronologis_reff rks ON rks.replid=oka.idalasan ";
-          $groupby.= "GROUP BY rks.replid ";
-          $orderby="ORDER BY filtercari";
-      }else if($this->input->post('idfiltercari')=="media"){
-        $select="rks.reff_kronologis_sub as filtercari";
-        $join= "  INNER JOIN online_kronologis_media okm ON okm.idkronologis=ok.replid
-                  LEFT JOIN online_kronologis_reff rks ON rks.replid=okm.idmedia ";
-        $groupby.= "GROUP BY rks.replid ";
-        $orderby="ORDER BY filtercari";
-      }else{
-        $cari=" AND s.nama='f4ad65f4sda6f4a'";
-      }
+		if($this->input->post('idfiltercari')=="voting"){
+			$select="rks.reff_kronologis_sub as filtercari";
+			$join= " LEFT JOIN online_kronologis_reff rks ON rks.replid=ok.voting ";
+			$groupby.= "GROUP BY ok.voting ";
+		}else if($this->input->post('idfiltercari')=="alasan"){
+			$select="rks.reff_kronologis_sub as filtercari";
+			$join= "  INNER JOIN online_kronologis_alasan oka ON oka.idkronologis=ok.replid
+						LEFT JOIN online_kronologis_reff rks ON rks.replid=oka.idalasan ";
+			$groupby.= "GROUP BY rks.replid ";
+		}else if($this->input->post('idfiltercari')=="media"){
+			$select="rks.reff_kronologis_sub as filtercari";
+			$join= "  INNER JOIN online_kronologis_media okm ON okm.idkronologis=ok.replid
+					LEFT JOIN online_kronologis_reff rks ON rks.replid=okm.idmedia ";
+			$groupby.= "GROUP BY rks.replid ";
+			
+		}else if($this->input->post('idfiltercari')=="kota"){
+			//$cari=" AND s.nama='f4ad65f4sda6f4a'";
+				$select.=",kot.kota AS filtercari ";
+				$join=" INNER JOIN calonsiswa cs ON cs.replid=ok.idcalon 
+						INNER JOIN kota kot ON kot.replid=cs.kota ";
+				$groupby.= "GROUP BY kot.replid ";
+		
+		}else if($this->input->post('idfiltercari')=="kota_ibu"){
+			//$cari=" AND s.nama='f4ad65f4sda6f4a'";
+				$select.=",kot.kota AS filtercari ";
+				$join=" INNER JOIN calonsiswa cs ON cs.replid=ok.idcalon 
+						INNER JOIN kota kot ON kot.replid=cs.kota_ibu ";
+				$groupby.= "GROUP BY kot.replid ";
+		
+		}else if($this->input->post('idfiltercari')=="kota_ayah"){
+			//$cari=" AND s.nama='f4ad65f4sda6f4a'";
+				$select.=",kot.kota AS filtercari ";
+				$join=" INNER JOIN calonsiswa cs ON cs.replid=ok.idcalon 
+						INNER JOIN kota kot ON kot.replid=cs.kota_ayah ";
+				$groupby.= "GROUP BY kot.replid ";
+		}else if($this->input->post('idfiltercari')=="kota_wali"){
+			//$cari=" AND s.nama='f4ad65f4sda6f4a'";
+				$select.=",kot.kota AS filtercari ";
+				$join=" INNER JOIN calonsiswa cs ON cs.replid=ok.idcalon 
+						INNER JOIN kota kot ON kot.replid=cs.kota_wali ";
+				$groupby.= "GROUP BY kot.replid ";
+		}
+	  $orderby="ORDER BY filtercari";
 			//----------------------------------------------------------------------------------------------
 
 			if ($this->input->post('idcompany')<>""){
@@ -77,12 +100,12 @@ Class ksw_statistik_calon_db extends CI_Model {
               WHERE
               	ok.replid IS NOT NULL
                 ".$cari.$groupby.$orderby;
-				//echo $sql;die;
-				if($this->input->post('idfiltercari')<>""){
-					$data['show_table']=$this->dbx->data($sql);
-				}else{
-					$data['show_table']=NULL;
-				}
+			//echo $sql;die;
+			if($this->input->post('idfiltercari')<>""){
+				$data['show_table']=$this->dbx->data($sql);
+			}else{
+				$data['show_table']=NULL;
+			}
 
 			//die;
 			$companyrow=$this->session->userdata('idcompany');
@@ -96,7 +119,8 @@ Class ksw_statistik_calon_db extends CI_Model {
 			$data['idtingkat_opt'] = $this->dbx->opt("SELECT replid,tingkat as nama FROM tingkat
 																								WHERE aktif=1 AND departemen='".$this->input->post('iddepartemen')."' ORDER BY CAST(tingkat AS SIGNED) ASC",'up');
 			$data['kelompok_siswa_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',kelompok) as nama FROM kelompoksiswa ks WHERE ks.departemen='".$this->input->post('iddepartemen')."' AND ks.aktif=1 ORDER BY ks.departemen,ks.kelompok",'up');
-      $data['idfiltercari_opt'] =array(''=>'Pilih..','voting'=>'Kualitas PPDB','alasan'=>'Alasan','media'=>'Media');
+      		
+			$data['idfiltercari_opt'] =array(''=>'Pilih..','voting'=>'Kualitas PPDB','alasan'=>'Alasan','media'=>'Media','kota'=>'Kota CPD','kota_ibu'=>'Kota Ibu CPD','kota_ayah'=>'Kota Ayah CPD','kota_wali'=>'Kota Wali CPD');
       return $data;
     }
 }

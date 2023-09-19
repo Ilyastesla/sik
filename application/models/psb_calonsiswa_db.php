@@ -11,13 +11,13 @@ Class psb_calonsiswa_db extends CI_Model {
 		$cari="";
 
 		if (($this->input->post('periode1')<>"") AND ($this->input->post('periode2')=="")){
-			$cari=$cari." AND ok.created_date >= '".$this->p_c->tgl_db($this->input->post('periode1'))."' ";
+			$cari=$cari." AND c.tanggal_masuk >= '".$this->p_c->tgl_db($this->input->post('periode1'))."' ";
 		}
 		if (($this->input->post('periode1')=="") AND ($this->input->post('periode2')<>"")){
-			$cari=$cari." AND ok.created_date <= '".$this->p_c->tgl_db($this->input->post('periode2'))."' ";
+			$cari=$cari." AND c.tanggal_masuk <= '".$this->p_c->tgl_db($this->input->post('periode2'))."' ";
 		}
 		if (($this->input->post('periode1')<>"") AND ($this->input->post('periode2')<>"")){
-			$cari=$cari." AND ok.created_date BETWEEN '".$this->p_c->tgl_db($this->input->post('periode1'))."' AND '".$this->p_c->tgl_db($this->input->post('periode2'))."' ";
+			$cari=$cari." AND c.tanggal_masuk BETWEEN '".$this->p_c->tgl_db($this->input->post('periode1'))."' AND '".$this->p_c->tgl_db($this->input->post('periode2'))."' ";
 		}
 
 		if($cari==""){
@@ -42,8 +42,11 @@ Class psb_calonsiswa_db extends CI_Model {
 		if ($this->input->post('idproses')<>""){
 			$cari=$cari." AND c.idproses='".$this->input->post('idproses')."'";
 		}
+		
 		if ($this->input->post('idkelompok')<>""){
-			$cari=$cari." AND c.idkelompok='".$this->input->post('idkelompok')."'";
+			//$cari=$cari." AND c.idkelompok='".$this->input->post('idkelompok')."'";
+			$cari=$cari." AND kcs.kelompok_siswa='".$this->input->post('idkelompok')."'";
+			
 		}
 
 		if ($this->input->post('abk')<>""){
@@ -100,7 +103,8 @@ Class psb_calonsiswa_db extends CI_Model {
 		$data['idtahunajaran_opt'] = $this->dbx->opt("SELECT replid, tahunajaran as nama FROM tahunajaran WHERE idcompany='".$this->input->post('idcompany')."' AND departemen='".$this->input->post('iddepartemen')."' ORDER BY tahunajaran DESC",'up');
 		$data['idproses_opt'] = $this->dbx->opt("SELECT replid,proses as nama FROM prosespenerimaansiswa WHERE departemen='".$this->input->post('iddepartemen')."' ORDER BY proses",'up');
 		$data['idjurusan_opt'] = $this->dbx->opt("SELECT replid,jurusan as nama FROM jurusan WHERE departemen='".$this->input->post('iddepartemen')."' ORDER BY jurusan",'up');
-        $data['idkelompok_opt'] = $this->dbx->opt("SELECT replid,kelompok as nama FROM kelompokcalonsiswa WHERE aktif=1 AND idproses='".$this->input->post('idproses')."' ORDER BY kelompok",'up');
+        //$data['idkelompok_opt'] = $this->dbx->opt("SELECT replid,kelompok as nama FROM kelompokcalonsiswa WHERE aktif=1 AND idproses='".$this->input->post('idproses')."' ORDER BY kelompok",'up');
+		$data['idkelompok_opt'] = $this->dbx->opt("SELECT replid,kelompok as nama FROM kelompoksiswa WHERE aktif=1 AND departemen='".$this->input->post('iddepartemen')."' ORDER BY kelompok",'up');
 		$companyrow=$this->session->userdata('idcompany');
 		$sqlcompany="SELECT replid,nama as nama
 								FROM hrm_company

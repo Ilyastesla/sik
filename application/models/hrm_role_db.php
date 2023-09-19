@@ -6,11 +6,16 @@ parent::__construct();
 }
     // Read data from database to show data in admin page
     public function data() {
+		$cari="";
+		if ($this->input->post('katakunci')<>""){
+			$cari=$cari." AND r.role LIKE '%".$this->input->post('katakunci')."%' ";
+		}
       	$sql="SELECT r.*,r2.role as roletext FROM role r
 							LEFT JOIN role r2 ON r2.idatasan=r.replid
-				WHERE r.hide<>1 
+				WHERE r.hide<>1  ".$cari."
       			ORDER BY role";
-      	return $this->dbx->data($sql);
+		$data['show_table']=$this->dbx->data($sql);
+		return $data;
     }
 
 

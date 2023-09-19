@@ -52,6 +52,9 @@ function __construct(){
 		if($modul=="idkelas"){
 			echo $this->combobox_db->idkelas($id);
 		}
+		if($modul=="idkelastingkat"){
+			echo $this->combobox_db->idkelastingkat($id,$this->input->post('idtingkat'));
+		}
 		if($modul=="idprosestipe"){
 			echo $this->combobox_db->idprosestipe($id,$this->input->post('idcompany'));
 		}
@@ -71,6 +74,11 @@ function __construct(){
 		if($modul=="idsiswa"){
 			echo $this->combobox_db->idsiswa($id);
 		}
+
+		if($modul=="idsiswatingkat"){
+			echo $this->combobox_db->idsiswatingkat($id,$this->input->post('idtingkat'));
+		}
+
 		if($modul=="idsiswacompany"){
 			echo $this->combobox_db->idsiswacompany($id,$this->input->post('iddepartemen'));
 		}
@@ -130,6 +138,22 @@ function __construct(){
 
 		if($modul=="idpermintaan_barang"){
 			echo $this->combobox_db->idpermintaan_barang($id,$this->input->post('idpermintaan_barang'));
+		}
+
+		if($modul=="idtahunajarankompetensi"){
+			echo $this->combobox_db->idtahunajarankompetensi($id,$this->input->post('idcompany'));
+		}
+		if($modul=="idtingkatkompetensi"){
+			echo $this->combobox_db->idtingkatkompetensi($id);
+		}
+		if($modul=="idmatpelkompetensi"){
+			echo $this->combobox_db->idmatpelkompetensi($id,$this->input->post('idtahunajaran'));
+		}
+		if($modul=="idsiswakompetensi"){
+			echo $this->combobox_db->idsiswakompetensi($id,$this->input->post('idtahunajaran'));
+		}
+		if($modul=="idprojek"){
+			echo $this->combobox_db->idprojek($id,$this->input->post('idcompany'));
 		}
 	}
 

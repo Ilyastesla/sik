@@ -90,7 +90,11 @@ public function __construct() {
 	public function hapus($id) {
 		$result = $this->dbx->hapusdata('hrm_modul','replid',$id);
 		if ($result == TRUE) {
-			redirect('modul');
+			?><script>
+			    window.opener.location.reload();
+			    window.close();
+			  </script>
+			<?php
 		}
 	}
 
@@ -99,7 +103,11 @@ public function __construct() {
 				'aktif' =>$aktif);
 		$result = $this->dbx->ubahdata('hrm_modul',$data,'replid',$id);
 		if ($result == TRUE) {
-			redirect('modul');
+			?><script>
+			    window.opener.location.reload();
+			    window.close();
+			  </script>
+			<?php
 		} else {
 			$data['error']='Errorr...';
 			$this->ubah($id,$data);

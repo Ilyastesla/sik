@@ -61,6 +61,7 @@ parent::__construct();
 				'groupon' => $this->input->post('groupon'),
 				'sembunyinilai' => $this->input->post('sembunyinilai'),
 				'aktif' => $this->input->post('aktif'),
+				'lpd' => $this->input->post('lpd'),
 				"modified_date"=> $this->dbx->cts(),
 				"modified_by"=> $this->session->userdata('idpegawai'));
 

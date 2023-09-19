@@ -14,7 +14,6 @@ Class ksw_kenaikan_db extends CI_Model {
 				$cari=$cari." AND s.idkelas='".$this->input->post('idkelas')."' ";
 			//}
 
-				//,(select replid from calonsiswa where replidsiswa=s.replid) replidcalon
 				$sql = "SELECT s.*,DAY(s.tgllahir),MONTH(s.tgllahir)
 								,YEAR(s.tgllahir),ks.kondisi as kondisi_nm
 								,(DATEDIFF (current_date(),s.tgl_masuk)) as jml_hari

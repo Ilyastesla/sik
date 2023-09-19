@@ -22,7 +22,7 @@ parent::__construct();
         $data['isi'] = $this->dbx->rows($sql);
 
         if ($data['isi']== NULL ) {
-					unset($data['isi']);
+			unset($data['isi']);
 	        $sql="SELECT ".$this->dbx->tablecolumn('hrm_modul').",1 as aktif";
 	        $data['isi']=$this->dbx->rows($sql);
         }

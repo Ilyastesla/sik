@@ -51,8 +51,10 @@ parent::__construct();
 
 	public function tambah_p($id='') {
 		//"urutan" => $this->input->post("urutan"));
+		die;
 		$data = array(
-				"negara" => $this->input->post("negara"));
+				"negara" => $this->input->post("negara")
+			);
 
 
 		if ($id<>""){

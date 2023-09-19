@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <?php
 $CI =& get_instance();
-if ($excel==1){
-	header('Content-Type: application/vnd.ms-excel'); //IE and Opera
-	header('Content-Type: application/x-msexcel'); // Other browsers
-	header('Content-Disposition: attachment; filename=rapot_'.$isi->siswa.'|'.$isi->nis.'.xls');
-	header('Expires: 0');
-	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-}else { ?>
-	<script language="javascript">
-		window.print();
-	</script>
-<?php } ?>
-
+$marginsplit="10%";
+if($isi->jurusanon==1){
+	$marginsplit="0%";
+}
+?>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 <html>
 <title><?php echo $form ?></title>
 <!--
 .lpd {
-	font-family:'Source Sans Pro', sans-serif;
+	font-family:'Source Sans Pro', sans-serif;0
 	font-size:7pt;
 	width: 85% !important;
 }
@@ -25,15 +22,13 @@ if ($excel==1){
 <?php if(($digital==1) OR ($isi->kopsurat==1)){?>
 	<style>
 		.sectionrapot{
-			display:inline-block;
-			margin-top:50px;
+			padding-top:50px;
 		}
 	</style>
 <?php } else {?>
 	<style>
 		.sectionrapot{
-			display:inline-block;
-			margin-top:150px;
+			padding-top:4cm;
 		}
 	</style>
 <?php } ?>
@@ -94,16 +89,52 @@ if ($excel==1){
 		font-size:<?php echo $isi->besarfont?>pt;
 	}
 
+	#sample{
+		position: fixed;
+		display: inline-block;
+		width:94vw;
+		height:96vh;
+		border: 10px solid black;
+		opacity:1;
+		z-index:-9999;
+		align:center;
+		left: 2vw;
+		top: 1vh;
+	}
+
+	#sementara{
+		position: fixed;margin:0 auto;top:400px;color: grey;font-size: 40pt !important;text-align: center;width:100%;height:150px;border: 0px solid grey;opacity:0.5;display: block;
+	}
+	.sectionrapot{
+		width: 85% !important;
+	}
+	.sectionrapot h1{
+		margin-top:0px;
+		padding-top:0px;
+	}
+
 	.divheaderpd{
 		font-family:'Source Sans Pro', sans-serif;
 		text-align:left;
-		width: 85% !important;
-		font-family: 'Source Sans Pro', sans-serif;
     	font-size: 8.5pt;
-		width:85%;
 		display: inline-block;
 		word-wrap:normal;
-		text-align:left;
+		width:100%;
+	}
+	.divheaderpdsplit{
+		width:50%;
+		display: inline-table;
+		align-content:right;
+		margin-right:<?php echo $marginsplit ?>;
+	}
+	.divheaderpdsplit_right{
+		width:calc(50% - <?php echo $marginsplit ?>);
+		display: inline-table;
+		align-content:right;
+	}
+
+	.tableheader{
+		width:100% !important;
 	}
 	.divheaderpd img{
 		margin-bottom:25px;
@@ -112,45 +143,32 @@ if ($excel==1){
 
 	.divketerangan{
 		display: inline-block;
-		width:19% !important;
+		width:42% !important;
 		vertical-align:top;
 		padding:2px;
 		font-weight:bold;
-	}
-	.divketerangan_content{
-		display: inline-block;
-		width:26% !important;
-		vertical-align:top;
-		padding:2px;
 	}
 	.divketerangan_mid{
 		display: inline-block;
-		width:2% !important;
+		width:4% !important;
 		vertical-align:top;
 		padding:2px;
 		font-weight:bold;
-	}
-
-	#sample{
-		position: fixed;
-		margin:0 auto;
-		width:96%;
-		height:97%;
-		border: 10px solid black;
-		opacity:1;
-		display: block;
-		z-index:-9999;
-	}
-
-	#sementara{
-		position: fixed;margin:0 auto;top:400px;color: grey;font-size: 40pt !important;text-align: center;width:100%;height:150px;border: 0px solid grey;opacity:0.5;display: block;
+		text-align:center;
 	}
 	
+	.divketerangan_content{
+		width:44% !important;
+		display: inline-table;
+		vertical-align:top;
+		padding:2px;
+	}
 
 	@page {
 		  size: A4;
 		  width:210mm;
 		  height:297mm;
+		  margin-top: 50pt;
 	}
 
 	@media print {
@@ -158,8 +176,8 @@ if ($excel==1){
 			page-break-inside:always !important;
 			page-break-after: auto;
 		}
-		thead { display:table-header-group }
-    tfoot { display:table-footer-group }
+		thead { display:table-header-group;}
+    	tfoot { display:table-footer-group;}
 
 		#breaktable{
 			page-break-before:always !important;
@@ -173,17 +191,21 @@ if ($excel==1){
 		}
 
 		.page-break { display: block; margin: 200mm 0 0 0; }
-		#divcontent{
-			page-break-after: always;
+		
+		.sectionrapot{
+			page-break-before: always;
 		}
+		/*
 		.nonakademik{
 			page-break-after: always;
 		}
+		*/
+		
 }
 </style>
 <?php if($digital){?>
-<div id="sample">&nbsp;
-</div>
+
+<div id="sample">&nbsp;</div>
 <div id="sementara">
 	<center>
 		<?php
@@ -209,36 +231,120 @@ if ($excel==1){
 			break;
 	}
 	$headerrapot='';
-	if ($isi->tipe<>'SKL'){
-		$headerrapot=$headerrapot. "<div class='divketerangan'>Alamat Satuan Pendidikan</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->alamatrapor."</div>";
-		if($isi->kelastexton==1){
-			$headerrapot=$headerrapot. "<div class='divketerangan'>Kelas</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->kelastext."</div>";
-		}else{
-			$headerrapot=$headerrapot. "<div class='divketerangan'>Tingkatan/Setara Kelas</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->kesetaraantext.'/'.$CI->p_c->romawi($isi->tingkattext)."</div>";
-		}
-		//$headerrapot=$headerrapot. "<div class='divketerangan'>Fase/Setara Kelas</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->fasetext.'/'.$CI->p_c->romawi($isi->tingkattext)."</div>";
+	if (($isi->tipe=='SKL') OR ($isi->tipe=='SKL23')){
+		$headerrapot='';
+	}else{
+		$headerrapot=$headerrapot. "<div class='divheaderpdsplit'>";
+			$headerrapot=$headerrapot. "<div class='divketerangan'>Alamat Satuan Pendidikan</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->alamatrapor."</div>";
+			$headerrapot=$headerrapot. "<div class='divketerangan'>Nama Peserta Didik</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($isi->siswa))."</div>";
+			if($isi->nisn<>''){$nistext=$isi->nis."/".$isi->nisn;}else{$nistext=$isi->nis."/".'-';}
+			$headerrapot=$headerrapot. "<div class='divketerangan'>Nomor Induk/NISN</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$nistext."</div>";
+			if($isi->programon=='1'){
+				$headerrapot=$headerrapot. "<div class='divketerangan'>Program</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".($isi->kelompoksiswa)."</div>";
+			}
+		$headerrapot=$headerrapot. "</div>";
+
+
+		$headerrapot=$headerrapot. "<div class='divheaderpdsplit_right'>";
+		//echo $isi->tingkatshowtype."adsfadsf";die;
+			switch ($isi->tingkatshowtype) {
+				case 6:
+					$headerrapot=$headerrapot. "<div class='divketerangan'>Kelas</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->kelastext."</div>";
+					break;
+				case 13:
+					$headerrapot=$headerrapot. "<div class='divketerangan'>Tingkatan/Setara Kelas</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->kesetaraantext.'/'.$CI->p_c->romawi($isi->tingkattext)."</div>";
+					break;
+				case 22:
+					$headerrapot=$headerrapot. "<div class='divketerangan'>Fase/Setara Kelas</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$isi->fasetext.'/'.$CI->p_c->romawi($isi->tingkattext)."</div>";
+					break;
+				default:
+					$headerrapot=$headerrapot;
+					break;
+			}
+			if($isi->jurusanon==1){
+				$headerrapot=$headerrapot. "<div class='divketerangan'>Jurusan</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($isi->jurusantext))."</div>";
+			}
+			if($isi->paketkompetension=="1"){
+				$headerrapot=$headerrapot. "<div class='divketerangan'>Paket Kompetensi</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($isi->paketkompetensitext))."</div>";
+			}else{
+				$headerrapot=$headerrapot. "<div class='divketerangan'>Semester</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($isi->periode))."</div>";
+			}
+			if($isi->tahunajaranrapot<>''){
+				$tahunajarantext=$isi->tahunajaranrapot;
+			}else{
+				$tahunajarantext=$isi->tahunajaran;
+			}
+			$headerrapot=$headerrapot. "<div class='divketerangan'>Tahun Pelajaran</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($tahunajarantext))."</div>";
+		$headerrapot=$headerrapot. "</div>";
+
+		
+		
+		
+		
+		
+		
+		/*
+
+		$headerrapot=$headerrapot."<table border='0' class='tableheader'>";
+		$headerrapot=$headerrapot."<tr>";
+		$headerrapot=$headerrapot. "<td align='left' width='20%' valign='top' rowspan='2'><b>Alamat Satuan Pendidikan</b></td><td valign='top' rowspan='2'><b>:</b></td><td width='28%' rowspan='2'>".$isi->alamatrapor.".</td>";
+		switch ($isi->tingkatshowtype) {
+			case 6:
+					$headerrapot=$headerrapot."<td align='left' width='20%' valign='top'><b>Kelas</b></td><td valign='top'><b>:</b></td><td width='28%' valign='top'>".$isi->kelastext."</td>";
+					break;
+				case 13:
+					$headerrapot=$headerrapot."<td align='left' width='20%' valign='top'><b>Tingkatan/Setara Kelas</b></td><td valign='top'><b>:</b></td><td width='28%' valign='top'>".$isi->kesetaraantext.'/'.$CI->p_c->romawi($isi->tingkattext)."</td>";
+					break;
+				case 20:
+					$headerrapot=$headerrapot."<td align='left' width='20%' valign='top'><b>Tingkatan/Setara Kelas</b></td><td valign='top'><b>:</b></td><td width='28%' valign='top'>".$isi->fasetext.'/'.$CI->p_c->romawi($isi->tingkattext)."</td>";
+					break;
+				default:
+					$headerrapot=$headerrapot;
+					break;
+			}
+		$headerrapot=$headerrapot."</tr>";
+
+
+		$headerrapot=$headerrapot."<tr>";
 		if($isi->jurusanon==1){
-			$headerrapot=$headerrapot. "<div class='divketerangan'>Jurusan</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($isi->jurusantext))."</div>";
+			$headerrapot=$headerrapot."<td align='left' valign='top'><b>Jurusan</b></td><td valign='top'><b>:</b></td><td valign='top'><b>".ucwords(strtolower($isi->jurusantext))."</b></td>";
+		}else{
+			$headerrapot=$headerrapot."<td colspan='3'></td>";
 		}
-		$headerrapot=$headerrapot. "<div class='divketerangan'>Nama Peserta Didik</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($isi->siswa))."</div>";
-		
+		$headerrapot=$headerrapot."</tr>";
+
+
+		$headerrapot=$headerrapot."<tr>";
+		$headerrapot=$headerrapot. "<td align='left' valign='top'><b>Nama Peserta Didik</b></td><td valign='top'><b>:</b></td><td valign='top'><b>".ucwords(strtolower($isi->siswa))."</b></td>";
 		if($isi->paketkompetension=="1"){
-			$headerrapot=$headerrapot. "<div class='divketerangan'>Paket Kompetensi</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($isi->paketkompetensitext))."</div>";
+			$headerrapot=$headerrapot."<td align='left' valign='top'><b>Paket Kompetensi</b></td><td valign='top'><b>:</b></td><td valign='top'>".$isi->paketkompetensitext."</td>";
 		}else{
-			$headerrapot=$headerrapot. "<div class='divketerangan'>Semester</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($isi->periode))."</div>";
+			$headerrapot=$headerrapot."<td align='left' valign='top'><b>Semester</b></td><td valign='top'><b>:</b></td><td valign='top'>".$isi->periode."</td>";
 		}
-		if($isi->nisn<>''){$nistext=$isi->nis."/".$isi->nisn;}else{$nistext=$isi->nis."/".'-';}
-		$headerrapot=$headerrapot. "<div class='divketerangan'>Nomor Induk/NISN</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".$nistext."</div>";
+		$headerrapot=$headerrapot."</tr>";
 		
+		$headerrapot=$headerrapot."<tr>";
+		$headerrapot=$headerrapot."<td align='left' valign='top'><b>Nomor Induk/NISN</b></td>";
+		$headerrapot=$headerrapot."<td valign='top'><b>:</b></td><td valign='top'>".$isi->nis."/";
+		if($isi->nisn<>''){$headerrapot=$headerrapot.$isi->nisn;}else{$headerrapot=$headerrapot.'-';}
+		$headerrapot=$headerrapot."</td>";
+		$headerrapot=$headerrapot."<td align='left'><b>Tahun Pelajaran</b></td><td valign='top'><b>:</b></td>";
+		$headerrapot=$headerrapot."<td>";
 		if($isi->tahunajaranrapot<>''){
-			$tahunajarantext=$isi->tahunajaranrapot;
+			$headerrapot=$headerrapot.$isi->tahunajaranrapot;
 		}else{
-			$tahunajarantext=$isi->tahunajaran;
+			$headerrapot=$headerrapot.$isi->tahunajaran;
 		}
-		$headerrapot=$headerrapot. "<div class='divketerangan'>Tahun Pelajaran</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".ucwords(strtolower($tahunajarantext))."</div>";
+		$headerrapot=$headerrapot."</td>";
+		$headerrapot=$headerrapot."</tr>";
 		if($isi->programon=='1'){
-			$headerrapot=$headerrapot. "<div class='divketerangan'>Program</div><div class='divketerangan_mid'>:</div><div class='divketerangan_content'>".($isi->kelompoksiswa)."</div>";
-		}
+			$headerrapot=$headerrapot."<tr>
+				<td align='left' valign='top'><b>Program</b></td><td valign='top'><b>:</b></td><td valign='top'>".$isi->kelompoksiswa."</td>
+				</tr>";
+			}
+		$headerrapot=$headerrapot."</table>";
+		//echo $headerrapot."<br/>";
+		*/
 	}
 ?>
 <body>
@@ -250,9 +356,14 @@ if ($excel==1){
 		$judulrapot.= "<center><img src='".base_url()."images/".$isi->logotext."' width='190' /></center>";
 	}
 	
-	if ($isi->tipe=='SKL'){
+	if (($isi->tipe=='SKL') OR ($isi->tipe=='SKL23')){
 		//$judulrapot= $judulrapot."<b>".$isi->companytext."</b>";
-		$judulrapot= $judulrapot."<br/><b>Ujian Pendidikan Kesetaraan Paket ".$paket." (Setara ".$isi->departemen.")"."</b>";
+		if ($isi->tipe=='SKL23'){
+			$judulrapot= $judulrapot."<br/><b>".$isi->rapottipe." Paket ".$paket." (Setara ".$isi->departemen.")"."</b>";
+		}else{
+			$judulrapot= $judulrapot."<br/><b>Ujian Pendidikan Kesetaraan Paket ".$paket." (Setara ".$isi->departemen.")"."</b>";
+		}
+		
 		if($isi->jurusantext<>""){
 			$judulrapot= $judulrapot. "<br/><b>Program Studi ".ucwords(strtolower($isi->jurusantext))."</b>";
 		}
@@ -260,15 +371,16 @@ if ($excel==1){
 		$judulrapot= $judulrapot."<br/><b>Nomor: ".$isi->nomordokumen."</b>";
 		//$judulrapot= $judulrapot."<br/><br/>";
 	}else{
-		$judulrapot.= "<h1>".ucwords(strtolower($isi->rapottipe))."</b>";
-		if ($isi->tipe=='Murni'){
+		$judulrapot.= "<h1>".$isi->rapottipe."</b>";
+		if (($isi->tipe=='Murni') OR ($isi->tipe=='Tryout')){
 			if($isi->paketkompetension=="1"){
 				$judulrapot.= "<br/>Paket Kompetensi ".ucwords(strtolower($isi->paketkompetensitext));
 			}else{
 				$judulrapot.= "<br/>Semester ".ucwords(strtolower($isi->periode));
 			}
 		}
-		$judulrapot.= "<br/>".ucwords(strtolower($isi->companytext));
+		//$judulrapot.= "<br/>".ucwords(strtolower($isi->companytext));
+		$judulrapot.= "<br/>".ucwords(strtolower($isi->raporcompanytext));
 		$judulrapot.= "</h1>";
 	}
 
@@ -276,13 +388,120 @@ if ($excel==1){
 	if (($isi->kopsurat==1) OR ($digital==1)){
 		$headerrapot="<div class='divheaderpd'><center><img src='".base_url()."images/".$isi->logotext."' width='190' /></center>".$headerrapot.'</div>';
 	}else{
-		$headerrapot="<div class='divheaderpd'>".$headerrapot.'</div>';
+		if($headerrapot<>""){
+			$headerrapot="<div class='divheaderpd'>".$headerrapot.'</div>';
+		}
 	}
 	
 		
 		//$headerrapot= $headerrapot."<b>". " MODUL ".$isi->idmodultipe."</b>";		
-	
-	if($isi->tipe=='Grafik'){
+	if($isi->tipe=='P5'){
+		$catatanproses=array();
+		foreach((array)$projek as $projekrow) {
+			echo "<table class='table tablecontentdetail'>";
+			echo "<tr>";
+			echo "<td align='left'><h4>".$projekrow->projektext." | Tema: ".$projekrow->tematext."</h4>Tipe Projek: ".$projekrow->projektipetext."</td>";
+			echo "</tr>";
+			echo "<tr>";
+			echo "<td align='justify'>".$projekrow->keterangan."</td>";
+			echo "</tr>";
+			echo "</table>";
+
+			$catatanproses[$projekrow->replid]=$projekrow->catatanproses;
+		  }
+		  echo "<div class='sectionrapot'>".$headerrapot.'</div>';
+		  echo "<table class='table tablecontentdetail'>";
+		  echo "<thead><tr>";
+			echo "<th width='50'>No.</th>";
+			//echo "<th>Elemen</th>";
+			//echo "<th>Sub Elemen</th>";
+			echo "<th>Capaian</th>";
+			//echo "<th>Fase</th>";
+			//echo "<th>aktif</th>";
+	  
+			echo "<th colspan='".(COUNT($idprojekpredikat_opt))."'>Predikat</th>";
+			echo "</tr></thead>";
+			
+			echo "<tbody>";
+			$dimensitext="";$idprojek="";
+			$CI =& get_instance();$no=1;
+			foreach((array)$capaian as $row) {
+				if ($idprojek<>$row->idprojek){
+					if($idprojek<>""){
+						$no=1;
+						echo "</table>";
+						echo "<table class='table tablecontentdetail'>";
+						echo "<tr>";
+						echo "<td align='left'><h4>Catatan Proses:</h4>";
+						echo $catatanproses[$idprojek];
+						//<h4>".$projekrow->projektext." | Tema: ".$projekrow->tematext."</h4>Tipe Projek: ".$projekrow->projektipetext."
+						echo "</td>";
+						echo "</tr>";
+						echo "</table>";
+						echo "<div class='sectionrapot'>".$headerrapot.'</div>';
+						echo "<table class='table tablecontentdetail'>";
+						echo "<thead><tr>";
+						  echo "<th width='50'>No.</th>";
+						  //echo "<th>Elemen</th>";
+						  //echo "<th>Sub Elemen</th>";
+						  echo "<th>Capaian</th>";
+						  //echo "<th>Fase</th>";
+						  //echo "<th>aktif</th>";
+					
+						  echo "<th colspan='".(COUNT($idprojekpredikat_opt))."'>Predikat</th>";
+						  echo "</tr></thead>";
+						  
+						  echo "<tbody>";
+						//echo "<tr >";
+						//echo "<td align='left' colspan='".(2+COUNT($idprojekpredikat_opt))."'>&nbsp;</td>";
+						//echo "</tr>";
+					}
+					echo "<tr >";
+					echo "<td align='left' colspan='2'><b>Projek: ".($row->projektext)."</b></td>";
+					foreach((array)$idprojekpredikat_opt as $rowprojekpredikat) {
+						echo "<th>".$rowprojekpredikat->nama."</th>";
+					}
+					echo "</tr>";
+				  }
+			  if ($dimensitext<>$row->dimensitext){
+				echo "<tr >";
+				echo "<td align='left' colspan='".(2+COUNT($idprojekpredikat_opt))."'><b>Dimensi: ".($row->dimensitext)."</b></td>";
+				echo "</tr>";
+			  }
+				echo "<tr>";
+				echo "<td align='center'>".$no++."</td>";
+				//echo "<td align='left'>".($row->elementext)."</td>";
+				//echo "<td align='left'>".($row->elemen_subtext)."</td>";
+				echo "<td align='left'>".($row->elemen_sub_capaiantext)."</td>";
+				//echo "<td align='center'>".($row->fase)."</td>";
+				//echo "<td align='left'>".$CI->p_c->cekaktif($row->aktifesc)."</td>";
+				foreach((array)$idprojekpredikat_opt as $rowprojekpredikat) {
+				  if($rowprojekpredikat->replid==$row->idprojekpredikat){
+					echo "<td align='center'>&check;</td>";
+				  }else{
+					echo "<td align='center'><b>&nbsp;</b></td>";
+				  }
+				  
+				  
+				}  
+			   echo "</tr>";
+			   	$idprojek=$row->idprojek;
+			  	$dimensitext=$row->dimensitext;
+			}
+			echo "</tbody></table>";
+			if ($idprojek<>""){
+				echo "<table class='table tablecontentdetail'>";
+				echo "<tr>";
+				echo "<td align='left'><h4>Catatan Proses:</h4>";
+				echo $catatanproses[$idprojek];
+				//<h4>".$projekrow->projektext." | Tema: ".$projekrow->tematext."</h4>Tipe Projek: ".$projekrow->projektipetext."
+				echo "</td>";
+				echo "</tr>";
+				echo "</table>";
+			}
+	// ----------------------------------------------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------------------------------------------
+	}else if($isi->tipe=='Grafik'){
 ?>
 		<script src="<?php echo base_url(); ?>js/jquery2.min.js"></script>
 		<script src="https://code.highcharts.com/highcharts.js"></script>
@@ -346,7 +565,8 @@ if ($excel==1){
 					foreach((array)$judultextgraph as $graph) {
 						if ((($x%6)==0) and ($x<>0)){
 						    	echo "</table>";
-						    	echo "<table style='border-collapse:collapse;border-color:black;' border='0' id='breaktable'>";
+								echo "<div class='sectionrapot'>".$headerrapot.'</div>';
+						    	echo "<table style='border-collapse:collapse;border-color:black;' border='0'>";
 						    	echo "<tr>";
 
 						}
@@ -467,7 +687,7 @@ if ($excel==1){
 					}
 					echo "</table></div><br/>";
 			} //judultextgraph
-	}else if ($isi->tipe=='Murni'){
+	}else if (($isi->tipe=='Murni') OR ($isi->tipe=='Tryout')){
 	// Murni
 	// ----------------------------------------------------------------------------------------------------------------------------------
 	// ----------------------------------------------------------------------------------------------------------------------------------
@@ -586,8 +806,11 @@ if ($excel==1){
 						</tfoot>
 				</table>
 				<?php
-				if ($totalmatpel>15){
-					echo "<table border='0' id='breaktable'>";
+				if ($totalmatpel>$isi->jumlahdata){
+					if($excel<>1){
+						echo "<div class='sectionrapot'>".$headerrapot.'</div>';
+					}
+					echo "<table border='0' >";
 				}else{
 					echo "<table border='0'>";
 				}
@@ -645,7 +868,7 @@ if ($excel==1){
 			-->
 		<?php
       } // keterangan
-}else if ($isi->tipe=='SKL'){
+}else if (($isi->tipe=='SKL') OR ($isi->tipe=='SKL23')){
 	$matkel="";$matpel="";$pengembangandirivariabel="";$jml_kel=0;
 	$csx=3+$isi->kkmon+$isi->predikaton+$isi->kalimatraporon;
 	$cspdv=1+$isi->predikaton;
@@ -713,7 +936,9 @@ if ($excel==1){
 	
 	?>
 			<p align='justify'>
-				Ketua PKBM Kak Seto Program "<i>Homeschooling</i>" Pusat menerangkan dengan sesungguhnya bahwa:
+			<?php //echo $isi->companytext 
+			?>
+				Ketua PKBM Kak Seto Program "<i>Homeschooling</i>" menerangkan dengan sesungguhnya bahwa:
 			</p>
 		<table border="0">
 							<tr>
@@ -738,10 +963,20 @@ if ($excel==1){
 				dan berdasarkan kriteria kelulusan peserta didik pada Satuan Pendidikan Paket <?php echo $paket; ?> PKBM Kak Seto dinyatakan:
 			</p>
 			-->
-			<p align='justify'>
-				Adalah peserta Ujian Pendidikan Kesetaraan Paket <?php echo $paket; ?> PKBM Kak Seto Tahun Pelajaran <?php echo $isi->tahunajaran; ?>
-				dan berdasarkan kriteria kelulusan peserta didik pada Satuan Pendidikan Paket <?php echo $paket; ?> PKBM Kak Seto dinyatakan:
-			</p>
+			<?php 
+			if($isi->tipe=='SKL23'){
+				echo "<p align='justify'>
+				Adalah peserta Ujian Satuan Pendidikan Paket ".$paket." PKBM Kak Seto Tahun Pelajaran ".$isi->tahunajaran
+				." dan berdasarkan kriteria kelulusan peserta didik pada Satuan Pendidikan Paket ".$paket." PKBM Kak Seto dinyatakan:
+			</p>";
+			}else{
+				echo "<p align='justify'>
+				Adalah peserta Ujian Satuan Pendidikan Paket ".$paket." PKBM Kak Seto Tahun Pelajaran ".$isi->tahunajaran
+				." dan berdasarkan kriteria kelulusan peserta didik pada Satuan Pendidikan Paket ".$paket." PKBM Kak Seto dinyatakan:
+			</p>";
+			}
+			?>
+			
 			<p align='center'>
 				<?php
 				$nilaiakhir=0;
@@ -803,7 +1038,8 @@ if ($excel==1){
 									if ($matpel<>$rowkelompok->matpel){
 										echo "<tr>";
 										echo "<td align='center'>".$no++."</td>";
-										echo "<td align='left'>".ucwords(strtolower($rowkelompok->matpel));
+										//ucwords(strtolower())
+										echo "<td align='left'>".($rowkelompok->matpel);
 										//echo var_dump($nilaiavgmatpel[$rowkelompok->matpel]);
 										if($rowkelompok->matpelexternal){
 											echo "&nbsp;".$isi->external;
@@ -867,10 +1103,11 @@ if ($excel==1){
 			</p>
 <?php
 } else if($isi->tipe=='LPD'){
+	$header_count="A";
 ?>
 				<table border=0 width="100%">
 				<tr>
-						<td><b>A. Pengetahuan</b></td>
+						<td><b><?php echo $header_count++.'. '. $isi->tabeljudul_1 ?></b></td>
 				</tr>
 				<tr>
 						<td style="padding-left:30px">
@@ -943,7 +1180,13 @@ if ($excel==1){
 										if($idmatpel<>$pengetahuan->idmatpel){
 													echo "<tr>";
 													echo "<td align='center'>".$no++."</td>";
-													echo "<td align='left'>".ucwords(strtolower($pengetahuan->grouptext))."</td>";
+													echo "<td align='left'>";
+													if($pengetahuan->grouptext<>""){
+														echo ucwords(strtolower($pengetahuan->grouptext));
+													}else{
+														echo ucwords(strtolower($pengetahuan->groupmatpeltext));
+													}
+													echo "</td>";
 													echo "<td align='left'>".$pengetahuan->matpel;
 													if($pengetahuan->matpelexternal){
 														echo "&nbsp;".$isi->external;
@@ -972,8 +1215,11 @@ if ($excel==1){
 									</table>
 								</td>
 						</tr>
+<?php
+			if ($kelompok2<>NULL){
+?>
 						<tr>
-								<td><b>B. Keterampilan</b></td>
+							<td><b><?php echo $header_count++.'. '. $isi->tabeljudul_2 ?></b></td>
 						</tr>
 						<tr>
 								<td style="padding-left:30px">
@@ -1077,6 +1323,9 @@ if ($excel==1){
 
 													</tbody>
 											</table>
+<?php
+} //if ($kelompok2<>NULL)
+?>
 										</td>
 								</tr>
 							</table>
@@ -1086,6 +1335,7 @@ if ($excel==1){
 				// ----------------------------------------------------------------------------------------------------------------------------------
 				// ----------------------------------------------------------------------------------------------------------------------------------
 						$header_count="A";
+						if ($isi->sikap=="1"){
 						?>
 							<div id="divheader">
 								<font><b><?php echo $header_count++ ?>. Sikap</b></font>
@@ -1131,6 +1381,7 @@ if ($excel==1){
 
 
 							<?php
+						}
 							if($isi->satutabel==1){
 								$csx=2+$isi->skkon+$isi->kkmon+$isi->kalimatraporon+(2*COUNT($arrmodultipe))+$isi->matpeldeskripsion;
 								if($isi->predikaton==1){
@@ -1206,122 +1457,160 @@ if ($excel==1){
 							}
 
 							//echo var_dump($keterampilanmp13);die;
-							if($isi->satutabel<>1){
-								if($excel<>1){
-									echo "<div class='sectionrapot'>".$headerrapot.'</div>';
-								}
-							?>
+if($isi->satutabel<>1){
+	if($excel<>1){
+		if($header_count<>"A"){
+			echo "<div class='sectionrapot'>".$headerrapot.'</div>';
+		}
+	}
+?>
 
 							<div id="divheader">
-								<font><b><?php echo $header_count++ ?>. Pengetahuan</b></font>
+								<font><b><?php echo $header_count++.'. '. $isi->tabeljudul_1 ?></b></font>
 							</div>
 							<div id="divcontent">
 												<?php
 												//TAMPIL
 												$matkel="";$idmodultipe="";$no=1;$grouptext="";$jml_kel=0;$idmatpel="";$colspanmodul=0;$rowspanmodul="";
+												$totalmatpel1=0;
 												//$modular=$isi->modular;
+												if($modular>0){$colspanmodul=COUNT($arrmodultipe);$rowspanmodul=" rowspan='2' ";}
+
+												$headertablecontent="";
+												$headertablecontent.= "<table class='table tablecontent'>";
+												$headertablecontent.= "<thead>";
+												$headertablecontent.= "<tr>";
+												$headertablecontent.= "<th width='25' ".$rowspanmodul." align='center'>No.</th>";
+												$headertablecontent.= "<th".$rowspanmodul." style='width:190px !important;'>Mata Pelajaran</th>";
+													if($isi->skkon==1){
+														$headertablecontent.= "<th width='25' ".$rowspanmodul." align='center'>SKK</th>";
+													}
+													if($isi->kkmon==1){
+														$headertablecontent.= "<th width='25' ".$rowspanmodul." align='center'>KKM</th>";
+													}
+													$headertablecontent.= "<th width='*' colspan=".($colspanmodul)." align='center'>Nilai</th>";
+													if($isi->predikaton==1){
+														$headertablecontent.= "<th width='*' colspan=".($colspanmodul)." align='center'>Predikat</th>";
+													}
+													if($isi->matpeldeskripsion){
+														$headertablecontent.= "<th ".$rowspanmodul." align='center'>Deskripsi</th>";
+													}
+													$headertablecontent.= "</tr>";
+													if($modular>0){
+														$headertablecontent.= "<tr>";
+															foreach((array)$arrmodultipe as $rowmodultipe) {
+																$headertablecontent.= "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
+															}
+															if($isi->predikaton==1){
+																foreach((array)$arrmodultipe as $rowmodultipe) {
+																	$headertablecontent.= "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
+																}
+															}
+															$headertablecontent.= "</tr>";
+													}
+													$headertablecontent.= "</thead>";
+												echo $headertablecontent;
+												$jumlahdata1=$isi->jumlahdata;
+												$lengthcaption1=68; 
+												// maximum char 5923 per line 68 per paragrap 51
+
 												foreach((array)$kelompok as $pengetahuan) {
 													$nilaimp=0;$jml_kel++;
 													//$nilaimp=$CI->ns_rapor_baru_db->hitnilai_db($isi->idkelas,$isi->idsiswa,$pengetahuan->idmatpel,$isi->idtahunajaran,$isi->departemen,$isi->idregion,$isi->idrapottipe,$isi->nilaimurni,$isi->idperiode,$pengetahuan->idmatpelkelompok);
 													//echo var_dump($nilaimp);die;
-													if($modular>0){$colspanmodul=COUNT($arrmodultipe);$rowspanmodul=" rowspan='2' ";}
-													if ($matkel<>$pengetahuan->matpelkelompok){
-														 //$no=1;
-															if ($jml_kel<=1){
-																echo "<table class='table tablecontent'>";
-																echo "<thead>";
-																					echo "<tr>";
-																					echo "<th width='25' '".$rowspanmodul."' align='center'>No.</th>";
-																					echo "<th '".$rowspanmodul."'>Mata Pelajaran</th>";
-																					if($isi->skkon==1){
-																						echo "<th width='25' '".$rowspanmodul."' align='center'>SKK</th>";
-																					}
-																					if($isi->kkmon==1){
-																							echo "<th width='25' '".$rowspanmodul."' align='center'>KKM</th>";
-																					}
-																					echo "<th colspan=".($colspanmodul)." align='center'>Nilai</th>";
-																					if($isi->predikaton==1){
-																						echo "<th colspan=".($colspanmodul)." align='center'>Predikat</th>";
-																					}
-																					if($isi->matpeldeskripsion){
-																						echo "<th width='25' '".$rowspanmodul."' align='center'>Deskripsi</th>";
-																					}
-																					echo "</tr>";
-																					if($modular>0){
-																							echo "<tr>";
-																							foreach((array)$arrmodultipe as $rowmodultipe) {
-																								echo "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
-																							}
-																							if($isi->predikaton==1){
-																								foreach((array)$arrmodultipe as $rowmodultipe) {
-																									echo "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
-																								}
-																							}
-																							echo "</tr>";
-																					}
-																					echo "<tr>";
-																					echo "<td align='' colspan='".$csx."'><b>".ucwords(strtolower($pengetahuan->matpelkelompok))."</b></td>";
-																					echo "</tr>";
-																				echo "</thead>";
-																} else {
-																	echo "<tr>";
-																				echo "<td align='' colspan='".$csx."'><b>".ucwords(strtolower($pengetahuan->matpelkelompok))."</b></td>";
-																				echo "</tr>";
-
-																}//if $jml_kel
+													if(($idmatpel<>$pengetahuan->idmatpel) OR ($grouptext<>$pengetahuan->grouptext)){
+														//if ((($totalmatpel1 % $jumlahdata1)<1) and ($totalmatpel1>1)){
+														if (($lengthcaption1/68) > 25){
+															$jumlahdata1=(int)$isi->jumlahdata+1;
+															$totalmatpel1=0;
+															$lengthcaption1=0;
+															echo "</table>";
+															echo "<div class='sectionrapot'>".$headerrapot.'</div>';
+															echo $headertablecontent;
+															echo "<tr>";
+															echo "<td align='' colspan='".$csx."'><b>".ucwords(strtolower($pengetahuan->matpelkelompok))."</b></td>";
+															echo "</tr>";
+														}else{
+															if ($matkel<>$pengetahuan->matpelkelompok){
+																//$no=1;
+																echo "<tr>";
+																echo "<td align='' colspan='".$csx."'><b>".ucwords(strtolower($pengetahuan->matpelkelompok))."</b></td>";
+																echo "</tr>";
+																$lengthcaption1+=68;
+															}
 														}
+													}
 
 
 														if($pengetahuan->groupon<>"1"){
-																		if($idmatpel<>$pengetahuan->idmatpel){
-																			echo "<tr>";
-																			echo "<td align='center'>".$no++."</td>";
-																			echo "<td align='left'>".$pengetahuan->matpel;
-																			if($pengetahuan->matpelexternal){
-																				echo "&nbsp;".$isi->external;
-																			}
-																			echo "</td>";
-																			if($isi->skkon==1){
-																				echo "<td align='center'>".strtoupper($pengetahuan->jumlahskk)."</td>";
-																			}
-																			if($isi->kkmon==1){echo "<td align='center'>".strtoupper($pengetahuan->kkm)."</td>";}
+															if($idmatpel<>$pengetahuan->idmatpel){
+																$totalmatpel1++;
+																echo "<tr>";
+																echo "<td align='center'>".$no++."</td>";
+																//echo "<td align='left'>".($lengthcaption1/68).$pengetahuan->matpel;
+																echo "<td align='left'>".$pengetahuan->matpel;
+																if($pengetahuan->matpelexternal){
+																	echo "&nbsp;".$isi->external;
+																}
+																echo "</td>";
+																if($isi->skkon==1){
+																	echo "<td align='center'>".strtoupper($pengetahuan->jumlahskk)."</td>";
+																}
+																if($isi->kkmon==1){echo "<td align='center'>".strtoupper($pengetahuan->kkm)."</td>";}
 
-																			if(($pengetahuan->detail<>1) OR ($modular<>1)){
-																						$nilaimp13_tot = array_filter($nilaimp13[$pengetahuan->idmatpel]);
-																						if(array_sum($nilaimp13_tot)<1){
-																							$average=0;
-																						}else{
-																							$average = array_sum($nilaimp13_tot)/count($nilaimp13_tot);
-																						}
-																						echo "<th colspan=".($colspanmodul)." align='center'>".CEIL($average)."</th>";
+																if(($pengetahuan->detail<>1) OR ($modular<>1)){
+																			$nilaimp13_tot = array_filter($nilaimp13[$pengetahuan->idmatpel]);
+																			if(array_sum($nilaimp13_tot)<1){
+																				$average=0;
 																			}else{
-																				foreach((array)$arrmodultipe as $rowmodultipe) {
-																					if (isset($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe])){
-																							echo "<th width='*' align='center'>".CEIL($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe])."</th>";
-																					}else{
-																						echo "<th width='*' align='center' align='center'>-</th>";
-																					}
-																				}
+																				$average = array_sum($nilaimp13_tot)/count($nilaimp13_tot);
 																			}
-
-																	if(($pengetahuan->detail<>1) OR ($modular<>1)){
-																			echo "<th colspan=".($colspanmodul)." align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($average),$pengetahuan->idpredikattipe))."</th>";
-																	}else{
-																		foreach((array)$arrmodultipe as $rowmodultipe) {
-																			if (isset($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe])){
-																					echo "<th width='*' align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe]),$pengetahuan->idpredikattipe))."</th>";
-																			}else{
-																				echo "<th width='*' align='center'>-</th>";
-																			}
+																			echo "<th colspan=".($colspanmodul)." align='center'>".CEIL($average)."</th>";
+																}else{
+																	foreach((array)$arrmodultipe as $rowmodultipe) {
+																		if (isset($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe])){
+																				echo "<th align='center'>".CEIL($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe])."</th>";
+																		}else{
+																			echo "<th align='center' align='center'>-</th>";
 																		}
 																	}
-																	if($isi->matpeldeskripsion){
-																		echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>".$pengetahuan->matpeldeskripsitext."</font></td>";
+																}
+
+																if(($pengetahuan->detail<>1) OR ($modular<>1)){
+																		echo "<th colspan=".($colspanmodul)." align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($average),$pengetahuan->idpredikattipe))."</th>";
+																}else{
+																	foreach((array)$arrmodultipe as $rowmodultipe) {
+																		if (isset($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe])){
+																				echo "<th align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($nilaimp13[$pengetahuan->idmatpel][$rowmodultipe->idmodultipe]),$pengetahuan->idpredikattipe))."</th>";
+																		}else{
+																			echo "<th align='center'>-</th>";
+																		}
 																	}
-																} //$idmatpel<>$pengetahuan->idmatpel
+																}
+																if($isi->matpeldeskripsion){
+																	echo "<td align='justify'><font align='justify'>";
+																	$kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$pengetahuan->idmatpel,$isi->idsiswa);
+																	$lengthcaption1+=strlen($kompetensitextrapor);
+																	if (strlen($kompetensitextrapor)<1){
+																		$kompetensitextrapor=$CI->dbx->ns_predikat_text_lpd($isi->departemen,CEIL($average),$pengetahuan->idpredikattipe);
+																	}
+																	echo $kompetensitextrapor;
+																	if($pengetahuan->matpeldeskripsitext<>""){
+																		if ($kompetensitextrapor<>""){
+																			echo "<hr/>";
+																		}
+																		echo $pengetahuan->matpeldeskripsitext;
+																	}
+																	
+																	echo "</font></td>";
+																}else{
+																	$lengthcaption1+=68;
+																}
+															} //$idmatpel<>$pengetahuan->idmatpel
 														}else{ //$pengetahuan->group<>"1"
 															$average=0;
 															if($grouptext<>$pengetahuan->grouptext){
+																$totalmatpel1++;
 																echo "<tr>";
 																echo "<td align='center'>".$no++."</td>";
 																echo "<td align='left'>".$pengetahuan->grouptext;
@@ -1340,9 +1629,9 @@ if ($excel==1){
 																}else{
 																	foreach((array)$arrmodultipe as $rowmodultipe) {
 																		if (isset($nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe])){
-																				echo "<th width='*' align='center'>".CEIL($nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe])."</th>";
+																				echo "<th align='center'>".CEIL($nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe])."</th>";
 																		}else{
-																			echo "<th width='*' align='center'>-</th>";
+																			echo "<th align='center'>-</th>";
 																		}
 																	}
 																}
@@ -1353,14 +1642,29 @@ if ($excel==1){
 																}else{
 																	foreach((array)$arrmodultipe as $rowmodultipe) {
 																		if (isset($nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe])){
-																				echo "<th width='*' align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe]),$pengetahuan->idpredikattipe))."</th>";
+																				echo "<th align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe]),$pengetahuan->idpredikattipe))."</th>";
 																		}else{
-																			echo "<th width='*' align='center'>-</th>";
+																			echo "<th align='center'>-</th>";
 																		}
 																	}
 																}
 																if($isi->matpeldeskripsion){
-																	echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>".$pengetahuan->matpeldeskripsitext."</font></td>";
+																	echo "<td align='justify'><font align='justify'>";
+																	$kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$pengetahuan->idmatpel,$isi->idsiswa);
+																	$lengthcaption1+=strlen($kompetensitextrapor);
+																	if (strlen($kompetensitextrapor)<1){
+																		$kompetensitextrapor=$CI->dbx->ns_predikat_text_lpd($isi->departemen,CEIL($average),$pengetahuan->idpredikattipe);
+																	}
+																	echo $kompetensitextrapor;
+																	if($pengetahuan->matpeldeskripsitext<>""){
+																		if ($kompetensitextrapor<>""){
+																			echo "<hr/>";
+																		}
+																		echo $pengetahuan->matpeldeskripsitext;
+																	}
+																	echo "</font></td>";
+																}else{
+																	$lengthcaption1+=68;
 																}
 															}
 														} //$pengetahuan->group<>"1"
@@ -1384,71 +1688,49 @@ if ($excel==1){
 										
 									?>
 									<div id="divheader">
-										<font><b><?php echo $header_count++ ?>. Keterampilan</b></font>
+									<font><b><?php echo $header_count++.'. '. $isi->tabeljudul_2 ?></b></font>
 									</div>
 									<div id="divcontent">
 											<td style="padding-left:30px">
 												<?php
 												//TAMPIL Keterampilan
 												$matkel="";$idmodultipe="";$no=1;$grouptext="";$jml_kel=0;$idmatpel="";
+												//if($modular>0){$colspanmodul=COUNT($arrmodultipe);$rowspanmodul=" rowspan='2' ";}
+												echo $headertablecontent;
+												$jumlahdata=$isi->jumlahdata;
+												$totalmatpel2=0;
+												$lengthcaption2=0;
 												foreach((array)$kelompok2 as $keterampilan) {
 													$nilaimp=0;$jml_kel++;
 													//$nilaimp=$CI->ns_rapor_baru_db->hitnilai_db($isi->idkelas,$isi->idsiswa,$keterampilan->idmatpel,$isi->idtahunajaran,$isi->departemen,$isi->idregion,$isi->idrapottipe,$isi->nilaimurni,$isi->idperiode,$keterampilan->idmatpelkelompok);
 													//echo var_dump($nilaimp);die;
-													if($modular>0){$colspanmodul=COUNT($arrmodultipe);$rowspanmodul=" rowspan='2' ";}
-													if ($matkel<>$keterampilan->matpelkelompok){
-														 //$no=1;
-															if ($jml_kel<=1){
-																echo "<table class='table tablecontent'>";
-																echo "<thead>";
-
-																					echo "<tr>";
-																					echo "<th width='25' '".$rowspanmodul."' align='center'>No.</th>";
-																					echo "<th '".$rowspanmodul."'>Mata Pelajaran</th>";
-																					if($isi->skkon==1){
-																						echo "<th width='25' '".$rowspanmodul."' align='center'>SKK</th>";
-																					}
-																					if($isi->kkmon==1){
-																							echo "<th width='25' '".$rowspanmodul."' align='center'>KKM</th>";
-																					}
-																					echo "<th colspan=".($colspanmodul)." align='center'>Nilai</th>";
-																					if($isi->predikaton==1){
-																						echo "<th colspan=".($colspanmodul)." align='center'>Predikat</th>";
-																					}
-																					if($isi->matpeldeskripsion){
-																						echo "<th width='25' '".$rowspanmodul."' align='center'>Deskripsi</th>";
-																					}
-																					echo "</tr>";
-																					if($modular>0){
-																						echo "<tr>";
-																						foreach((array)$arrmodultipe as $rowmodultipe) {
-																							echo "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
-																						}
-																						if($isi->predikaton==1){
-																							foreach((array)$arrmodultipe as $rowmodultipe) {
-																								echo "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
-																							}
-																						}
-																						echo "</tr>";
-																					}
-																					echo "<tr>";
-																					echo "<td align='' colspan='".$csx."'><b>".ucwords(strtolower($keterampilan->matpelkelompok))."</b></td>";
-																					echo "</tr>";
-																				?>
-																			</thead>
-																			<tbody>
-																<?php
-																} else {
-																	echo "<tr>";
-																				echo "<td align='' colspan='".$csx."'><b>".ucwords(strtolower($keterampilan->matpelkelompok))."</b></td>";
-																				echo "</tr>";
-
-																}//if $jml_kel
+													$nilaimp=0;$jml_kel++;
+													//$nilaimp=$CI->ns_rapor_baru_db->hitnilai_db($isi->idkelas,$isi->idsiswa,$pengetahuan->idmatpel,$isi->idtahunajaran,$isi->departemen,$isi->idregion,$isi->idrapottipe,$isi->nilaimurni,$isi->idperiode,$pengetahuan->idmatpelkelompok);
+													//echo var_dump($nilaimp);die;
+													if(($idmatpel<>$keterampilan->idmatpel) OR ($grouptext<>$keterampilan->grouptext)){
+														if ((($totalmatpel2 % $jumlahdata)<1) and ($totalmatpel2>1)){
+															$jumlahdata=(int)$isi->jumlahdata+1;
+															$totalmatpel2=0;
+															echo "</table>";
+															echo "<div class='sectionrapot'>".$headerrapot.'</div>';
+															echo $headertablecontent;
+															echo "<tr>";
+															echo "<td align='' colspan='".$csx."'><b>".ucwords(strtolower($keterampilan->matpelkelompok))."</b></td>";
+															echo "</tr>";
+														}else{
+															if ($matkel<>$keterampilan->matpelkelompok){
+																//$no=1;
+																echo "<tr>";
+																echo "<td align='' colspan='".$csx."'><b>".ucwords(strtolower($keterampilan->matpelkelompok))."</b></td>";
+																echo "</tr>";
+															}
 														}
+													}
 
 
 														if($keterampilan->groupon<>"1"){
 																if($idmatpel<>$keterampilan->idmatpel){
+																	$totalmatpel2++;
 																	echo "<tr>";
 																	echo "<td align='center'>".$no++."</td>";
 																	echo "<td align='left'>".$keterampilan->matpel;
@@ -1490,10 +1772,27 @@ if ($excel==1){
 																			}
 																		}
 																	}
+																	if($isi->matpeldeskripsion){
+																		echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>";
+																		$kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$keterampilan->idmatpel,$isi->idsiswa);
+																		$lengthcaption2+=strlen($kompetensitextrapor);
+																		if (strlen($kompetensitextrapor)<1){
+																			$kompetensitextrapor=$CI->dbx->ns_predikat_text_lpd($isi->departemen,CEIL($average),$keterampilan->idpredikattipe);
+																		}
+																		echo $kompetensitextrapor;
+																		if($keterampilan->matpeldeskripsitext<>""){
+																			if ($kompetensitextrapor<>""){
+																				echo "<hr/>";
+																			}
+																			echo $keterampilan->matpeldeskripsitext;
+																		}
+																		echo "</font></td>";
+																	}
 																} //$idmatpel<>$keterampilan->idmatpel
 														}else{ //$keterampilan->group<>"1"
 															$average=0;
 															if($grouptext<>$keterampilan->grouptext){
+																$totalmatpel2++;
 																echo "<tr>";
 																echo "<td align='center'>".$no++."</td>";
 																echo "<td align='left'>".$keterampilan->grouptext;
@@ -1533,6 +1832,22 @@ if ($excel==1){
 																		}
 																	}
 																}
+																if($isi->matpeldeskripsion){
+																	echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>";
+																	$kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$keterampilan->idmatpel,$isi->idsiswa);
+																	$lengthcaption2+=strlen($kompetensitextrapor);
+																	if (strlen($kompetensitextrapor)<1){
+																		$kompetensitextrapor=$CI->dbx->ns_predikat_text_lpd($isi->departemen,CEIL($average),$keterampilan->idpredikattipe);
+																	}
+																		echo $kompetensitextrapor;
+																		if($keterampilan->matpeldeskripsitext<>""){
+																			if ($kompetensitextrapor<>""){
+																				echo "<hr/>";
+																			}
+																			echo $keterampilan->matpeldeskripsitext;
+																		}
+																	echo "</font></td>";
+																}
 															}
 														} //$keterampilan->group<>"1"
 
@@ -1552,87 +1867,99 @@ if ($excel==1){
 <!-------------------------------------------------------------------------------------------------------------------------------->
 
 <?php
-}else{
+}else{ // satutabel
 echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 <div id="divheader">
-	<font><b><?php echo $header_count++ ?>. Pengetahuan Dan Keterampilan</b></font>
+<font><b><?php echo $header_count++.'. '. $isi->tabeljudul_1 ?></b></font>
 </div>
 <div id="divcontent">
 					<?php
 					//TAMPIL
 					$matkel="";$idmodultipe="";$no=1;$grouptext="";$jml_kel=0;$idmatpel="";$colspanmodul=0;$rowspanmodul="";
-					$modular=$isi->modular;
+					//$modular=$isi->modular;
+					$headertablecontent="";
+					if($modular==1){$colspanmodul=COUNT($arrmodultipe);$rowspanmodul=" rowspan='3' ";}else{$rowspanmodul=" rowspan='2' ";}
+					$headertablecontent.= "<table class='table tablecontent breaktablepk'>";
+					$headertablecontent.= "<thead>";
+					$headertablecontent.= "<tr>";
+					$headertablecontent.= "<th width='25' ".$rowspanmodul." align='center'>No.</th>";
+					$headertablecontent.= "<th ".$rowspanmodul.">Mata Pelajaran</th>";
+					if($isi->skkon==1){
+						$headertablecontent.= "<th width='25' ".$rowspanmodul." align='center'>SKK</th>";
+					}
+					if($isi->kkmon==1){
+							$headertablecontent.= "<th width='25' ".$rowspanmodul." align='center'>KKM</th>";
+					}
+					$colspansatutabel=(1+$isi->predikaton);
+					if($modular==1){
+						$colspansatutabel=$colspansatutabel*($colspanmodul);
+					}
+					$headertablecontent.= "<th colspan=".$colspansatutabel." align='center'>Pengetahuan</th>";
+					$headertablecontent.= "<th colspan=".$colspansatutabel." align='center'>Keterampilan</th>";
+					if($isi->matpeldeskripsion){
+						$headertablecontent.= "<th width='25' ".$rowspanmodul." align='center'>Deskripsi</th>";
+					}
+					$headertablecontent.= "</tr>";
+					$headertablecontent.= "<tr>";
+					$headertablecontent.= "<th colspan=".($colspanmodul)." align='center'>Nilai</th>";
+					if($isi->predikaton==1){
+						$headertablecontent.= "<th colspan=".($colspanmodul)." align='center'>Predikat</th>";
+					}
+					$headertablecontent.= "<th colspan=".($colspanmodul)." align='center'>Nilai</th>";
+					if($isi->predikaton==1){
+						$headertablecontent.= "<th colspan=".($colspanmodul)." align='center'>Predikat</th>";
+					}
+					$headertablecontent.= "</tr>";
+					if($modular==1){
+							$headertablecontent.= "<tr>";
+							foreach((array)$arrmodultipe as $rowmodultipe) {
+								$headertablecontent.= "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
+							}
+							if($isi->predikaton==1){
+								foreach((array)$arrmodultipe as $rowmodultipe) {
+									$headertablecontent.= "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
+								}
+							}
+							foreach((array)$arrmodultipe as $rowmodultipe) {
+								$headertablecontent.= "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
+							}
+							if($isi->predikaton==1){
+								foreach((array)$arrmodultipe as $rowmodultipe) {
+									$headertablecontent.= "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
+								}
+							}
+							$headertablecontent.= "</tr>";
+					}
+					$headertablecontent.= "</thead>";
+
+					$lengthcaption1=68; 
+					echo $headertablecontent;
 					foreach((array)$kelompok as $pengetahuan) {
 						$nilaimp=0;$jml_kel++;
 						//$nilaimp=$CI->ns_rapor_baru_db->hitnilai_db($isi->idkelas,$isi->idsiswa,$pengetahuan->idmatpel,$isi->idtahunajaran,$isi->departemen,$isi->idregion,$isi->idrapottipe,$isi->nilaimurni,$isi->idperiode,$pengetahuan->idmatpelkelompok);
 						//echo var_dump($nilaimp);die;
-						if($modular==1){$colspanmodul=COUNT($arrmodultipe);$rowspanmodul=" rowspan='3' ";}else{$rowspanmodul=" rowspan='2' ";}
-						if ($matkel<>$pengetahuan->matpelkelompok){
+						if(($idmatpel<>$pengetahuan->idmatpel) OR ($grouptext<>$pengetahuan->grouptext)){
 							 //$no=1;
-								if ($jml_kel<=1){
-									echo "<table class='table tablecontent breaktablepk'>";
-									echo "<thead>";
-														echo "<tr>";
-														echo "<th width='25' '".$rowspanmodul."' align='center'>No.</th>";
-														echo "<th '".$rowspanmodul."'>Mata Pelajaran</th>";
-														if($isi->skkon==1){
-															echo "<th width='25' '".$rowspanmodul."' align='center'>SKK</th>";
-														}
-														if($isi->kkmon==1){
-																echo "<th width='25' '".$rowspanmodul."' align='center'>KKM</th>";
-														}
-														$colspansatutabel=(1+$isi->predikaton);
-														if($modular==1){
-															$colspansatutabel=$colspansatutabel*($colspanmodul);
-														}
-														echo "<th colspan=".$colspansatutabel." align='center'>Pengetahuan</th>";
-														echo "<th colspan=".$colspansatutabel." align='center'>Keterampilan</th>";
-														if($isi->matpeldeskripsion){
-															echo "<th width='25' '".$rowspanmodul."' align='center'>Deskripsi</th>";
-														}
-														echo "</tr>";
-														echo "<tr>";
-														echo "<th colspan=".($colspanmodul)." align='center'>Nilai</th>";
-														if($isi->predikaton==1){
-															echo "<th colspan=".($colspanmodul)." align='center'>Predikat</th>";
-														}
-														echo "<th colspan=".($colspanmodul)." align='center'>Nilai</th>";
-														if($isi->predikaton==1){
-															echo "<th colspan=".($colspanmodul)." align='center'>Predikat</th>";
-														}
-														echo "</tr>";
-														if($modular==1){
-																echo "<tr>";
-																foreach((array)$arrmodultipe as $rowmodultipe) {
-																	echo "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
-																}
-																if($isi->predikaton==1){
-																	foreach((array)$arrmodultipe as $rowmodultipe) {
-																		echo "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
-																	}
-																}
-																foreach((array)$arrmodultipe as $rowmodultipe) {
-																	echo "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
-																}
-																if($isi->predikaton==1){
-																	foreach((array)$arrmodultipe as $rowmodultipe) {
-																		echo "<th align='center' width='45px'>Modul ".$rowmodultipe->idmodultipe."</th>";
-																	}
-																}
-																echo "</tr>";
-														}
-														echo "</thead>";
-														echo "<tr>";
-														echo "<td align='' colspan='".$csx."'><b>".$pengetahuan->matpelkelompok."</b></td>";
-														echo "</tr>";
+							if (($lengthcaption1/68) > $isi->jumlahdata){
+								$lengthcaption1=0;
+								echo "</table>";
+								echo "<div class='sectionrapot'>".$headerrapot.'</div>';
+								echo $headertablecontent;
 
-									} else {
-										echo "<tr>";
-													echo "<td align='' colspan='".$csx."'><b>".($pengetahuan->matpelkelompok)."</b></td>";
-													echo "</tr>";
-
-									}//if $jml_kel
+								echo "<tr>";
+								echo "<td align='' colspan='".$csx."'><b>".$pengetahuan->matpelkelompok."</b></td>";
+								echo "</tr>";
+							
+							}else{
+								if ($matkel<>$pengetahuan->matpelkelompok){
+									echo "<tr>";
+									echo "<td align='' colspan='".$csx."'><b>".$pengetahuan->matpelkelompok."</b></td>";
+									echo "</tr>";
+									$lengthcaption1+=68;
+								}
 							}
+						}
+						
 
 							//isi
 							//**************************************************************************************************************
@@ -1674,7 +2001,21 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 																	echo "<th colspan=".($colspanmodul)." align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($averageketerampilan),$pengetahuan->idpredikattipe))."</th>";
 															}
 															if($isi->matpeldeskripsion){
-																echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>".$pengetahuan->matpeldeskripsitext."</font></td>";
+																echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>";
+																$kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$pengetahuan->idmatpel,$isi->idsiswa);
+																if (strlen($kompetensitextrapor)<1){
+																	$kompetensitextrapor=$CI->dbx->ns_predikat_text_lpd($isi->departemen,CEIL($averageketerampilan),$pengetahuan->idpredikattipe);
+																}
+																echo $kompetensitextrapor;
+																$lengthcaption1+=strlen($kompetensitextrapor);
+																if($pengetahuan->matpeldeskripsitext<>""){
+																	if ($kompetensitextrapor<>""){
+																		echo "<hr/>";
+																	}
+																	echo $pengetahuan->matpeldeskripsitext;
+																	$lengthcaption1+=strlen($pengetahuan->matpeldeskripsitext);
+																}
+																echo "</font></td>";
 															}
 												}else{ //MODULAR
 													foreach((array)$arrmodultipe as $rowmodultipe) {
@@ -1710,7 +2051,21 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 															}
 													}
 													if($isi->matpeldeskripsion){
-														echo "<td width='200' align='justify'><font align='justify' style='width:100% !important'>".$pengetahuan->matpeldeskripsitext."</font></td>";
+														echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>";
+														$kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$pengetahuan->idmatpel,$isi->idsiswa);
+														$lengthcaption1+=strlen($kompetensitextrapor);
+														if (strlen($kompetensitextrapor)<1){
+															$kompetensitextrapor=$CI->dbx->ns_predikat_text_lpd($isi->departemen,CEIL($nilaimp13[$keterampilan->idmatpel][$rowmodultipe->idmodultipe]),$keterampilan->idpredikattipe);
+														}
+														echo $kompetensitextrapor;
+														if($pengetahuan->matpeldeskripsitext<>""){
+															if ($kompetensitextrapor<>""){
+																echo "<hr/>";
+															}
+															echo $pengetahuan->matpeldeskripsitext;
+															$lengthcaption1+=strlen($pengetahuan->matpeldeskripsitext);
+														}
+														echo "</font></td>";
 													}
 											} //MODULAR
 									} //$idmatpel<>$pengetahuan->idmatpel
@@ -1755,6 +2110,23 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 											}
 										}
 									}
+									if($isi->matpeldeskripsion){
+										echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>";
+										$kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$pengetahuan->idmatpel,$isi->idsiswa);
+										if (strlen($kompetensitextrapor)<1){
+											$kompetensitextrapor=$CI->dbx->ns_predikat_text_lpd($isi->departemen,CEIL($nilaimp13group[$pengetahuan->idgroup][$rowmodultipe->idmodultipe]),$pengetahuan->idpredikattipe);
+										}
+										echo $kompetensitextrapor;
+										$lengthcaption1+=strlen($kompetensitextrapor);
+										if($pengetahuan->matpeldeskripsitext<>""){
+											if ($kompetensitextrapor<>""){
+												echo "<hr/>";
+											}
+											echo $pengetahuan->matpeldeskripsitext;
+											$lengthcaption1+=strlen($pengetahuan->matpeldeskripsitext);
+										}
+										echo "</font></td>";
+									}
 								}
 							} //$pengetahuan->group<>"1"
 
@@ -1771,7 +2143,7 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 <?php } //$isi->satutabel ?>
 <!-------------------------------------------------------------------------------------------------------------------------------->
 <!-------------------------------------------------------------------------------------------------------------------------------->
-<?php if($isi->nonakademikon) {
+<?php if(($isi->nonakademikon) OR ($nonakademikdata<>"")) {
 	?>
 											<?php
 											if($excel<>1){
@@ -1779,29 +2151,54 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 											}
 											?>
 											<div id="divheader">
-												<font><b><?php echo $header_count++ ?>. Non Akademik</b></font>
+											<font><b><?php echo $header_count++.'. '. $isi->tabeljudul_3 ?></b></font>
 											</div>
 											<div id="divcontent">
 														<?php
 														//TAMPIL Keterampilan
-														$matkel="";$idmodultipe="";$no=1;$grouptext="";$jml_kel=0;$idmatpel="";$jmlmatpel=0;
+														$matkel="";$idmodultipe="";$no=1;$grouptext="";$jml_kel=0;$idmatpel="";$jmlmatpel=0;$colspanmodul=0;
+														//if($modular>0){$colspanmodul=$arrmodultipe;$rowspanmodul=" rowspan='2' ";}
+														//if($modular<>1){$rowspanmodul=" rowspan='2' ";}
+														$rowspanmodul=" rowspan='2' ";
+														if($nonakademikdata==""){
+															echo "<table class='table tablecontent nonakademik'>";
+															echo "<thead>";
+															echo "<tr>";
+															echo "<th width='25' ".$rowspanmodul." align='center'>No.</th>";
+															echo "<th ".$rowspanmodul.">Mata Pelajaran</th>";
+															echo "<th colspan='2' align='center'>Capaian</th>";
+															if($isi->matpeldeskripsion){
+																echo "<th width='200' ".$rowspanmodul." align='center'>Deskripsi</th>";
+															}
+															echo "</tr>";
+															echo "<tr>";
+															echo "<th align='center'>Nilai</th>";
+															if($isi->predikaton==1){
+																echo "<th align='center'>Predikat</th>";
+															}
+															echo "</tr></thead>";
+															//echo "<tr><td colspan='5'>&nbsp;</td></tr>";
+															echo "<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>";
+															echo "</table>";
+														}
 														foreach((array)$nonakademikdata as $nonakademik) {
 															$nilaimp=0;$jml_kel++;
 															//$nilaimp=$CI->ns_rapor_baru_db->hitnilai_db($isi->idkelas,$isi->idsiswa,$nonakademik->idmatpel,$isi->idtahunajaran,$isi->departemen,$isi->idregion,$isi->idrapottipe,$isi->nilaimurni,$isi->idperiode,$nonakademik->idmatpelkelompok);
 															//echo var_dump($nilaimp);die;
-															if($modular>0){$colspanmodul=$arrmodultipe;$rowspanmodul=" rowspan='2' ";}
+															
+
 															if ($matkel<>$nonakademik->matpelkelompok){
 																 //$no=1;
 																	if (($jml_kel<=1)){
 																		echo "<table class='table tablecontent nonakademik'>";
 																		echo "<thead>";
 																							echo "<tr>";
-																							echo "<th width='25' '".$rowspanmodul."' align='center'>No.</th>";
-																							echo "<th '".$rowspanmodul."'>Mata Pelajaran</th>";
+																							echo "<th width='25' ".$rowspanmodul." align='center'>No.</th>";
+																							echo "<th ".$rowspanmodul.">Mata Pelajaran</th>";
 																							echo "<th colspan='2' align='center'>Capaian</th>";
-																							if($isi->matpeldeskripsion){
-																								echo "<th width='25' '".$rowspanmodul."' align='center'>Deskripsi</th>";
-																							}
+																							//if($isi->matpeldeskripsion){
+																								echo "<th width='200' ".$rowspanmodul." align='center'>Deskripsi</th>";
+																							//}
 																							echo "</tr>";
 																							echo "<tr>";
 																							echo "<th align='center'>Nilai</th>";
@@ -1816,7 +2213,7 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 																						?>
 																		<?php
 																		} else {
-																			if(($jmlmatpel%10==0) and ($jmlmatpel>0) and ($idmatpel<>$nonakademik->idmatpel)){
+																			if(($jmlmatpel%12==0) and ($jmlmatpel>0) and ($idmatpel<>$nonakademik->idmatpel)){
 																				echo "</table><br/><br/><br/>";
 																				//echo $nonakademik->matpel;
 																				if($excel<>1){
@@ -1825,12 +2222,12 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 																				echo "<table class='table tablecontent nonakademik'>";
 																				echo "<thead>";
 																									echo "<tr>";
-																									echo "<th width='25' '".$rowspanmodul."' align='center'>No.</th>";
-																									echo "<th '".$rowspanmodul."'>Mata Pelajaran</th>";
+																									echo "<th width='25' ".$rowspanmodul." align='center'>No.</th>";
+																									echo "<th ".$rowspanmodul.">Mata Pelajaran</th>";
 																									echo "<th colspan='2' align='center'>Capaian</th>";
-																									if($isi->matpeldeskripsion){
-																										echo "<th width='25' '".$rowspanmodul."' align='center'>Deskripsi</th>";
-																									}
+																									//if($isi->matpeldeskripsion){
+																										echo "<th width='200' ".$rowspanmodul." align='center'>Deskripsi</th>";
+																									//}
 																									echo "</tr>";
 																									echo "<tr>";
 																									echo "<th align='center'>Nilai</th>";
@@ -1848,7 +2245,7 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 																			}
 																		}//if $jml_kel
 																}else{ //($matkel<>$nonakademik->matpelkelompok)
-																	if(($jmlmatpel%10==0) and ($jmlmatpel>0) and ($idmatpel<>$nonakademik->idmatpel)){
+																	if(($jmlmatpel%12==0) and ($jmlmatpel>0) and ($idmatpel<>$nonakademik->idmatpel)){
 																		echo "</table><br/><br/><br/>";
 																		//echo $nonakademik->matpel;
 																		if($excel<>1){
@@ -1857,12 +2254,12 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 																		echo "<table class='table tablecontent nonakademik'>";
 																		echo "<thead>";
 																							echo "<tr>";
-																							echo "<th width='25' '".$rowspanmodul."' align='center'>No.</th>";
-																							echo "<th '".$rowspanmodul."'>Mata Pelajaran</th>";
+																							echo "<th width='25' ".$rowspanmodul." align='center'>No.</th>";
+																							echo "<th ".$rowspanmodul.">Mata Pelajaran</th>";
 																							echo "<th colspan='2' align='center'>Capaian</th>";
-																							if($isi->matpeldeskripsion){
-																								echo "<th width='25' '".$rowspanmodul."' align='center'>Deskripsi</th>";
-																							}
+																							//if($isi->matpeldeskripsion){
+																								echo "<th width='200' ".$rowspanmodul." align='center'>Deskripsi</th>";
+																							//}
 																							echo "</tr>";
 																							echo "<tr>";
 																							echo "<th align='center'>Nilai</th>";
@@ -1893,9 +2290,21 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 																					if($nonakademik->sembunyinilai<>1){echo CEIL($average);}else{echo '';}
 																				echo "</th>";
 																				echo "<th colspan=".($colspanmodul)." align='center'>".strtoupper($CI->dbx->ns_predikat($isi->departemen,CEIL($average),$nonakademik->idpredikattipe))."</th>";
-																				if($isi->matpeldeskripsion){
-																					echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>".$nonakademik->matpeldeskripsitext."</font></td>";
-																				}
+																				//if($isi->matpeldeskripsion){
+																					echo "<td width='200'  align='justify'><font align='justify' style='width:100% !important'>";
+																					$kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$nonakademik->idmatpel,$isi->idsiswa);
+																					if (strlen($kompetensitextrapor)<1){
+																						$kompetensitextrapor=$CI->dbx->ns_predikat_text_lpd($isi->departemen,CEIL($average),$nonakademik->idpredikattipe);
+																					}
+																					echo $kompetensitextrapor;
+																					if($nonakademik->matpeldeskripsitext<>""){
+																						if ($kompetensitextrapor<>""){
+																							echo "<hr/>";
+																						}
+																						echo $nonakademik->matpeldeskripsitext;
+																					}
+																					echo "</font></td>";
+																				//}
 																		} //$idmatpel<>$nonakademik->idmatpel
 
 																$matkel=$nonakademik->matpelkelompok;
@@ -1910,14 +2319,14 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 																</table>
 													</div>
 	<?php
-	if($excel<>1){
+	if(($excel<>1) and ($jmlmatpel>4)){
 		echo "<div class='sectionrapot'>".$headerrapot.'</div>';
 	}
 } else { // $isi->nonakademikon
 		?>
 											<?php echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 											<div id="divheader">
-												<font><b><?php echo $header_count++ ?>. Ekstra Kurikuler</b></font>
+											<font><b><?php echo $header_count++.'. '. $isi->tabeljudul_3 ?></b></font>
 											</div>
 											<div id="divcontent2">
 														<?php
@@ -1925,7 +2334,7 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 																echo "<table class='table tablecontent'>";
 																echo "<tr>";
 																echo "<th width='25' align='center'>No.</th>";
-																echo "<th width='35%' align='center'>Kegiatan Ekstrakurikuler</th>";
+																echo "<th width='35%' align='center'>Kegiatan Ekstra Kurikuler</th>";
 																echo "<th align='center'>Predikat</th>";
 																echo "<th width='35%' align='center'>Deskripsi</th>";
 																echo "</tr>";
@@ -1938,6 +2347,7 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 																	echo "<td>".$rowekstrakurikuler->deskripsiekstrakurikuler."</td>";
 																	echo "</tr>";
 																	}
+																echo "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 																echo "</table>";
 														?>
 											</div>
@@ -1960,7 +2370,7 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 													$noprestasi=1;
 													foreach((array)$prestasirapot as $rowprestasi) {
 														echo "<tr>";
-														echo "<td>".$noprestasi++."</td>";
+														echo "<td align='center'>".$noprestasi++."</td>";
 														echo "<td>".$rowprestasi->jeniskegiatan."</td>";
 														echo "<td>".$rowprestasi->prestasi."</td>";
 														echo "</tr>";
@@ -2140,9 +2550,37 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 	        	$align="right";
 	        	$titik='...................................';
 
-        ?>
+				//$digital=1;
+		?>
         <table>
-					<?php if($isi->tipe<>'SKL'){ ?>
+					<?php if(($isi->tipe=='SKL') OR ($isi->tipe=='SKL23')){ ?>
+						<tr>
+										<td align="center" colspan="2">&nbsp;</td>
+										<td align="left" width="250"><b><?php echo $isi->citytext; ?>, <?php echo $CI->p_c->tgl_indo($isi->tanggalkegiatan); ?></b></td>
+									</tr>
+									<tr>
+										<td align="right" rowspan='3'>
+												<table class='table tablecontentdetail' style="width:90px !important;height:132px !important;">
+													<tr>
+															<td valign='center' align='center'>
+																	Pas Foto 4x6
+															</td>
+													</tr>
+												</table>
+										</td>
+										<td align="left" width="50px" rowspan="3">&nbsp;</td>
+										<td align="left" ><b>Ketua PKBM Kak Seto</b></td>
+									</tr>
+									<tr>
+										<td align="center" height="80px">&nbsp;</td>
+									</tr>
+									<tr>
+										<!-- <td align="left"><b>Dimas Ramdani Triputra, S.E., M.M</b></td> -->
+										<td align="left"><b>Sri Kurnia Nuraeni, S.Pd., M.M</b></td>
+										
+									</tr>
+							<?php }else{ ?>
+								
 								  <tr>
 										<td align="center" width="<?php echo $width; ?>"><b>Mengetahui,</b></td>
 										<td align="<?php echo $align;?>" <?php echo $cs2; ?>><b><?php echo $isi->citytext; ?>, <?php echo $CI->p_c->tgl_indo($isi->tanggalkegiatan); ?></b></td>
@@ -2166,7 +2604,7 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 													echo "<td align='center' width=".$width."><b>Kepala Akademik Paket ".strtoupper($paket)."</b></td>";
 												}
 											}else{
-												echo "<td align='center' width=".$width."><b>Kepala Sekolah";
+												echo "<td align='center' width=".$width."><b>Kepala Sekolah ";
 												if ($isi->namajenjang==1){
 													echo $isi->departemenpanjang;
 												}else {
@@ -2236,32 +2674,7 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 				            	<td align="center"><b><?php echo $CI->dbx->getpegawai($isi->idwali,0,0); ?></b></td>
 				            	<td align="center"><b><?php echo $CI->dbx->getpegawai($isi->idkepsek,0,0); ?></b></td>
 				            </tr>
-							<?php }else{?>
-									<tr>
-										<td align="center" colspan="2">&nbsp;</td>
-										<td align="left" width="250"><b><?php echo $isi->citytext; ?>, <?php echo $CI->p_c->tgl_indo($isi->tanggalkegiatan); ?></b></td>
-									</tr>
-									<tr>
-										<td align="right" rowspan='3'>
-												<table class='table tablecontentdetail' style="width:90px !important;height:132px !important;">
-													<tr>
-															<td valign='center' align='center'>
-																	Pas Foto 4x6
-															</td>
-													</tr>
-												</table>
-										</td>
-										<td align="left" width="50px" rowspan="3">&nbsp;</td>
-										<td align="left" ><b>Ketua PKBM Kak Seto</b></td>
-									</tr>
-									<tr>
-										<td align="center" height="80px">&nbsp;</td>
-									</tr>
-									<tr>
-										<!-- <td align="left"><b>Dimas Ramdani Triputra, S.E., M.M</b></td> -->
-										<td align="left"><b>Sri Kurnia Nuraeni, S.Pd., M.M</b></td>
-										
-									</tr>
+									
 							<?php } ?>
         </table>
 		<?php 
@@ -2312,5 +2725,18 @@ echo "<div class='sectionrapot'>".$headerrapot.'</div>'; ?>
 		<?php } ?>
 		</center>
 	</section>
+
 </body>
 </html>
+<?php
+if ($excel==1){
+	header('Content-Type: application/vnd.ms-excel'); //IE and Opera
+	header('Content-Type: application/x-msexcel'); // Other browsers
+	header('Content-Disposition: attachment; filename=rapot_'.$isi->siswa.'|'.$isi->nis.'.xls');
+	header('Expires: 0');
+	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+}else { ?>
+	<script language="javascript">
+		window.print();
+	</script>
+<?php } ?>

@@ -5,30 +5,28 @@ session_start(); //we need to start session in order to access it through CI
 Class user_authentication extends CI_Controller {
 
 public function __construct() {
-parent::__construct();
+	parent::__construct();
 	if($this->config->item("maintenance")<>1){
-		// Load form helper library
-		$this->load->helper('form');
+			// Load form helper library
+			$this->load->helper('form');
 
-		// Load form validation library
-		$this->load->library('form_validation');
+			// Load form validation library
+			$this->load->library('form_validation');
 
-		// Load session library
-		$this->load->library('session');
+			// Load session library
+			$this->load->library('session');
 
-		// Load database
-		$this->load->model('user_authentication_db');
+			// Load database
+			$this->load->model('user_authentication_db');
+		}
+
 	}
-
-}
 
 public function index()
 {
 	$data=NULL;
 	if($this->config->item("maintenance")=="1"){
-		$data['form']='SIK Maintenance';
-		$data['form_small']='Tunggu Informasi Selajutnya dari PPTIK';
-		$this->load->view('maintenance_v',$data);
+		redirect('/main/maintenance');
 	}else{
 		$data['idcompany_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM hrm_company WHERE aktif=1 ORDER BY kodecabang",'up',1);
 		$data['form']='Masuk';

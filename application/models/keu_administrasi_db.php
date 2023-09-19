@@ -59,7 +59,7 @@ Class keu_administrasi_db extends CI_Model {
 							LEFT JOIN pegawai p ON p.replid=k.idwali 
 							LEFT JOIN angkatan akt ON akt.replid=s.idangkatan
 							LEFT JOIN regional r ON r.replid=s.region
-							LEFT JOIN calonsiswa cs ON cs.replidsiswa=s.replid
+							LEFT JOIN calonsiswa cs ON cs.replid=s.replidcalon
 							WHERE s.replid IS NOT NULL ".$cari." ".$cari2." ".$order;
 			//echo $sql;die;
 			$data['show_table']=$this->dbx->data($sql);
@@ -124,7 +124,7 @@ Class keu_administrasi_db extends CI_Model {
 							LEFT JOIN tahunajaran t ON t.replid = k.idtahunajaran
 							LEFT JOIN angkatan akt ON akt.replid=s.idangkatan
 							LEFT JOIN regional r ON r.replid=s.region
-							LEFT JOIN calonsiswa cs ON cs.replidsiswa=s.replid
+							LEFT JOIN calonsiswa cs ON cs.replid=s.replidcalon
 							WHERE s.replid='".$id."'";
 			$data['isi'] = $this->dbx->rows($sql);
 

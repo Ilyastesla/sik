@@ -4,7 +4,8 @@ public function __construct() {
 parent::__construct();
 	$this->load->library('dbx');
 }
-    // Read data FROM database to show data in admin page
+    
+	//LEFT JOIN calonsiswa cs ON cs.replidsiswa=c.replid
     public function datasiswa_db($idsiswa){
         $sql=  " SELECT c.*,cs.replid as replidcalon,cs.nopendaftaran,ss.status, ks.kondisi as kondisi,
             DAY(c.tgllahir) AS tanggal, MONTH(c.tgllahir) AS bulan, YEAR(c.tgllahir) AS tahun, ax.alamat_surat
@@ -34,7 +35,7 @@ parent::__construct();
             ,(SELECT instansi FROM instansi WHERE replid=c.instansiwali) as instansiwali
             ,(SELECT penghasilan FROM penghasilan WHERE replid=c.penghasilanwali) as penghasilanwali
             ,r.region,j.jurusan,ja.jurusan as jurusan_asal,pjx.penanggung_jawab as pj,pjy.penanggung_jawab as pja
-            ,ta.departemen, ta.tahunajaran, k.kelas, t.tingkat as tingkattext,t3.tingkat as tingkatcover
+            ,ta.departemen, ta.tahunajaran,concat(k.kelas,' (',k.keterangan,')') as kelastext, t.tingkat as tingkattext,t3.tingkat as tingkatcover
             ,akt.angkatan
             ,(SELECT CONCAT(k.kelas,' [',ta.tahunajaran,']') FROM kelas k
                 INNER JOIN tahunajaran ta ON k.idtahunajaran=ta.replid
@@ -47,22 +48,22 @@ parent::__construct();
               ,c. sekolahjenjang,t2.tingkat as tingkat_asaltext
 			  ,com.nama as companytext,com.city as citytext,com.cap as captext,com.logo as logotext,ta.idkepsek,com.formal
             FROM siswa c
-				LEFT JOIN calonsiswa cs ON cs.replidsiswa=c.replid
-              LEFT JOIN kondisisiswa ks on ks.replid = c.kondisi
-              LEFT JOIN statussiswa ss on ss.replid = c.status
-              LEFT JOIN jurusan j ON j.replid=c.jurusan
-              LEFT JOIN regional r ON r.replid=c.region
-              LEFT JOIN alamat_surat ax ON ax.replid=c.alamatsurat
-              LEFT JOIN penanggung_jawab pjx ON pjx.replid=c.pj
-              LEFT JOIN penanggung_jawab pjy ON pjy.replid=c.pja
-              LEFT JOIN jurusan_asal ja ON ja.replid=c.jurusan_asal
-              LEFT JOIN kelas k ON k.replid = c.idkelas
-              LEFT JOIN tahunajaran ta ON k.idtahunajaran = ta.replid
-			  LEFT JOIN hrm_company com ON com.replid=ta.idcompany
-              LEFT JOIN tingkat t ON k.idtingkat = t.replid
-			  LEFT JOIN tingkat t3 ON c.tingkat = t3.replid 
-			  LEFT JOIN tingkat t2 ON t2.replid=c.tingkat_asal
-              LEFT JOIN angkatan akt ON akt.replid=c.idangkatan
+				LEFT JOIN calonsiswa cs ON cs.replid=c.replidcalon 
+				LEFT JOIN kondisisiswa ks on ks.replid = c.kondisi
+				LEFT JOIN statussiswa ss on ss.replid = c.status
+				LEFT JOIN jurusan j ON j.replid=c.jurusan
+				LEFT JOIN regional r ON r.replid=c.region
+				LEFT JOIN alamat_surat ax ON ax.replid=c.alamatsurat
+				LEFT JOIN penanggung_jawab pjx ON pjx.replid=c.pj
+				LEFT JOIN penanggung_jawab pjy ON pjy.replid=c.pja
+				LEFT JOIN jurusan_asal ja ON ja.replid=c.jurusan_asal
+				LEFT JOIN kelas k ON k.replid = c.idkelas
+				LEFT JOIN tahunajaran ta ON k.idtahunajaran = ta.replid
+				LEFT JOIN hrm_company com ON com.replid=ta.idcompany
+				LEFT JOIN tingkat t ON k.idtingkat = t.replid
+				LEFT JOIN tingkat t3 ON c.tingkat = t3.replid 
+				LEFT JOIN tingkat t2 ON t2.replid=c.tingkat_asal
+				LEFT JOIN angkatan akt ON akt.replid=c.idangkatan
             WHERE c.replid='".$idsiswa."'";
 		//echo $sql;die;
         $data['isi']= $this->dbx->rows($sql);
@@ -87,12 +88,46 @@ parent::__construct();
 											WHERE rks.nis='".$data['isi']->nis."' ORDER BY mulai DESC";
 				$data['riwayat']=$this->dbx->data($sqlriwayat);
 
-				$sqlmutasi="SELECT ms.*,jm.jenismutasi as jenismutasitext
+				$sqlmutasi="SELECT ms.*,jm.jenismutasi as jenismutasitext,com.nama as companytext
 										FROM mutasisiswa ms
 										LEFT JOIN jenismutasi jm ON jm.replid=ms.jenismutasi
+										LEFT JOIN hrm_company com ON com.replid=ms.idcompany
 										WHERE ms.idsiswa='".$idsiswa."' ORDER BY ms.tglmutasi";
 				$data['riwayatmutasi']=$this->dbx->data($sqlmutasi);
 
+				$sqlrapor="SELECT pv.*,ta.tahunajaran,k.kelas,CONCAT(rt.rapottipe,' ',rt.keterangan) as rapottipe,ta.departemen,p.periode,ta.aktif as aktiftahunajaran
+								,k.idwali,rt.k13 
+							FROM ns_rapot pv
+							LEFT JOIN tahunajaran ta ON ta.replid=pv.idtahunajaran
+							LEFT JOIN kelas k ON k.replid=pv.idkelas
+							LEFT JOIN ns_rapottipe rt ON rt.replid=pv.idrapottipe
+							LEFT JOIN ns_periode p ON p.replid=pv.idperiode
+							WHERE pv.deletethis<>1 AND pv.idsiswa='".$idsiswa."'
+							ORDER BY ta.tahunajaran, p.periode,pv.tanggalkegiatan,k.kelas,rt.rapottipe";
+				//echo $sqlrapor;
+				$data['riwayatrapor']=$this->dbx->data($sqlrapor);
+
+				$sqlkonseling = "SELECT r.*,s.nis,s.nama as namasiswatext,s.abk,s.aktif as aktifsiswa
+                                ,ta.tahunajaran as tahunajarantext,ta.departemen as departementext,c.nama as companytext
+                                ,k.kelas as kelastext, CONCAT(p.nip,' ',p.nama ) as namawalitext
+                                , CONCAT(p2.nip,' ',p2.nama ) as createdbytext
+                                ,jl.nama as jenislaporantext,t.nama as tempattext,rp.prioritas as prioritastext
+                                ,st.status as statustext
+                                ,(SELECT 1 FROM kp_konselingreport WHERE idkonseling=r.replid AND fase=1 LIMIT 1) as onproses
+                        FROM kp_konseling r
+                        LEFT JOIN siswa s ON s.replid=r.idsiswa
+                        LEFT JOIN kelas k ON k.replid=r.idkelas
+                        LEFT JOIN pegawai p ON p.replid=k.idwali 
+                        LEFT JOIN tahunajaran ta ON ta.replid=k.idtahunajaran
+                        LEFT JOIN hrm_company c ON c.replid=ta.idcompany
+                        LEFT JOIN pegawai p2 ON p2.replid=r.created_by  
+                        LEFT JOIN reff_konseling jl ON jl.replid=r.idjenislaporan  
+                        LEFT JOIN reff_konseling t ON t.replid=r.idtempat
+                        LEFT JOIN reff_prioritas rp ON rp.replid=r.idprioritas  
+                        LEFT JOIN hrm_status st ON st.node=r.status 
+                        WHERE r.idsiswa='".$idsiswa."'";
+                //echo $sql;die;
+                $data['riwayatkonseling']=$this->dbx->data($sqlkonseling);
 
         return $data;
     }
@@ -143,7 +178,7 @@ parent::__construct();
 				,t2.tingkat as tingkat_asaltext
 				,com.nama as companytext,com.logo as logotext
 				FROM calonsiswa c
-					LEFT JOIN siswa s ON s.replid=c.replidsiswa
+					LEFT JOIN siswa s ON c.replid=s.replidcalon
 					LEFT JOIN kondisisiswa ks on ks.replid = c.kondisi
 					LEFT JOIN statussiswa ss on ss.replid = c.status
 					LEFT JOIN kelompokcalonsiswa k on k.replid = c.idkelompok
@@ -424,5 +459,17 @@ parent::__construct();
 		
     	return $data;
     }
+
+	public function manualbook_db() {
+		$sql="SELECT * FROM bukumanual";
+		$data['show_table']=$this->dbx->data($sql);
+		return $data;
+	}
+
+	public function hrm_codeofconduct_db() {
+		$sql="SELECT * FROM hrm_codeofconduct";
+		$data['show_table']=$this->dbx->data($sql);
+		return $data;
+	}
 
 }

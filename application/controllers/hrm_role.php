@@ -32,9 +32,10 @@ public function __construct() {
 
 	public function index()
 	{
-			$data['show_table'] = $this->hrm_role_db->data();
+			$data=$this->hrm_role_db->data();
 			$data['form']='Peran';
 			$data['view']='index';
+			$data['action']='hrm_role';
 			$this->load->view('hrm_role_v', $data);
 	}
 
@@ -109,7 +110,8 @@ public function __construct() {
 			}
 		}
 		if ($result == TRUE) {
-			redirect('hrm_role/role_map_sip/'.$id);
+			//redirect('hrm_role/role_map_sip/'.$id);
+			redirect('hrm_role/view/'.$id);
 		} else {
 			$data['error']='Errorr...';
 			$this->ubah($id,$data);

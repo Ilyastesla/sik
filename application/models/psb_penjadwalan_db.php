@@ -36,8 +36,8 @@ Class psb_penjadwalan_db extends CI_Model {
                           ,t.tingkat as tingkattext, kls.kelas as kelastext,ks.kondisi as kondisitext
                           ,kcs.lamaproses,DATEDIFF(CURRENT_DATE(),c.tanggal_daftar) as lama
                       FROM calonsiswa c
-											LEFT JOIN online_kronologis ok ON ok.idcalon=c.replid
-											INNER JOIN tahunajaran ta ON ok.idtahunajaran = ta.replid
+							LEFT JOIN online_kronologis ok ON ok.idcalon=c.replid
+							INNER JOIN tahunajaran ta ON ok.idtahunajaran = ta.replid
                 			LEFT JOIN  prosespenerimaansiswa pps ON c.idproses = pps.replid
                 			LEFT JOIN  kelompokcalonsiswa kcs ON kcs.idproses = pps.replid AND c.idkelompok = kcs.replid
                 			LEFT JOIN  tingkat t ON c.tingkat=t.replid

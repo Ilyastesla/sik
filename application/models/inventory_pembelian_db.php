@@ -12,6 +12,7 @@ public function __construct() {
 			$cari=$cari." AND ibb.status='".$this->input->post('idstatus')."' ";
 		}
 		
+		
 		if (($this->input->post('periode1')<>"") AND ($this->input->post('periode2')=="")){
 			$cari=$cari." AND ibb.tanggalpembelian >= '".$this->p_c->tgl_db($this->input->post('periode1'))."' ";
 		}
@@ -19,7 +20,7 @@ public function __construct() {
 			$cari=$cari." AND ibb.tanggalpembelian <= '".$this->p_c->tgl_db($this->input->post('periode2'))."' ";
 		}
 		if (($this->input->post('periode1')<>"") AND ($this->input->post('periode2')<>"")){
-			$cari=$cari." AND ibb.tanggalpembelian BETWEEN '".$this->p_c->tgl_db($this->input->post('periode1'))."' AND '".$this->p_c->tgl_db($this->input->userdata('periode2'))."' ";
+			$cari=$cari." AND ibb.tanggalpembelian BETWEEN '".$this->p_c->tgl_db($this->input->post('periode1'))."' AND '".$this->p_c->tgl_db($this->input->post('periode2'))."' ";
 		}
 
 		if($cari==""){

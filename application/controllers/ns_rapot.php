@@ -21,12 +21,12 @@ parent::__construct();
 		$this->load->model('ns_rapot_db');
 
    if( $this->session->userdata('logged_in')) {
-       if($this->dbx->checkpage($this->session->userdata('role_id'),'ns_rapot')==false){
-          redirect('user_authentication');
-       }
-		}else{
-			redirect('user_authentication');
-		}
+       //if($this->dbx->checkpage($this->session->userdata('role_id'),'ns_rapot')==false){
+       //   redirect('user_authentication');
+       //}
+	}else{
+		redirect('user_authentication');
+	}
 
 	}
 

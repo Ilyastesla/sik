@@ -25,11 +25,30 @@ parent::__construct();
 
 	}
 
-  public function datasiswa($idsiswa)
+	public function hrm_codeofconduct()
+	{
+			$data= $this->general_db->hrm_codeofconduct_db();
+			$data['form']='Kebijakan Sekolah Kak Seto';
+      		$data['form_small']='Lihat';
+			$data['view']='index';
+			$this->load->view('hrm_codeofconduct_v', $data);
+	}
+	
+	public function manualbook()
+	{
+			$data= $this->general_db->manualbook_db();
+			//echo var_dump($data['show_table']);
+			$data['form']='Manual Book';
+      		$data['form_small']='Lihat';
+			$data['view']='index';
+			$this->load->view('manualbook_v', $data);
+	}
+	
+	public function datasiswa($idsiswa)
 	{
 			$data= $this->general_db->datasiswa_db($idsiswa);
 			$data['form']='Data Peserta Didik';
-      $data['form_small']='Lihat';
+      		$data['form_small']='Lihat';
 			$data['view']='index';
 			$this->load->view('datasiswa_v', $data);
 	}

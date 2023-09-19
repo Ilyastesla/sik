@@ -29,7 +29,7 @@
                 </section>
                 <section class="content-header table-responsive">
                 <?php
-  			             $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate','onsubmit'=>'return validate()');
+  			             $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate');
   		    	echo form_open($action,$attributes);
   		    		?>
                     	<table width="100%" border="0">
@@ -133,7 +133,7 @@
                             <div class="box">
                                 <div class="box-body table-responsive">
                                   <?php
-                    			             $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate','onsubmit'=>'return validate()','target'=>'_blank');
+                    			             $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate','onsubmit'=>"window.open('about:blank','save');",'target'=>'save');
                     		    	echo form_open($actionsave,$attributes);
                     		    		?>
                                     <table class="table table-bordered table-striped">

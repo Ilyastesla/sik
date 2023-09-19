@@ -72,6 +72,7 @@
                                                 <th>Detail Rapor</th>
                                                 <th>Group Aktif</th>
 												<th>Sembunyikan Nilai</th>
+												<th>LPD</th>
 												<th>Tgl. Buat</th>
                                                 <th>aktif</th>
                                                 <th width="80">Aksi</th>
@@ -91,6 +92,7 @@
 											    echo "<td align='center'>".($CI->p_c->cekaktif($row->detail))."</td>";
                           echo "<td align='center'>".($CI->p_c->cekaktif($row->groupon))."</td>";
 						  echo "<td align='center'>".$CI->p_c->cekaktif($row->sembunyinilai)."</td>";
+						  echo "<td align='center'>".$CI->p_c->cekaktif($row->lpd)."</td>";
 											    echo "<td align='center'>".$CI->p_c->cekaktif($row->aktif)."</td>";
 												echo "<td align='center'>".($row->created_date)."</td>";
 											    echo "<td align='center'>";
@@ -233,6 +235,18 @@
 							<div class="controls">:
 		                	<?php
 		                		echo form_checkbox('aktif', '1', $isi->aktif);
+		                	?>
+		                	<?php //echo  <p id="message"></p> ?>
+							</div>
+		        		</div>
+		            </th></tr>
+					<tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">LPD</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		echo form_checkbox('lpd', '1', $isi->lpd);
 		                	?>
 		                	<?php //echo  <p id="message"></p> ?>
 							</div>

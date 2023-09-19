@@ -59,9 +59,10 @@ parent::__construct();
     $result = $this->dbx->ubahdata('siswa',$data,'replid',$replid);
     $data = array(
                     "nis"=> $this->input->post("nis"),
-										"idsiswa"=> $replid,
-										"aktif"=>0,
+					"idsiswa"=> $replid,
+					"aktif"=>0,
                     "jenismutasi"=> $this->input->post("jenismutasi"),
+					"idcompany"=> $this->input->post("idcompany"),
                     "tglmutasi"=> $this->p_c->tgl_db($this->input->post("tglmutasi")),
                     "keterangan"=> $this->input->post("keterangan"),
                     "modified_date"=> $this->dbx->cts(),
@@ -91,8 +92,8 @@ parent::__construct();
     $result = $this->dbx->ubahdata('siswa',$data,'replid',$replid);
     $data = array(
                     "nis"=> $this->input->post("nis"),
-										"idsiswa"=> $replid,
-										"aktif"=>1,
+					"idsiswa"=> $replid,
+					"aktif"=>1,
                     "jenismutasi"=> 11,
                     "tglmutasi"=> $this->dbx->cts(),
                     "modified_date"=> $this->dbx->cts(),

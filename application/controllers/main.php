@@ -44,5 +44,15 @@ parent::__construct();
 		$this->session->set_userdata($data);
 		redirect(site_url($pages), 'refresh');
 	}
+
+	public function maintenance()
+	{
+		if($this->config->item("maintenance")<>"1"){
+			redirect('user_authentication');
+		}
+		$data['form']='SIK Maintenance';
+		$data['form_small']='Tunggu Informasi Selajutnya dari PPTIK';
+		$this->load->view('maintenance_v',$data);
+	}
 } //end of class
 ?>

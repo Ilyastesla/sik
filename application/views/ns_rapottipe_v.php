@@ -72,6 +72,16 @@
                   </td>
                 </tr>
                 <tr>
+                <td align="left" width="150">Kurikulum</td>
+									  <td align="left">
+      				                		<div class="control-group">
+                                  <?php
+                                          $arrkurikulumkode="id='kurikulumkode' data-rule-required=false onchange=javascript:this.form.submit();";
+                                          echo form_dropdown('kurikulumkode',$kurikulumkode_opt,$this->input->post('kurikulumkode'),$arrkurikulumkode);
+                                        ?>
+          						                	<?php //echo  <p id="message"></p> ?>
+              											</div>
+            						         </td>
                 <td align="left" width="150">Kata Kunci</td>
 									  <td align="left">
       				                		<div class="control-group">
@@ -109,6 +119,7 @@
                                                 echo "<th>Nama Rapor</th>";
                                                 echo "<th>Jenjang</th>";
                                                 echo "<th>Tipe</th>";
+                                                echo "<th>Kurikulum</th>";
                                                 //echo "<th>LPD</th>";
                                                 //echo "<th>Grafik</th>";
                                                 //echo "<th>Memanjang</th>";
@@ -123,6 +134,7 @@
                                                 echo "<th>Nama Jenjang</th>";
                                                 echo "<th>Psikolog</th>";
                                                 */
+                                                echo "<th>Judul Tabel</th>";
                                                 echo "<th>Formula</th>";
                                                 echo "<th>Tampilan</th>";
                                                 //echo "<th>Tipe Predikat</th>";
@@ -143,6 +155,7 @@
 											    echo "<td align=''>".strtoupper($row->rapottipe)."</td>";
                           echo "<td align=''>".strtoupper($row->iddepartemen)."</td>";
                           echo "<td align=''>".strtoupper($row->tipe)."</td>";
+                          echo "<td align='center'>".strtoupper($row->kurikulumtext)."</td>";
                           //echo "<td align='center'>".($CI->p_c->cekaktif($row->lpd))."</td>";
                           //echo "<td align='center'>".($CI->p_c->cekaktif($row->grafik))."</td>";
                           //echo "<td align='center'>".($CI->p_c->cekaktif($row->portraitview))."</td>";
@@ -158,6 +171,12 @@
                           echo "<td align='center'>".($CI->p_c->cekaktif($row->namajenjang))."</td>";
                           echo "<td align='center'>".($CI->p_c->cekaktif($row->psikologon))."</td>";
                           */
+                          echo "<td align='left'>";
+                          echo "<b>1 :</b> ".$row->tabeljudul_1."<br/>";
+                          echo "<b>2 :</b> ".$row->tabeljudul_2."<br/>";
+                          echo "<b>3 :</b> ".$row->tabeljudul_3."<br/>";
+                          echo "<b>4 :</b> ".$row->tabeljudul_4."<br/>";
+                          echo "</td>";
                           echo "<td align='left'>";
                             echo "Absensi: ".($CI->p_c->cekaktif($row->absensi))."<br/>";
                             echo "Batas Nilai: ".$row->batasnilai."<br/>";
@@ -177,6 +196,8 @@
                             echo "Nama Jenjang: ".($CI->p_c->cekaktif($row->namajenjang))."<br/>";
                             echo "Psikolog: ".($CI->p_c->cekaktif($row->psikologon))."<br/>";
                             echo "Konselor: ".($CI->p_c->cekaktif($row->konseloron))."<br/>";
+                            echo "Deskripsi Pesdik: ".($CI->p_c->cekaktif($row->matpeldeskripsi))."<br/>";
+                            echo "Tingkat: ".(($row->tingkatshowtype))."<br/>";
                             //echo "Modular :<a href=javascript:void(window.open('".site_url('ns_rapottipe/ubahmodular/'.$row->replid.'/'.!($row->modular))."')) >".$CI->p_c->cekaktif($row->modular)."</a><br/>";
                           echo "</td>";
                           //echo "<td align='center'>".$row->predikattipe."</td>";

@@ -95,11 +95,12 @@
             </th></tr>
             <tr>
               <th align="left">
-              <label class="control-label" for="minlengthfield">Nama Siswa</label>
+              <label class="control-label" for="minlengthfield">Nama Pesdik</label>
               <div class="control-group">
             <div class="controls">:
                     <?php
-                      echo $isi->nis." ".$isi->namasiswatext;
+                    echo "<a href=javascript:void(window.open('".site_url('general/datasiswa/'.$isi->idsiswa)."')) >".strtoupper($isi->nis)."</a> ".strtoupper($isi->namasiswatext);
+                      //echo $isi->nis." ".$isi->namasiswatext;
                     ?>
             </div>
               </div>
@@ -133,6 +134,28 @@
             <div class="controls">:
                     <?php
                       echo $isi->tempattext;
+                    ?>
+            </div>
+              </div>
+            </th></tr>
+            <tr>
+              <th align="left">
+              <label class="control-label" for="minlengthfield">Jenis Pelapor</label>
+              <div class="control-group">
+            <div class="controls">:
+                    <?php
+                      echo $isi->jenispelaportext;
+                    ?>
+            </div>
+              </div>
+            </th></tr>
+            <tr>
+              <th align="left">
+              <label class="control-label" for="minlengthfield">Tempat Kejadian</label>
+              <div class="control-group">
+            <div class="controls">:
+                    <?php
+                      echo trim($CI->dbx->getpegawai($isi->idpelapor,0,1));
                     ?>
             </div>
               </div>
@@ -451,7 +474,7 @@
 											    echo "<td align='center'>".$no++."</td>";
                                                 echo "<td align='center'>";
                                                 //echo "<a href=javascript:void(window.open('".site_url('kp_konseling/view/0/'.$row->replid)."'))>".strtoupper($row->nis)."</a> ";
-                                                echo "<a href=javascript:void(window.open('".site_url('general/datasiswa/'.$row->replid)."')) >".strtoupper($row->nis)."</a> ".strtoupper($row->namasiswatext);
+                                                echo "<a href=javascript:void(window.open('".site_url('general/datasiswa/'.$row->idsiswa)."')) >".strtoupper($row->nis)."</a> ".strtoupper($row->namasiswatext);
                                                 echo "</td>";
                                                 echo "<td align='center'>".strtoupper($row->tahunajarantext);
                                                 echo "<td align='center'>".strtoupper($row->kelastext)."<br/>[".$row->namawalitext."]</td>";
@@ -595,7 +618,7 @@
   -->
 		            <tr>
 		            <th align="left">
-		        		<label class="control-label" for="minlengthfield">Nama Siswa</label>
+		        		<label class="control-label" for="minlengthfield">Nama Pesdik</label>
 		        		<div class="control-group">
 							<div class="controls">:
 		                	<?php
@@ -640,6 +663,32 @@
 		                	<?php
 		                		$arridtempat="data-rule-required=true id=idtempat";
 		                		echo form_dropdown('idtempat',$idtempat_opt,$isi->idtempat,$arridtempat);
+		                	?>
+		                	<?php //echo  <p id="message"></p> ?>
+							</div>
+		        		</div>
+		            </th></tr>
+                <tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Jenis Pelapor</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		$arridjenispelapor="data-rule-required=true id=idjenispelapor";
+		                		echo form_dropdown('idjenispelapor',$idjenispelapor_opt,$isi->idjenispelapor,$arridjenispelapor);
+		                	?>
+		                	<?php //echo  <p id="message"></p> ?>
+							</div>
+		        		</div>
+		            </th></tr>
+                <tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Nama Staff Sekolah</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		$arridpelapor="data-rule-required=true id=idpelapor";
+		                		echo form_dropdown('idpelapor',$idpelapor_opt,$isi->idpelapor,$arridpelapor);
 		                	?>
 		                	<?php //echo  <p id="message"></p> ?>
 							</div>

@@ -82,7 +82,7 @@
 	</tr>
 <tr>
     <th align="left">Kelas Terakhir/Aktif</th>
-    <th align="left">:&nbsp;<?php echo $isi->tingkattext." - ".$isi->kelas ?> ( <?php echo $isi->region ?> )
+    <th align="left">:&nbsp;<?php echo $isi->tingkattext." - ".$isi->kelastext ?> ( <?php echo $isi->region ?> )
 </tr>
 <!--
 <tr>
@@ -169,8 +169,10 @@
 								<ul class="nav nav-tabs">
 										<li class="active"><a href="#tab_1" data-toggle="tab"><b>Data Diri</b></a></li>
 										<li><a href="#tab_2" data-toggle="tab"><b>Riwayat Kelas</a></b></li>
-										<li><a href="#tab_3" data-toggle="tab"><b>Riwayat Mutasi</a></b></li>
-										<li><a href="#tab_4" data-toggle="tab"><b>Lain Lain</a></b></li>
+										<li><a href="#tab_3" data-toggle="tab"><b>Riwayat Rapor</a></b></li>
+										<li><a href="#tab_4" data-toggle="tab"><b>Riwayat Konseling</a></b></li>
+										<li><a href="#tab_5" data-toggle="tab"><b>Riwayat Mutasi</a></b></li>
+										<li><a href="#tab_6" data-toggle="tab"><b>Lain Lain</a></b></li>
 								</ul>
 								<div class="tab-content">
 									<div class="tab-pane active" id="tab_1"><br/>
@@ -741,11 +743,93 @@
 										</div>
 										<div class="tab-pane" id="tab_3"><br/>
 											<table border="1" cellpadding="0" style="border-collapse:collapse" cellspacing="0" width="100%" >
+												<thead>
+												<tr>
+													<th width='50'>No.</th>
+													<th>Tahun Pelajaran</th>
+													<th>Semester</th>
+													<th>Jenjang</th>
+													<th>Kelas</th>
+													<th>Tipe Rapor</th>
+													<th>Tgl. Rapor</th>
+												</tr>
+												</thead>
+												<tbody>
+												<?php
+                                        	$no=1;
+											foreach((array)$riwayatrapor as $rowrapor) {
+												$urlx="ns_rapor_baru";
+												if($rowrapor->k13<>1){
+													$urlx="ns_rapot";
+												}
+											    echo "<tr>";
+											    echo "<td align='center'>".$no++."</td>";
+											    echo "<td align='center'>".strtoupper($rowrapor->tahunajaran)."</td>";
+											    echo "<td align='center'>".strtoupper($rowrapor->periode)."</td>";
+											    echo "<td align='center'>".strtoupper($rowrapor->departemen)."</td>";
+											    echo "<td align='center'>".strtoupper($rowrapor->kelas)."</td>";
+											    echo "<td align='center'>".strtoupper($rowrapor->rapottipe)."</td>";
+											    echo "<td align='center'>".strtoupper($CI->p_c->tgl_indo($rowrapor->tanggalkegiatan))."</td>";
+											    echo "<td align='center' width='*'>";
+                         
+                          						echo "<a href='".site_url($urlx.'/rapot/'.$rowrapor->replid)."' target='blank_'><i class='fa fa-file-text'></i>&nbsp;Lihat</a></li> ";
+                          echo "</td>";
+											    echo "</tr>";
+											}
+											?>
+												</tbody>
+											</table>
+										</div>
+										<div class="tab-pane" id="tab_4"><br/>
+										<table border="1" cellpadding="0" style="border-collapse:collapse" cellspacing="0" width="100%" >
+										<thead>
+										<tr>
+                                              <?php
+                                                echo "<th width='50'>No</th>";
+                                                echo "<th>Tahun Ajaran</th>";
+                                                echo "<th>Kelas</th>";
+                                                echo "<th>Pembuat Laporan</th>";
+                                                echo "<th width='100px'>Tgl. Laporan</th>";
+                                                echo "<th>Prioritas</th>";
+												echo "<th>Latar Belakang</th>";
+                                                echo "<th>Status</th>";
+                                                
+                                              ?>
+                                          </tr>
+								
+								</thead>
+								<tbody>
+								<?php
+                                        	$CI =& get_instance();$no=1;
+											foreach((array)$riwayatkonseling as $rowkonseling) {
+											    echo "<tr>";
+											    echo "<td align='center'>".$no++."</td>";
+                                                
+                                                echo "<td align='center'>".strtoupper($rowkonseling->tahunajarantext);
+                                                echo "<td align='center'>".strtoupper($rowkonseling->kelastext)."<br/>[".$rowkonseling->namawalitext."]</td>";
+                                                echo "<td align='center'>".($rowkonseling->createdbytext)."</td>";
+                                                echo "<td align='center'>".$CI->p_c->tgl_indo($rowkonseling->tanggallaporan)."</td>";
+                                                echo "<td align='center'>".($rowkonseling->prioritastext)."</td>";
+												echo "<td align='left'>".($rowkonseling->latarbelakang)."</td>";
+                                                echo "<td align='center'>".($rowkonseling->statustext)."</td>";
+                                                
+                                                echo "</tr>";
+											}
+											?>
+
+													</tbody>
+													<tfoot>
+													</tfoot>
+												</table>
+										</div>
+										<div class="tab-pane" id="tab_5"><br/>
+											<table border="1" cellpadding="0" style="border-collapse:collapse" cellspacing="0" width="100%" >
 													<thead>
 														<tr>
 																<?php
 																echo "<th>Tanggal Mutasi</th>";
 																echo "<th>Jenis Mutasi</th>";
+																echo "<th>Unit Sekolah</th>";
 																//echo "<th>Aktif</th>";
 																echo "<th>Keterangan</th>";
 																?>
@@ -758,6 +842,7 @@
 																	echo "<tr>";
 																	echo "<td align='center'>".$CI->p_c->tgl_indo($rowmutasi->tglmutasi)."</td>";
 																	echo "<td align='center'>".strtoupper($rowmutasi->jenismutasitext)."</td>";
+																	echo "<td align='center'>".strtoupper($rowmutasi->companytext)."</td>";
 																	//echo "<td align='center'>".$CI->p_c->cekaktif($rowmutasi->aktif)."</td>";
 																	echo "<td align='center'>".strtoupper($rowmutasi->keterangan)."</td>";
 																	echo "</tr>";
@@ -769,7 +854,7 @@
 													</tfoot>
 											</table>
 										</div>
-										<div class="tab-pane" id="tab_4"><br/>
+										<div class="tab-pane" id="tab_6"><br/>
 											<table border="1" cellpadding="0" style="border-collapse:collapse" cellspacing="0" width="100%" >
 													<thead>
 														<tr>

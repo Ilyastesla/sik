@@ -1,3 +1,8 @@
+<?php
+if($this->config->item('maintenance')==1){
+   redirect('/main/maintenance');
+}
+?>
 <!DOCTYPE html>
     <head>
         <meta charset="UTF-8">
@@ -387,12 +392,12 @@
                       <?php } ?>
 
                       <li class="dropdown user user-menu">
-	                       	<a href="<?php echo site_url("hrm_codeofconduct") ?>">
+	                       	<a href="<?php echo site_url("general/hrm_codeofconduct") ?>">
 	                            <i class='glyphicon glyphicon-book'></i>Kebijakan
 	                        </a>
 	                      </li>
                         <li class="dropdown user user-menu">
-	                       	<a href="<?php echo site_url("manualbook") ?>">
+	                       	<a href="<?php echo site_url("general/manualbook") ?>">
 	                            <i class='glyphicon glyphicon-film'></i> Manual Book
 	                        </a>
 	                      </li>

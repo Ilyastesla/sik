@@ -73,6 +73,21 @@
                                     </div>
                                    </th>
 								   <th align="left">
+                                     <label class="control-label" for="minlengthfield">Kurikulum</label>
+                                     <div class="control-group">
+                                       <div class="controls">:
+                                       <?php
+                                          $arrkurikulumkode="id='kurikulumkode' data-rule-required=false onchange=javascript:this.form.submit();";
+                                          echo form_dropdown('kurikulumkode',$kurikulumkode_opt,$this->input->post('kurikulumkode'),$arrkurikulumkode);
+                                        ?>
+                                           <?php //echo  <p id="message"></p> ?>
+                                       </div>
+                                     </div>
+                                    </th>
+
+          			                  </tr>
+										<tr>
+										<th align="left">
       				                		<label class="control-label" for="minlengthfield">Kata Kunci</label>
       				                		<div class="control-group">
               											<div class="controls">:
@@ -103,6 +118,7 @@
                                                 echo "<th width='50'>No.</th>";
                                                 echo "<th>Tipe Proses</th>";
                                                 echo "<th>Jenjang</th>";
+												echo "<th>Kurikulum</th>";
                                                 echo "<th>Keterangan</th>";
                                                 echo "<th width='80'>No. Urut</th>";
                                                 echo "<th>Penilaian WK</th>";
@@ -120,6 +136,7 @@
 											    echo "<td align='center'>".$no++."</td>";
 											    echo "<td align=''>".strtoupper($row->prosestipe)."</td>";
                           echo "<td align=''>".strtoupper($row->iddepartemen)."</td>";
+						  echo "<td align='center'>".strtoupper($row->kurikulumtext)."</td>";
 											    echo "<td align='center'>".strtoupper($row->keterangan)."</td>";
 											    echo "<td align='center'>".$row->no_urut."</td>";
                           echo "<td align='center'>";
@@ -189,6 +206,20 @@
                   </div>
                     </div>
                     </th></tr>
+					<tr>
+                    <th align="left">
+                      <label class="control-label" for="minlengthfield">Kurikulum</label>
+                      <div class="control-group">
+                          <div class="controls">:
+                            <?php
+                              $arrkurikulumkode="id='kurikulumkode' data-rule-required=true";
+                              echo form_dropdown('kurikulumkode',$kurikulumkode_opt,$isi->kurikulumkode,$arrkurikulumkode);
+                            ?>
+                                  <?php //echo  <p id="message"></p> ?>
+                          </div>
+                      </div>
+                    </th>
+                  </tr>
 		    		<tr>
 				            <th align="left">
 		                		<label class="control-label" for="minlengthfield">Keterangan</label>
@@ -252,6 +283,21 @@
                     <hr/>
                     </th>
               </tr>
+			  <tr>
+		            <th align="left">
+		        		<label class="control-label" for="minlengthfield">Rapor Tipe</label>
+		        		<div class="control-group">
+		        			<div class="controls">
+											<input type="checkbox" onClick="selectallx('idrapottipe','selectall')" id="selectall" class="selectall"/> Pilih Semua <hr/>
+											<div id='divrapottipe'>
+											<?php
+		                		$CI->p_c->checkbox_one('idrapottipe',$idrapottipe_opt);
+		                	?>
+		                	<?php //echo  <p id="message"></p> ?>
+											</div>
+							</div>
+		        		</div>
+		            </th></tr>
 				    <tr>
 				            <th align="left">
 				            	<button class='btn btn-primary' onclick="return validate()">Simpan</button>

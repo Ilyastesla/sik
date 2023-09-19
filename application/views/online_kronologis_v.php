@@ -92,6 +92,20 @@
               						         </th>
                                  -->
     			                  </tr>
+                            <tr>
+                                <th align="left">
+                                  <label class="control-label" for="minlengthfield">Tahun Pelajaran</label>
+                                  <div class="control-group">
+                                      <div class="controls">:
+                                        <?php
+                                          $arridtahunajaran="id='idtahunajaran' data-rule-required='false' onchange=javascript:this.form.submit();";
+                                          echo form_dropdown('idtahunajaran',$idtahunajaran_opt,$this->input->post("idtahunajaran"),$arridtahunajaran);
+                                        ?>
+                                              <?php //echo  <p id="message"></p> ?>
+                                      </div>
+                                  </div>
+                                </th>
+                              </tr>
                             <!--
                             <tr>
               						       <th align="left">

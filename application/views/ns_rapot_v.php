@@ -18,8 +18,9 @@
                     </h1>
 
                     <ol class="breadcrumb">
+						<!--
                         <li><a href="javascript:void(window.open('<?php echo site_url('ns_rapot/tambah'); ?>'))" ><i class="fa fa-plus-square"></i> Tambah</a></li>
-                        <!--
+                        
                         <li><a href="#"><i class="fa fa-file-text"></i>Cetak</a></li>
                         <li><a href="#"><i class="fa fa-file-excel-o"></i>Excel</a></li>
                         -->
@@ -667,7 +668,7 @@
 
         echo "<tr>";
         //".(count($nilaimp)+5)."
-        echo "<td align='' colspan='6'><b><a href=javascript:void(window.open('".site_url('ns_rapot/ns_rapot_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."')) >".strtoupper($rowkelompok->matpelkelompok)."</a></b></td>";
+        echo "<td align='' colspan='6'><b><a href='".site_url('ns_rapot/ns_rapot_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."' target='_blank'>".strtoupper($rowkelompok->matpelkelompok)."</a></b></td>";
         echo "</tr>";
       } //if ($matkel<>$rowkelompok->matpelkelompok){
       echo "<tr>";
@@ -1017,7 +1018,7 @@
                     if ($matpel<>$rowkelompok->matpel){
                       echo "<tr>";
                       echo "<td>".$no++."</td>";
-                      echo "<td align='left'><a href=javascript:void(window.open('".site_url('ns_rapot/ns_rapot_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."')) >".ucwords(strtolower($rowkelompok->matpel));
+                      echo "<td align='left'><a href='".site_url('ns_rapot/ns_rapot_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."' >".ucwords(strtolower($rowkelompok->matpel));
                       if($rowkelompok->matpelexternal){
                         echo "&nbsp;".$isi->external;
                       }
@@ -1109,7 +1110,7 @@
                         if ($matpel<>$rowkelompok->matpel){
                           echo "<tr>";
                           echo "<td>".$no++."</td>";
-                          echo "<td align='left'><a href=javascript:void(window.open('".site_url('ns_rapot/ns_rapot_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."')) >".ucwords(strtolower($rowkelompok->matpel));
+                          echo "<td align='left'><a href='".site_url('ns_rapot/ns_rapot_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."' >".ucwords(strtolower($rowkelompok->matpel));
                           if($rowkelompok->matpelexternal){
                             echo "&nbsp;".$isi->external;
                           }
@@ -1235,7 +1236,7 @@
                     } //if ($matkel<>$rowkelompok->matpelkelompok){
                     echo "<tr>";
           			    echo "<td align='center'>".$no++."</td>";
-          			    echo "<td align='left'><a href=javascript:void(window.open('".site_url('ns_rapot/ns_rapot_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."')) >".ucwords(strtolower($rowkelompok->matpel));
+          			    echo "<td align='left'><a href='".site_url('ns_rapot/ns_rapot_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."'>".ucwords(strtolower($rowkelompok->matpel));
                     if($rowkelompok->matpelexternal){
                       echo "&nbsp;".$isi->external;
                     }

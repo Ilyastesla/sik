@@ -54,7 +54,7 @@
     			                  </tr>
                         <tr>
                           <th align="left">
-                              <label class="control-label" for="minlengthfield">Periode</label>
+                              <label class="control-label" for="minlengthfield">Periode Tgl. Masuk</label>
                               <div class="control-group">
                         <div class="controls">:
                                 <?php
@@ -169,13 +169,14 @@
                                                 echo "<th>Nama</th>";
                                                 //echo "<th width='120'>Tgl. Posting</th>";
                                                 echo "<th>No Daftar</th>";
+                                                echo "<th>Tgl. Daftar</th>";
                                                 //echo "<th>NIS Sementara</th>";
                                                 echo "<th width='100'>Tingkat</th>";
                                                 //echo "<th>Jurusan</th>";
                                                 echo "<th>Tahun Pelajaran</th>";
                                                 //echo "<th>Status Program</th>";
                                                 //echo "<th>Calon Kelas</th>";
-                                                echo "<th>Tgl. Daftar</th>";
+                                                echo "<th>Tgl. Masuk</th>";
                                                 echo "<th>Biaya Form</th>";
                                                 //echo "<th>Biaya Assessment</th>";
                                                 echo "<th>UP</th>";
@@ -198,6 +199,13 @@
                           echo "<td align='center'>";
                           echo "<a href=javascript:void(window.open('".site_url('general/datacalonsiswa/'.$row->replid)."')) >".$row->nopendaftaran."</a>";
                           echo "</td>";
+                          echo "<td align=''>";
+                          if (($row->lama>$row->lamaproses) and ($row->replidsiswa=="") and ($row->aktif=="1")){
+                            echo $CI->p_c->bgcolortext($CI->p_c->tgl_indo($row->tanggal_daftar),'red');
+                          }else{
+                            echo $CI->p_c->tgl_indo($row->tanggal_daftar);
+                          }
+                          echo "</td>";
                           //echo "<td align=''>".($row->nissementara)."</td>";
                           echo "<td align='center'>".($row->tingkattext." ".$row->jurusantext."<br/>(".$row->kondisitext).")</td>";
                           //echo "<td align=''>".($row->jurusantext)."</td>";
@@ -205,11 +213,9 @@
                           //echo "<td align=''>".($row->kondisitext)."</td>";
                           //echo "<td align=''>".($row->kelastext )."</td>";
                           echo "<td align=''>";
-                          if (($row->lama>$row->lamaproses) and ($row->replidsiswa=="") and ($row->aktif=="1")){
-                            echo $CI->p_c->bgcolortext($CI->p_c->tgl_indo($row->tanggal_daftar),'red');
-                          }else{
-                            echo $CI->p_c->tgl_indo($row->tanggal_daftar);
-                          }
+                          
+                            echo $CI->p_c->tgl_indo($row->tanggal_masuk);
+                          
                           echo "</td>";
                           echo "<td align=''>Reguler: ".$CI->p_c->cekaktif($row->keu_form)."<br/>Asesmen:".$CI->p_c->cekaktif($row->keu_assessment)."</td>";
                           //echo "<td align=''>".$CI->p_c->cekaktif($row->keu_assessment)."</td>";

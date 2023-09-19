@@ -137,7 +137,7 @@
                                                 <th>Kelas</th>
                                                 <!--<th>Regional</th>
                                                  <th>Non Reguler</th>-->
-                                                <th>Nama Siswa</th>
+                                                <th>Nama Pesdik</th>
                                                 <th>Tipe Rapor</th>
                                                 <th>Tgl. Rapor</th>
                                                 <th>Petugas</th>
@@ -148,9 +148,13 @@
                                         	<?php
                                         	$no=1;
 											foreach((array)$show_table as $row) {
+                          $urlx="ns_rapor_baru";
+                          if($row->k13<>1){
+                            $urlx="ns_rapot";
+                          }
 											    echo "<tr>";
 											    echo "<td align='center'>".$no++."</td>";
-											    echo "<td align=''><a href=javascript:void(window.open('".site_url('ns_rapor_baru/rapot/'.$row->replid)."/1')) >".strtoupper($row->tahunajaran)."</a></td>";
+											    echo "<td align=''>".strtoupper($row->tahunajaran)."</td>";
 											    echo "<td align='center'>".strtoupper($row->periode)."</td>";
 											    echo "<td align=''>".strtoupper($row->departemen)."</td>";
 											    echo "<td align='center'>".strtoupper($row->kelas)."</td>";
@@ -160,23 +164,37 @@
 											    echo "<td align='center'>".strtoupper($row->rapottipe)."</td>";
 											    echo "<td align='center'>".strtoupper($CI->p_c->tgl_indo($row->tanggalkegiatan))."</td>";
                           echo "<td align='center'>".strtoupper(trim($row->created_bytext))."</td>";
-											    echo "<td align='center'>";
-                          //if ($row->aktiftahunajaran==1){
-                            //if (trim($row->created_by)==$this->session->userdata('idpegawai')){
-                              if (trim($row->idwali)==$this->session->userdata('idpegawai')){
+											    echo "<td align='center' width='250px'>";
+                          if ($row->deletethis<>1){
+                            //if ($row->aktiftahunajaran==1){
+                              //if (trim($row->created_by)==$this->session->userdata('idpegawai')){
+                                if (trim($row->idwali)==$this->session->userdata('idpegawai')){
 
-  												    //echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/penilaian/'.$row->replid)."/0'))>
-  												    //			<button class='btn btn-xs btn-info'>Penilaian</button>
-  												    //		</a>";
-  												    //if ($row->nilaipd<=0){
-  													    echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/tambah/'.$row->replid)."')) class='btn btn-warning' >Ubah</a>&nbsp;";
-  													    echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/hapus/'.$row->replid)."')) class='btn btn-danger' id='btnOpenDialog' >Hapus</a>&nbsp;";
-  												    //}
-  											    }
-                          //}
-                          echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/digitalrapot/'.$row->replid)."')) class='btn btn-success' >Digital</a>&nbsp;&nbsp;";
-                          echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/printrapot/'.$row->replid.'/0')."')) class='btn btn-primary' >Cetak</a>&nbsp;";
-                          echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/printrapot/'.$row->replid.'/1')."')) class='btn btn-primary' >Excel</a>&nbsp;";
+                                //echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/penilaian/'.$row->replid)."/0'))>
+                                //			<button class='btn btn-xs btn-info'>Penilaian</button>
+                                //		</a>";
+                                //if ($row->nilaipd<=0){
+                                  echo "<a href=javascript:void(window.open('".site_url($urlx.'/tambah/'.$row->replid)."')) class='btn btn-warning' >Ubah</a>&nbsp;";
+                                  echo "<a href=javascript:void(window.open('".site_url($urlx.'/hapus/'.$row->replid)."')) class='btn btn-danger' id='btnOpenDialog' >Hapus</a>&nbsp;<br/>";
+                                //}
+                              }
+                            //}
+                            echo "<a href='".site_url($urlx.'/rapot/'.$row->replid)."' target='blank_'><i class='fa fa-file-text'></i>&nbsp;Lihat</a></li> | ";
+                            //echo "<a href='".site_url($urlx.'/digitalrapot/'.$row->replid)."' target='blank_'class='btn btn-success' >Digital</a>&nbsp;&nbsp;";
+                            //echo "<a href='".site_url($urlx.'/printrapot/'.$row->replid.'/0')."' target='blank_'class='btn btn-primary' >Cetak</a>&nbsp;";
+                            //echo "<a href='".site_url($urlx.'/printrapot/'.$row->replid.'/1')."' target='blank_'class='btn btn-primary' >Excel</a>&nbsp;";
+                            echo "<a href='".site_url($urlx.'/printrapot/'.$row->replid.'/0')."' target='blank_'><i class='fa fa-print'></i>&nbsp;Cetak</a></li> | ";
+                            echo "<a href='".site_url($urlx.'/digitalrapot/'.$row->replid)."' target='blank_'><i class='fa fa-file-pdf-o'></i>&nbsp;Digital</a></li> | ";
+                            echo "<a href='".site_url($urlx.'/printrapot/'.$row->replid.'/1')."' target='blank_'><i class='fa fa-file-excel-o'></i>&nbsp;Excel</a></li><br/> ";
+                            if($row->k13==1){
+                              echo "<a href='".site_url($urlx.'/printrapotavg/'.$row->replid.'/0')."' target='blank_'><i class='fa fa-print'></i>&nbsp;Cetak AVG</a></li> | ";
+                              echo "<a href='".site_url($urlx.'/digitalrapotavg/'.$row->replid)."' target='blank_'><i class='fa fa-file-pdf-o'></i>&nbsp;Digital AVG</a></li> | ";
+                              echo "<a href='".site_url($urlx.'/printrapotavg/'.$row->replid.'/1')."' target='blank_'><i class='fa fa-file-excel-o'></i>&nbsp;Excel AVG</a></li> ";
+                            }
+                          }else{
+														echo "<div style='background-color:red;text-align:center;'><b>Data Telah Dihapus</b></div>";
+													}
+                          
                           echo "</td>";
 											    echo "</tr>";
 											}
@@ -231,7 +249,7 @@
         });
 
         $.ajax({
-          data:{modul:'idrapottipe13',id:$("#iddepartemen").val(),idcompany:value},
+          data:{modul:'idrapottipe13',id:0,idcompany:0},
           success: function(respond){
             $("#idrapottipe").html(respond);
           }
@@ -285,11 +303,11 @@
         });
 
         $.ajax({
-          data:{modul:'idrapottipe13',id:value,idcompany:$("#idcompany").val()},
+          data:{modul:'idrapottipe13',id:0,idcompany:0},
           success: function(respond){
             $("#idrapottipe").html(respond);
           }
-        });  
+        }); 
 
         $.ajax({
           data:{modul:'idkelas',id:-1},
@@ -319,6 +337,12 @@
             $("#idsiswa").html(respond);
           }
         }); 
+        $.ajax({
+          data:{modul:'idrapottipe13',id:0,idcompany:0},
+          success: function(respond){
+            $("#idrapottipe").html(respond);
+          }
+        }); 
     });
 
     $("#idkelas").change(function(){
@@ -329,6 +353,12 @@
             $("#idsiswa").html(respond);
           }
         });
+        $.ajax({
+          data:{modul:'idrapottipe13',id:value,idcompany:$("#idcompany").val()},
+          success: function(respond){
+            $("#idrapottipe").html(respond);
+          }
+        }); 
     });
     });
   </script>
@@ -455,7 +485,7 @@
               -->
 		            <tr>
 		            <th align="left">
-		        		<label class="control-label" for="minlengthfield">Nama Siswa</label>
+		        		<label class="control-label" for="minlengthfield">Nama Pesdik</label>
 		        		<div class="control-group">
 							<div class="controls">:
 		                	<?php
@@ -480,33 +510,6 @@
 		        		</div>
 		            </th></tr>
                 <tr>
-    		            <th align="left">
-    	                		<label class="control-label" for="minlengthfield">Kegiatan External Siswa</label>
-    	                		<div class="control-group">
-    								<div class="controls">:
-    			                	<?php
-    			                		echo form_input(array('class' => '', 'id' => 'external','name'=>'external','value'=>$isi->external,'style'=>'width:500px','data-rule-required'=>'false' ,'data-rule-maxlength'=>'100', 'data-rule-minlength'=>'2' ,'placeholder'=>'Masukkan 2-100 Karakter'));
-    			                	?>
-    			                	<?php //echo  <p id="message"></p> ?>
-    								</div>
-    	                		</div>
-    			     </th></tr>
-               <!--
-               <tr>
-                 <th align="left">
-               <label class="control-label" for="minlengthfield">Tampilkan Nilai Akhir</label>
-               <div class="control-group">
-             <div class="controls">:
-                     <?php
-                       $fcdata=array('name'=>'tampilna','id'=>'tampilna','value'=>'1','checked'=>$isi->tampilna);
-                       echo form_checkbox($fcdata);
-                     ?>
-                     <?php //echo  <p id="message"></p> ?>
-             </div>
-               </div>
-               </th></tr>
-                    -->
-                    <tr>
                           <th align="left">
                               <label class="control-label" for="minlengthfield">Tgl. Rapor</label>
                               <div class="control-group">
@@ -519,57 +522,6 @@
                               </div>
                           </th>
                        </tr>
-                       <tr>
-                       <th align="left">
-                       <label class="control-label" for="minlengthfield">Tahun Pelajaran Non Reguler</label>
-                       <div class="control-group">
-                     <div class="controls">:
-                             <?php
-                               $arridtahunajaranrapot="id=idtahunajaranrapot";
-                               echo form_dropdown('idtahunajaranrapot',$idtahunajaranrapot_opt,$isi->idtahunajaranrapot,$arridtahunajaranrapot);
-                             ?>
-                             <?php //echo  <p id="message"></p> ?>
-                     </div>
-                       </div>
-                       </th></tr>
-                       <tr>
-                       <th align="left">
-                       <label class="control-label" for="minlengthfield">Kenaikan Kelas</label>
-                       <div class="control-group">
-                     <div class="controls">:
-                             <?php
-                               $arridnaikkelas="id=idnaikkelas";
-                               echo form_dropdown('idnaikkelas',$idnaikkelas_opt,$isi->idnaikkelas,$arridnaikkelas);
-                             ?>
-                             <?php //echo  <p id="message"></p> ?>
-                     </div>
-                       </div>
-                       </th></tr>
-                       <tr>
-                       <th align="left">
-                       <label class="control-label" for="minlengthfield">Naik/Tetap di Tingkat</label>
-                       <div class="control-group">
-                     <div class="controls">:
-                             <?php
-                               $arridnaiktingkat="id=idnaiktingkat";
-                               echo form_dropdown('idnaiktingkat',$idnaiktingkat_opt,$isi->idnaiktingkat,$arridnaiktingkat);
-                             ?>
-                             <?php //echo  <p id="message"></p> ?>
-                     </div>
-                       </div>
-                       </th></tr>
-                       <tr>
-        		            <th align="left">
-        	                		<label class="control-label" for="minlengthfield">Nomor Dokumen</label>
-        	                		<div class="control-group">
-        								<div class="controls">:
-        			                	<?php
-        			                		echo form_input(array('class' => '', 'id' => 'nomordokumen','name'=>'nomordokumen','value'=>$isi->nomordokumen,'style'=>'width:500px','data-rule-required'=>'false' ,'data-rule-maxlength'=>'100', 'data-rule-minlength'=>'2' ,'placeholder'=>'Masukkan 2-100 Karakter'));
-        			                	?>
-        			                	<?php //echo  <p id="message"></p> ?>
-        								</div>
-        	                		</div>
-        			            </th></tr>
                   </table>
                   <table>
       				    <tr>
@@ -583,6 +535,7 @@
                   <?php
                   echo form_close();
                   } else if ($indeks=="2"){
+                    echo '<h4 align="left">Pengaturan Opsional</h4>';
                     if ($rapotsetting->prestasi=="1"){
                       $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate');
                       echo form_open($actionprestasi,$attributes);
@@ -633,7 +586,7 @@
                           </table>
 
                       <hr style="border-top:1px solid black !important;" />
-                <?php }if ($rapotsetting->prestasi=="1"){
+                <?php }if ($rapotsetting->nonakademik<>"1"){
                       $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate');
                       echo form_open($actionekstrakurikuler,$attributes);
                       ?>
@@ -691,6 +644,87 @@
                   $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate');
     		    	    echo form_open($action,$attributes);
                   echo "<table width='100%' border='0'>";
+                  ?>
+                     <tr>
+    		            <th align="left">
+    	                		<label class="control-label" for="minlengthfield">Kegiatan External Siswa</label>
+    	                		<div class="control-group">
+    								<div class="controls">:
+    			                	<?php
+    			                		echo form_input(array('class' => '', 'id' => 'external','name'=>'external','value'=>$isi->external,'style'=>'width:500px','data-rule-required'=>'false' ,'data-rule-maxlength'=>'100', 'data-rule-minlength'=>'2' ,'placeholder'=>'Masukkan 2-100 Karakter'));
+    			                	?>
+    			                	<?php //echo  <p id="message"></p> ?>
+    								</div>
+    	                		</div>
+    			     </th></tr>
+               <!--
+               <tr>
+                 <th align="left">
+               <label class="control-label" for="minlengthfield">Tampilkan Nilai Akhir</label>
+               <div class="control-group">
+             <div class="controls">:
+                     <?php
+                       $fcdata=array('name'=>'tampilna','id'=>'tampilna','value'=>'1','checked'=>$isi->tampilna);
+                       echo form_checkbox($fcdata);
+                     ?>
+                     <?php //echo  <p id="message"></p> ?>
+             </div>
+               </div>
+               </th></tr>
+                    -->
+                    
+                       <tr>
+                       <th align="left">
+                       <label class="control-label" for="minlengthfield">Tahun Pelajaran Non Reguler</label>
+                       <div class="control-group">
+                     <div class="controls">:
+                             <?php
+                               $arridtahunajaranrapot="id=idtahunajaranrapot";
+                               echo form_dropdown('idtahunajaranrapot',$idtahunajaranrapot_opt,$isi->idtahunajaranrapot,$arridtahunajaranrapot);
+                             ?>
+                             <?php //echo  <p id="message"></p> ?>
+                     </div>
+                       </div>
+                       </th></tr>
+                       <tr>
+                       <th align="left">
+                       <label class="control-label" for="minlengthfield">Kenaikan Kelas</label>
+                       <div class="control-group">
+                     <div class="controls">:
+                             <?php
+                               $arridnaikkelas="id=idnaikkelas";
+                               echo form_dropdown('idnaikkelas',$idnaikkelas_opt,$isi->idnaikkelas,$arridnaikkelas);
+                             ?>
+                             <?php //echo  <p id="message"></p> ?>
+                     </div>
+                       </div>
+                       </th></tr>
+                       <tr>
+                       <th align="left">
+                       <label class="control-label" for="minlengthfield">Naik/Tetap di Tingkat</label>
+                       <div class="control-group">
+                     <div class="controls">:
+                             <?php
+                               $arridnaiktingkat="id=idnaiktingkat";
+                               echo form_dropdown('idnaiktingkat',$idnaiktingkat_opt,$isi->idnaiktingkat,$arridnaiktingkat);
+                             ?>
+                             <?php //echo  <p id="message"></p> ?>
+                     </div>
+                       </div>
+                       </th></tr>
+                       <tr>
+        		            <th align="left">
+        	                		<label class="control-label" for="minlengthfield">Nomor Dokumen</label>
+        	                		<div class="control-group">
+        								<div class="controls">:
+        			                	<?php
+        			                		echo form_input(array('class' => '', 'id' => 'nomordokumen','name'=>'nomordokumen','value'=>$isi->nomordokumen,'style'=>'width:500px','data-rule-required'=>'false' ,'data-rule-maxlength'=>'100', 'data-rule-minlength'=>'2' ,'placeholder'=>'Masukkan 2-100 Karakter'));
+        			                	?>
+        			                	<?php //echo  <p id="message"></p> ?>
+        								</div>
+        	                		</div>
+        			            </th></tr>
+                    <?php
                   if ($rapotsetting->sikap=="1"){ ?>
                     <tr>
                         <th align="left">
@@ -828,7 +862,8 @@
                     <table class="table table-bordered table-striped">
                       <tr>
                           <?php
-                          echo "<th colspan='3'>Hanya akan ditampilkan apabila tabel penilaian di gabung</th>";
+                          //echo "<th colspan='3'>Hanya akan ditampilkan apabila tabel penilaian di gabung</th>";
+                          echo "<th colspan='3'>Deskripsi tambahan dari tutor:</th>";
                           ?>
                       </tr>
                       <tr>
@@ -896,20 +931,35 @@
           <small><?php echo $form_small ?></small>
       </h1>
   		<ol class="breadcrumb">
-              <li><a href="JavaScript:cetakprint()"><i class="fa fa-file-text"></i>&nbsp;Cetak</a></li>
-              <li><a href="JavaScript:cetakdigital()"><i class="fa fa-print"></i>&nbsp;Digital</a></li>
-              <li><a href="JavaScript:cetakexcel()"><i class="fa fa-file-text"></i>&nbsp;Excel</a></li>
-              <li><a href="JavaScript:cetakprintavg()"><i class="fa fa-file-text"></i>&nbsp;Cetak AVG</a></li>
-              <li><a href="JavaScript:cetakdigitalavg()"><i class="fa fa-print"></i>&nbsp;Digital AVG</a></li><br/>
-              <li><a href="JavaScript:cetakexcelavg()"><i class="fa fa-file-text"></i>&nbsp;Excel AVG</a></li>
-              
-              <li><a href="javascript:void(window.open('<?php echo site_url("ns_rapor_baru/tambah") ?>'))"><i class="fa fa-plus"></i>&nbsp;Tambah</a></li>
-              
+        <?php if($isi->deletethis<>1){ ?>
+              <li><a href="JavaScript:cetakprint()"><i class="fa fa-print"></i>&nbsp;Cetak</a></li>
+              <li><a href="JavaScript:cetakdigital()"><i class="fa fa-file-pdf-o"></i>&nbsp;Digital</a></li>
+              <li><a href="JavaScript:cetakexcel()"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</a></li>
+              <li><a href="JavaScript:cetakprintavg()"><i class="fa fa-print"></i>&nbsp;Cetak AVG</a></li>
+              <li><a href="JavaScript:cetakdigitalavg()"><i class="fa fa-file-pdf-o"></i>&nbsp;Digital AVG</a></li><br/>
+              <li><a href="JavaScript:cetakexcelavg()"><i class="fa fa-file-excel-o"></i>&nbsp;Excel AVG</a></li>
               <li><a href="javascript:void(window.open('<?php echo site_url("ns_rapor_baru/ns_rapor_baru_detailmatpel/".$isi->replid."/d95d318e0bd6b9bea8da986a104fce7c") ?>'))"><i class="fa fa-calendar"></i>&nbsp;Rekap Nilai</a></li>
+        <?php } ?>
+              <li><a href="javascript:void(window.open('<?php echo site_url("ns_rapor_baru/tambah") ?>'))"><i class="fa fa-plus"></i>&nbsp;Tambah</a></li>
       </ol>
+      
     </section>
     <section class="content">
+    <?php if($isi->deletethis==1){ ?>
+      <div style="background-color:red;text-align:center;"><h2>Data Telah Dihapus</h2></div>
+      <?php } ?>
   		<table width="100%" border="0" class="form-horizontal form-validate">
+      <tr>
+              <th align="left">
+          		<label class="control-label" for="minlengthfield">Unit Bisnis</label>
+          		<div class="control-group">
+  					<div class="controls">:
+                  	<?php
+                  		echo $isi->companytext." (".$isi->departemen.")";
+                  	?>
+  					</div>
+          		</div>
+              </th></tr>
   			<tr>
               <th align="left">
           		<label class="control-label" for="minlengthfield">Nama Siswa</label>
@@ -938,7 +988,7 @@
           		<div class="control-group">
   					<div class="controls">:
                   	<?php
-                  		echo $isi->nis;
+                  		echo "<a href='".site_url('general/datasiswa/'.$isi->replidsiswa)."' target='_blank'>".$isi->nis."</a>";
                   	?>
   					</div>
           		</div>
@@ -1031,7 +1081,7 @@
           		<div class="control-group">
   					<div class="controls">:
                   	<?php
-                  		echo ucwords(strtolower($isi->rapottipe));
+                  		echo $isi->rapottipe." (".$isi->keteranganrapor.")";
                   	?>
   					</div>
           		</div>
@@ -1096,7 +1146,74 @@
                      		</div>
      		            </th></tr>
   		</table>
-  <?php if($isi->tipe=='Grafik'){
+  <?php if($isi->tipe=='P5'){
+    foreach((array)$projek as $projekrow) {
+      echo " <table class='table table-bordered' width='100%'>";
+      echo "<tr>";
+      echo "<td align='left'><h4>".$projekrow->projektext." | Tema: ".$projekrow->tematext."</h4>Tipe Projek: ".$projekrow->projektipetext."</td>";
+      echo "</tr>";
+      echo "<tr>";
+      echo "<td align='left'><p align='justify'>".$projekrow->keterangan."</p></td>";
+      echo "</tr>";
+      echo "<tr>";
+      echo "<td align='left'><h4>Catatan Proses: </h4><p align='justify'>".$projekrow->catatanproses."</p></td>";
+      echo "</tr>";
+      echo "</table>";
+    }
+    echo "<table class='table table-bordered table-striped'>";
+    echo "<thead><tr>";
+      echo "<th width='50'>No.</th>";
+      echo "<th>Elemen</th>";
+      echo "<th>Sub Elemen</th>";
+      echo "<th>Capaian</th>";
+      echo "<th>Fase</th>";
+      echo "<th>aktif</th>";
+
+			foreach((array)$idprojekpredikat_opt as $rowprojekpredikat) {
+          echo "<th>".$rowprojekpredikat->nama."</th>";
+      }
+      echo "</tr></thead>";
+      
+      echo "<tbody>";
+      $dimensitext="";$idprojek="";
+      $CI =& get_instance();$no=1;
+      foreach((array)$capaian as $row) {
+        if ($idprojek<>$row->idprojek){
+          echo "<tr >";
+          echo "<td align='center' colspan='".(7+COUNT($idprojekpredikat_opt))."' style='background:orange !important;'><b>Projek: ".($row->projektext)."</b></td>";
+          echo "</tr>";
+        }
+        if ($dimensitext<>$row->dimensitext){
+          echo "<tr >";
+          echo "<td align='center' colspan='".(7+COUNT($idprojekpredikat_opt))."' style='background:orange !important;'><b>Dimensi: ".($row->dimensitext)."</b></td>";
+          echo "</tr>";
+        }
+          echo "<tr>";
+          echo "<td align='center'>".$no++."</td>";
+          echo "<td align='left'>".($row->elementext)."</td>";
+          echo "<td align='left'>".($row->elemen_subtext)."</td>";
+          echo "<td align='left'>".($row->elemen_sub_capaiantext)."</td>";
+          echo "<td align='center'>".($row->fase)."</td>";
+          echo "<td align='left'>".$CI->p_c->cekaktif($row->aktifesc)."</td>";
+          foreach((array)$idprojekpredikat_opt as $rowprojekpredikat) {
+            if($rowprojekpredikat->replid==$row->idprojekpredikat){
+              echo "<td align='center'><b>&check;</b></td>";
+            }else{
+              echo "<td align='center'>&nbsp;</td>";
+            }
+            
+            
+          }  
+         echo "</tr>";
+         $idprojek=$row->idprojek;
+        $dimensitext=$row->dimensitext;
+      }
+			echo "</tbody></table>";
+    
+  // ----------------------------------------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------------------------------------
+  ?>
+  <?php } else if($isi->tipe=='Grafik'){
     // ----------------------------------------------------------------------------------------------------------------------------------
   	// ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -1244,7 +1361,7 @@
       		}
           echo "</table>";
       } //judultextgraph
-}else if(($isi->tipe=='Murni') OR ($isi->tipe=='SKL')){
+}else if(($isi->tipe=='Murni') OR ($isi->tipe=='Tryout') OR ($isi->tipe=='SKL') OR ($isi->tipe=='SKL23')){
       	// Murni
       	// ----------------------------------------------------------------------------------------------------------------------------------
       	// ----------------------------------------------------------------------------------------------------------------------------------
@@ -1289,9 +1406,9 @@
                     if($isi->skkon==1){
                       echo "<th width='65' rowspan='2'>SKK</th>";
                     }
-                    if($isi->kkmon==1){
+                    //if($isi->kkmon==1){
                         echo "<th width='65' rowspan='2'>KKM</th>";
-                    }
+                    //}
                     foreach((array)$arraypsv[$rowmpk] as $rowpsv) {
                       //foreach((array)$arraypdv[$rowmpk][$rowpsv] as $rowpdv) {
                         echo "<th width='".(80*(((1+$isi->predikaton+$isi->kalimatraporon)*COUNT($arraypdv[$rowmpk][$rowpsv]))))."' colspan='".((1+$isi->predikaton+$isi->kalimatraporon)*COUNT($arraypdv[$rowmpk][$rowpsv]))."'>".$rowpsv."</th>";
@@ -1318,14 +1435,16 @@
                         if ($matpel<>$rowkelompok->matpel){
                           echo "<tr>";
                           echo "<td>".$no++."</td>";
-                          echo "<td align='left'><a href=javascript:void(window.open('".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."')) >".$rowkelompok->matpel;
+                          echo "<td align='left'><a href='".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$rowkelompok->idmatpel."' target='_blank' >".$rowkelompok->matpel.' '.$rowkelompok->matpelketerangan;
                           if($rowkelompok->matpelexternal){
                             echo "&nbsp;".$isi->external;
                           }
                           if($isi->skkon==1){
                             echo "<td align='center'>".$rowkelompok->jumlahskk."</td>";
                           }
-                          if($isi->kkmon==1){echo "<td align='center'>".$rowkelompok->kkm."</td>";}
+                          //if($isi->kkmon==1){
+                            echo "<td align='center'>".$rowkelompok->kkm."</td>";
+                          //}
                           echo "<td align='center'>".CEIL($rowkelompok->nilaiasli)."</td>";
                           if($isi->kalimatraporon==1){
       											echo "<td align='left'>".ucwords(strtolower($CI->p_c->kalimatrapor(CEIL($rowkelompok->nilaiasli),0))) ."</td>";
@@ -1352,6 +1471,7 @@
                   </tfoot>
               </table>
               <br/>
+              <?php if ($rapotsetting->sikap=="1"){ ?>
               <h4>Sikap Spiritual</h4>
                <table class='table table-bordered' width='100%'>
                 <tr>
@@ -1380,10 +1500,11 @@
                   </td>
                 </tr>
               </table>
+              <?php } ?>
   <?php } else if($isi->tipe=='LPD'){ ?>
     <table border=0 width="100%">
     <tr>
-        <td><b>Pengetahuan</b></td>
+        <td><b><?php echo $isi->tabeljudul_1 ?></b></td>
     </tr>
     <tr>
         <td style="padding-left:30px">
@@ -1430,9 +1551,9 @@
                                 echo "<th width='60'>No.</th>";
                                 echo "<th>Group</th>";
                                 echo "<th>Mata Pelajaran</th>";
-                                if($isi->kkmon==1){
+                                //if($isi->kkmon==1){
                                     echo "<th width='60' rowspan='2'>KKM</th>";
-                                }
+                                //}
                                 echo "<th>Nilai</th>";
                                 if($isi->predikaton==1){
                                   echo "<th>Predikat</th>";
@@ -1457,14 +1578,22 @@
                 if($idmatpel<>$pengetahuan->idmatpel){
                       echo "<tr>";
                       echo "<td align='center'>".$no++."</td>";
-                      echo "<td align='center'>".($pengetahuan->grouptext)."</td>";
-                      echo "<td align='left'><a href=javascript:void(window.open('".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$pengetahuan->idmatpel."')) >".$pengetahuan->matpel;
+                      echo "<td align='left'>";
+													if($pengetahuan->grouptext<>""){
+														echo ucwords(strtolower($pengetahuan->grouptext));
+													}else{
+														echo ucwords(strtolower($pengetahuan->groupmatpeltext));
+													}
+													echo "</td>";
+                      echo "<td align='left'><a href='".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$pengetahuan->idmatpel."' target='_blank'>".$pengetahuan->matpel;
                       if($pengetahuan->matpelexternal){
                         echo "&nbsp;".$isi->external;
                       }
                       echo "</a>";
                       echo "</td>";
-                      if($isi->kkmon==1){echo "<td align='center'>".strtoupper($pengetahuan->kkm)."</td>";}
+                      //if($isi->kkmon==1){
+                        echo "<td align='center'>".strtoupper($pengetahuan->kkm)."</td>";
+                      //}
                       $nilaimp13_tot = array_filter($nilaimp13[$pengetahuan->idmatpel]);
                       if(array_sum($nilaimp13_tot)<1){
                         $average=0;
@@ -1488,7 +1617,7 @@
             </td>
         </tr>
         <tr>
-            <td><b>Keterampilan</b></td>
+            <td><b><?php echo $isi->tabeljudul_2 ?></b></td>
         </tr>
         <tr>
             <td style="padding-left:30px">
@@ -1535,9 +1664,9 @@
                                 echo "<th width='60'>No.</th>";
                                 echo "<th>Group</th>";
                                 echo "<th>Mata Pelajaran</th>";
-                                if($isi->kkmon==1){
+                                //if($isi->kkmon==1){
                                     echo "<th width='60' rowspan='2'>KKM</th>";
-                                }
+                                //}
                                 echo "<th>Nilai</th>";
                                 if($isi->predikaton==1){
                                   echo "<th>Predikat</th>";
@@ -1563,13 +1692,15 @@
                     echo "<tr>";
                     echo "<td align='center'>".$no++."</td>";
                     echo "<td align='center'>".($keterampilan->grouptext)."</td>";
-                    echo "<td align='left'><a href=javascript:void(window.open('".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$keterampilan->idmatpel."')) >".$keterampilan->matpel;
+                    echo "<td align='left'><a href='".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$keterampilan->idmatpel."' target='_blank'>".$keterampilan->matpel;
                     if($keterampilan->matpelexternal){
                       echo "&nbsp;".$isi->external;
                     }
                     echo "</a>";
                     echo "</td>";
-                    if($isi->kkmon==1){echo "<td align='center'>".strtoupper($keterampilan->kkm)."</td>";}
+                    //if($isi->kkmon==1){
+                      echo "<td align='center'>".strtoupper($keterampilan->kkm)."</td>";
+                    //}
 
                     $nilaimp13_tot = array_filter($nilaimp13[$keterampilan->idmatpel]);
                     if(array_sum($nilaimp13_tot)<1){
@@ -1603,7 +1734,9 @@
           	// ----------------------------------------------------------------------------------------------------------------------------------
                 $header_count="A";
                 ?>
+                
                 <table border=0 width="100%">
+                <?php if ($isi->sikap=="1"){ ?>
                   <tr>
                       <td><b><?php echo $header_count++ ?>. Sikap</b></td>
                   </tr>
@@ -1639,7 +1772,7 @@
                         </table>
                       </td>
                   </tr>
-
+                  <?php }?>            
                   <?php
                   $csx=3+$isi->kkmon+$isi->kalimatraporon+COUNT($arrmodultipe);
                   if($isi->predikaton==1){
@@ -1708,7 +1841,7 @@
     							}
                   ?>
                   <tr>
-                      <td><b><?php echo $header_count++ ?>. Pengetahuan</b></td>
+                      <td><b><?php echo $header_count++ ?>. <?php echo $isi->tabeljudul_1 ?></b></td>
                   </tr>
                   <tr>
                       <td style="padding-left:30px">
@@ -1729,12 +1862,13 @@
                                               echo "<tr>";
                                               echo "<th width='60' rowspan='2'>No.</th>";
                                               echo "<th rowspan='2'>Mata Pelajaran</th>";
+                                              echo "<th rowspan='2'>Grup</th>";
                                               if($isi->skkon==1){
                                                 echo "<th width='65' rowspan='2'>SKK</th>";
                                               }
-                                              if($isi->kkmon==1){
+                                              //if($isi->kkmon==1){
                                                   echo "<th width='60' rowspan='2'>KKM</th>";
-                                              }
+                                              //}
                                               echo "<th colspan=".COUNT($arrmodultipe).">Nilai</th>";
                                               if($isi->predikaton==1){
                                                 echo "<th colspan=".COUNT($arrmodultipe).">Predikat</th>";
@@ -1759,8 +1893,8 @@
                       							<?php
                       							} else {
                       								echo "<tr>";
-                      				            	echo "<td align='' colspan='".$csx."'><b>".ucfirst(strtolower($pengetahuan->matpelkelompok))."</b></td>";
-                      				            	echo "</tr>";
+                      				        echo "<td align='' colspan='".$csx."'><b>".ucfirst(strtolower($pengetahuan->matpelkelompok))."</b></td>";
+                      				        echo "</tr>";
 
                       							}//if $jml_kel
                       					}
@@ -1770,19 +1904,33 @@
                                     if($idmatpel<>$pengetahuan->idmatpel){
                                       echo "<tr>";
                                       echo "<td align='center'>".$no++."</td>";
-                                      echo "<td align='left'><a href=javascript:void(window.open('".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$pengetahuan->idmatpel."')) >".$pengetahuan->matpel;
+                                      echo "<td align='left'><a href='".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$pengetahuan->idmatpel."' target='_blank'>".$pengetahuan->matpel.' '.$pengetahuan->matpelketerangan;
                                       if($pengetahuan->matpelexternal){
                                         echo "&nbsp;".$isi->external;
                                       }
                                       echo "</a>";
                                       if($isi->matpeldeskripsion){
-                                        echo "<br/>".$pengetahuan->matpeldeskripsitext;
+                                        $kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$pengetahuan->idmatpel,$isi->idsiswa);
+                                        if ($kompetensitextrapor<>""){
+                                          echo "<br/>";
+                                          echo $kompetensitextrapor;
+                                        }
+																					if($pengetahuan->matpeldeskripsitext<>""){
+																						if ($kompetensitextrapor<>""){
+																							echo "<hr/>";
+																						}
+																						echo $pengetahuan->matpeldeskripsitext;
+																					}
+                                        
                                       }
                                       echo "</td>";
+                                      echo "<td align='center'>".$pengetahuan->grouptext."</td>";
                                       if($isi->skkon==1){
                                         echo "<td align='center'>".strtoupper($pengetahuan->jumlahskk)."</td>";
                                       }
-                                      if($isi->kkmon==1){echo "<td align='center'>".strtoupper($pengetahuan->kkm)."</td>";}
+                                      //if($isi->kkmon==1){
+                                        echo "<td align='center'>".strtoupper($pengetahuan->kkm)."</td>";
+                                      //}
                                       /*
                                       if($pengetahuan->detail<>1){
                                         $nilaimp13_tot = array_filter($nilaimp13[$pengetahuan->idmatpel]);
@@ -1873,7 +2021,7 @@
                           </td>
                       </tr>
                       <tr>
-                          <td><b><?php echo $header_count++ ?>. Keterampilan</b></td>
+                          <td><b><?php echo $header_count++ ?>. <?php echo $isi->tabeljudul_2 ?></b></td>
                       </tr>
                       <tr>
                           <td style="padding-left:30px">
@@ -1894,12 +2042,13 @@
                                               echo "<tr>";
                                               echo "<th width='60' rowspan='2'>No.</th>";
                                               echo "<th rowspan='2'>Mata Pelajaran</th>";
+                                              echo "<th rowspan='2'>Grup</th>";
                                               if($isi->skkon==1){
                                                 echo "<th width='65' rowspan='2'>SKK</th>";
                                               }
-                                              if($isi->kkmon==1){
+                                              //if($isi->kkmon==1){
                                                   echo "<th width='60' rowspan='2'>KKM</th>";
-                                              }
+                                              //}
                                               echo "<th colspan=".COUNT($arrmodultipe).">Nilai</th>";
                                               if($isi->predikaton==1){
                                                 echo "<th colspan=".COUNT($arrmodultipe).">Predikat</th>";
@@ -1935,19 +2084,33 @@
                                     if($idmatpel<>$keterampilan->idmatpel){
                                       echo "<tr>";
                                       echo "<td align='center'>".$no++."</td>";
-                                      echo "<td align='left'><a href=javascript:void(window.open('".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$keterampilan->idmatpel."')) >".$keterampilan->matpel;
+                                      echo "<td align='left'><a href='".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$keterampilan->idmatpel."' target='_blank'>".$keterampilan->matpel.' '.$keterampilan->matpelketerangan;
                                       if($keterampilan->matpelexternal){
                                         echo "&nbsp;".$isi->external;
                                       }
                                       echo "</a>";
                                       if($isi->matpeldeskripsion){
-                                        echo "<br/>".$keterampilan->matpeldeskripsitext;
+                                        $kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$keterampilan->idmatpel,$isi->idsiswa);
+                                        if ($kompetensitextrapor<>""){
+                                          echo "<br/>";
+                                          echo $kompetensitextrapor;
+                                        }
+																					if($keterampilan->matpeldeskripsitext<>""){
+																						if ($kompetensitextrapor<>""){
+																							echo "<hr/>";
+																						}
+																						echo $keterampilan->matpeldeskripsitext;
+																					}
+                                        
                                       }
                                       echo "</td>";
+                                      echo "<td align='center'>".$keterampilan->grouptext."</td>";
                                       if($isi->skkon==1){
                                         echo "<td align='center'>".strtoupper($keterampilan->jumlahskk)."</td>";
                                       }
-                                      if($isi->kkmon==1){echo "<td align='center'>".strtoupper($keterampilan->kkm)."</td>";}
+                                      //if($isi->kkmon==1){
+                                        echo "<td align='center'>".strtoupper($keterampilan->kkm)."</td>";
+                                      //}
                                       /*
                                       if($keterampilan->detail<>1){
                                         $keterampilanmp13_tot = array_filter($keterampilanmp13[$keterampilan->idmatpel]);
@@ -2032,13 +2195,45 @@
                               </td>
                           </tr>
                           <tr>
-                              <td><b><?php echo $header_count++ ?>. Non Akademik</b></td>
+                              <td><b><?php echo $header_count++ ?>. <?php echo $isi->tabeljudul_3 ?></b></td>
                           </tr>
                           <tr>
                               <td style="padding-left:30px">
                                 <?php
                                 //TAMPIL
                                 $matkel="";$idmodultipe="";$no=1;$grouptext="";$jml_kel=0;$idmatpel="";
+                                //echo var_dump($nonakademikdata)."asfdasdfasdfasd";
+                                echo "<table class='table table-bordered'><thead>";
+                                  echo "<tr>";
+                                  echo "<th width='60' rowspan='2'>No.</th>";
+                                  echo "<th rowspan='2'>Mata Pelajaran</th>";
+                                  echo "<th rowspan='2'>Grup</th>";
+                                  if($isi->skkon==1){
+                                    echo "<th width='65' rowspan='2'>SKK</th>";
+                                  }
+                                  //if($isi->kkmon==1){
+                                      echo "<th width='60' rowspan='2'>KKM</th>";
+                                  //}
+                                  echo "<th colspan=".COUNT($arrmodultipe).">Nilai</th>";
+                                  if($isi->predikaton==1){
+                                    echo "<th colspan=".COUNT($arrmodultipe).">Predikat</th>";
+                                  }
+                                  echo "</tr>";
+                                  echo "<tr>";
+                                  foreach((array)$arrmodultipe as $rowmodultipe) {
+                                    echo "<th width='*'>Modul ".$rowmodultipe->idmodultipe."</th>";
+                                  }
+                                  if($isi->predikaton==1){
+                                    foreach((array)$arrmodultipe as $rowmodultipe) {
+                                      echo "<th width='*'>Modul ".$rowmodultipe->idmodultipe."</th>";
+                                    }
+                                  }
+                                  echo "</tr></thead>";
+                                if($nonakademikdata==""){
+                                  echo "<tr><td colspan='6'>&nbsp;</td></tr>";
+                                  echo "</table>";
+                                }
+
                                 foreach((array)$nonakademikdata as $nonakademik) {
                                   $nilaimp=0;$jml_kel++;
                                   //$nilaimp=$CI->ns_rapor_baru_db->hitnilai_db($isi->idkelas,$isi->idsiswa,$nonakademik->idmatpel,$isi->idtahunajaran,$isi->departemen,$isi->idregion,$isi->idrapottipe,$isi->nilaimurni,$isi->idperiode,$nonakademik->idmatpelkelompok);
@@ -2046,34 +2241,7 @@
                                   if ($matkel<>$nonakademik->matpelkelompok){
                                      //$no=1;
                                       if ($jml_kel<=1){
-                                        ?>
-                                        <table class="table table-bordered">
-                                              <thead>
-                                                <?php
-                                                  echo "<tr>";
-                                                  echo "<th width='60' rowspan='2'>No.</th>";
-                                                  echo "<th rowspan='2'>Mata Pelajaran</th>";
-                                                  if($isi->skkon==1){
-                                                    echo "<th width='65' rowspan='2'>SKK</th>";
-                                                  }
-                                                  if($isi->kkmon==1){
-                                                      echo "<th width='60' rowspan='2'>KKM</th>";
-                                                  }
-                                                  echo "<th colspan=".COUNT($arrmodultipe).">Nilai</th>";
-                                                  if($isi->predikaton==1){
-                                                    echo "<th colspan=".COUNT($arrmodultipe).">Predikat</th>";
-                                                  }
-                                                  echo "</tr>";
-                                                  echo "<tr>";
-                                                  foreach((array)$arrmodultipe as $rowmodultipe) {
-                                                    echo "<th width='*'> Modul ".$rowmodultipe->idmodultipe."</th>";
-                                                  }
-                                                  if($isi->predikaton==1){
-                                                    foreach((array)$arrmodultipe as $rowmodultipe) {
-                                                      echo "<th width='*'> Modul ".$rowmodultipe->idmodultipe."</th>";
-                                                    }
-                                                  }
-                                                  echo "</tr>";
+                                        
                                                   echo "<tr>";
                                                   echo "<td align='' colspan='".$csx."'><b>".ucfirst(strtolower($nonakademik->matpelkelompok))."</b></td>";
                                                   echo "</tr>";
@@ -2094,16 +2262,33 @@
                                         if($idmatpel<>$nonakademik->idmatpel){
                                           echo "<tr>";
                                           echo "<td align='center'>".$no++."</td>";
-                                          echo "<td align='left'><a href=javascript:void(window.open('".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$nonakademik->idmatpel."')) >".$nonakademik->matpel;
+                                          echo "<td align='left'><a href='".site_url('ns_rapor_baru/ns_rapor_baru_detailmatpel/')."/".$id."/".$nonakademik->idmatpel."' target='_blank'>".$nonakademik->matpel.' '.$nonakademik->matpelketerangan;
                                           if($nonakademik->matpelexternal){
                                             echo "&nbsp;".$isi->external;
                                           }
                                           echo "</a>";
+                                          if($isi->matpeldeskripsion){
+                                            $kompetensitextrapor=$CI->dbx->ns_rapotkompetensi($isi->replid,$nonakademik->idmatpel,$isi->idsiswa);
+                                            if ($kompetensitextrapor<>""){
+                                              echo "<br/>";
+                                              echo $kompetensitextrapor;
+                                            }
+                                              if($nonakademik->matpeldeskripsitext<>""){
+                                                if ($kompetensitextrapor<>""){
+                                                  echo "<hr/>";
+                                                }
+                                                echo $nonakademik->matpeldeskripsitext;
+                                              }
+                                            
+                                          }
                                           echo "</td>";
+                                          echo "<td align='center'>".$nonakademik->grouptext."</td>";
                                           if($isi->skkon==1){
                                             echo "<td align='center'>".strtoupper($nonakademik->jumlahskk)."</td>";
                                           }
-                                          if($isi->kkmon==1){echo "<td align='center'>".strtoupper($nonakademik->kkm)."</td>";}
+                                          //if($isi->kkmon==1){
+                                            echo "<td align='center'>".strtoupper($nonakademik->kkm)."</td>";
+                                          //}
                                           /*
                                           if($nonakademik->detail<>1){
                                             $nonakademikmp13_tot = array_filter($nonakademikmp13[$nonakademik->idmatpel]);
@@ -2188,7 +2373,7 @@
                                   </td>
                               </tr>
                           <tr>
-                              <td><b><?php echo $header_count++ ?>. Ekstra Kurikuler</b></td>
+                              <td><b><?php echo $header_count++ ?>. <?php echo $isi->tabeljudul_4 ?></b></td>
                           </tr>
                           <tr>
                               <td style="padding-left:30px">
@@ -2413,18 +2598,19 @@
   </table>
   <?php } ?>
   <?php
-  //if ($isi->aktiftahunajaran==1){
+  if (($isi->aktiftahunajaran==1) and ($isi->deletethis<>1)){
     if (trim($isi->created_by)==$this->session->userdata('idpegawai')){
 
       //echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/penilaian/'.$row->replid)."/0'))>
       //			<button class='btn btn-xs btn-info'>Penilaian</button>
       //		</a>";
       //if ($row->nilaipd<=0){
+        echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/duplikasi/'.$isi->replid)."')) class='btn btn-info'>Duplikasi</a>&nbsp;"; 
         echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/tambah/'.$isi->replid)."')) class='btn btn-warning'>Ubah</a>&nbsp;";
         echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru/hapus/'.$isi->replid)."')) class='btn btn-danger' id='btnOpenDialog'>Hapus</a>&nbsp";
       //}
     }
-  //}
+  }
   echo "<a href=javascript:void(window.open('".site_url('ns_rapor_baru')."')) class='btn btn-success'>Kembali</a>&nbsp";
 }
 ?>

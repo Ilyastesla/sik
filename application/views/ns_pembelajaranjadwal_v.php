@@ -176,7 +176,7 @@ function cetakabsensi(id) {
 											foreach((array)$show_table as $row) {
 											    echo "<tr>";
 											    echo "<td align='center'>".$no++."</td>";
-											    echo "<td align=''><a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/penilaian/'.$row->replid)."/0')) >".strtoupper($row->prosestipe)."</a></td>";
+											    echo "<td align=''><a href='".site_url('ns_pembelajaranjadwal/penilaian/'.$row->replid)."/0' target='_blank' >".strtoupper($row->prosestipe)."</a></td>";
 													echo "<td align=''>".$row->idmodultipe."</td>";
 											    echo "<td align=''>".strtoupper($CI->dbx->getpegawai($row->created_by,0,1))."</td>";
 											    echo "<td align=''>".strtoupper($row->matpel)."</td>";
@@ -189,22 +189,26 @@ function cetakabsensi(id) {
 											    echo "<td align='center'>".strtoupper($CI->p_c->tgl_indo($row->tanggalkegiatan))."</td>";
                           echo "<td align='center'>".($CI->p_c->cekaktif($row->nonreguler))."</td>";
 													echo "<td align='center'>".$row->jmlsiswa."</td>";
-													echo "<td align='center'>".$CI->p_c->cektrue(($row->jmlsiswa==$row->jmlsiswajadwal),$row->jmlsiswajadwal)."</td>";
+													echo "<td align='center'>".$CI->p_c->cektrue(($row->jmlsiswa==$row->jumlahpd),$row->jumlahpd)."</td>";
 													echo "<td align='center'>".$CI->p_c->cekaktif($row->aktif)."</td>";
 											    echo "<td align='center'>";
-                          // if ($row->aktiftahunajaran==1){
-                              if ((trim($row->created_by)==$this->session->userdata('idpegawai')) or (($row->idwali==$this->session->userdata('idpegawai')) AND ($row->nilaiwali==1))){
+													if ($row->deletethis<>1){
+													// if ($row->aktiftahunajaran==1){
+														if ((trim($row->created_by)==$this->session->userdata('idpegawai')) or (($row->idwali==$this->session->userdata('idpegawai')) AND ($row->nilaiwali==1))){
 
-                                echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/penilaian/'.$row->replid)."/1')) class='btn btn-xs btn-info'>Penilaian</a> ";
-                                //if ($row->status<=0){
-                                if (trim($row->created_by)==$this->session->userdata('idpegawai')){
-                                  echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/ubah/'.$row->replid)."')) class='btn btn-xs btn-warning' >Ubah</a>";
-                                  echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/hapus/'.$row->replid)."')) class='btn btn-xs btn-danger' id='btnOpenDialog' >Hapus</a>
-                                      </td>";
-                                }
-                                //}
-                              }
-                          //}
+															echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/penilaian/'.$row->replid)."/1')) class='btn btn-xs btn-info'>Penilaian</a> ";
+															//if ($row->status<=0){
+															if (trim($row->created_by)==$this->session->userdata('idpegawai')){
+															echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/ubah/'.$row->replid)."')) class='btn btn-xs btn-warning' >Ubah</a>";
+															//echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/hapus/'.$row->replid)."')) class='btn btn-xs btn-danger' id='btnOpenDialog' >Hapus</a>";
+															echo "</td>";
+															}
+															//}
+														}
+													//}
+													}else{
+														echo "<div style='background-color:red;text-align:center;'><b>Data Telah Dihapus</b></div>";
+													}
 											    echo "</tr>";
 											}
 											?>
@@ -243,18 +247,19 @@ function cetakabsensi(id) {
 	          }
 	        });
 			$.ajax({
-	          data:{modul:'idprosestipe',id:0,idcompany:$("#idcompany").val()},
+	          data:{modul:'idprosestipe',id:0,idcompany:0},
 	          success: function(respond){
 	            $("#idprosestipe").html(respond);
 	          }
 	        });
 
 			$.ajax({
-				data:{modul:'idrapottipediv',id:0,idcompany:$("#idcompany").val()},
+				data:{modul:'idrapottipediv',id:0,idcompany:0},
 				success: function(respond){
 					$("#divrapottipe").html(respond);
 				}
 			});
+			
 	        $.ajax({
 	          data:{modul:'idmatpel',id:0,idcompany:$("#idcompany").val()},
 	          success: function(respond){
@@ -278,14 +283,14 @@ function cetakabsensi(id) {
 	          }
 	        });
 			$.ajax({
-	          data:{modul:'idprosestipe',id:0,idcompany:$("#idcompany").val()},
+	          data:{modul:'idprosestipe',id:0,idcompany:0},
 	          success: function(respond){
 	            $("#idprosestipe").html(respond);
 	          }
 	        });
 
 			$.ajax({
-				data:{modul:'idrapottipediv',id:0,idcompany:$("#idcompany").val()},
+				data:{modul:'idrapottipediv',id:0,idcompany:0},
 				success: function(respond){
 					$("#divrapottipe").html(respond);
 				}
@@ -308,14 +313,14 @@ function cetakabsensi(id) {
 	          }
 	        });
 			$.ajax({
-	          data:{modul:'idprosestipe',id:value,idcompany:$("#idcompany").val()},
+	          data:{modul:'idprosestipe',id:0,idcompany:0},
 	          success: function(respond){
 	            $("#idprosestipe").html(respond);
 	          }
 	        });
 
 			$.ajax({
-				data:{modul:'idrapottipediv',id:value,idcompany:$("#idcompany").val()},
+				data:{modul:'idrapottipediv',id:0,idcompany:0},
 				success: function(respond){
 					$("#divrapottipe").html(respond);
 				}
@@ -336,6 +341,18 @@ function cetakabsensi(id) {
 	            $("#idmatpel").html(respond);
 	          }
 	        });
+			$.ajax({
+	          data:{modul:'idprosestipe',id:value,idcompany:$("#idcompany").val()},
+	          success: function(respond){
+	            $("#idprosestipe").html(respond);
+	          }
+	        });
+			$.ajax({
+				data:{modul:'idrapottipediv',id:value,idcompany:$("#idcompany").val()},
+				success: function(respond){
+					$("#divrapottipe").html(respond);
+				}
+			});
 	    });
 	  });
 	</script>
@@ -357,7 +374,7 @@ function cetakabsensi(id) {
                   <div class="control-group">
                     <div class="controls">:
                         <?php
-                        $arridcompany="data-rule-required=true id=idcompany";
+                        $arridcompany="data-rule-required='true' id='idcompany' style='width:300px'";
                         echo form_dropdown('idcompany',$idcompany_opt,$isi->idcompany,$arridcompany);
                         ?>
                         <?php //echo  <p id="message"></p> ?>
@@ -445,20 +462,7 @@ function cetakabsensi(id) {
 		        		</div>
 		            </th></tr>
               -->
-                <tr>
-                  <th align="left">
-                  <label class="control-label" for="minlengthfield">Tipe Proses</label>
-                  <div class="control-group">
-                <div class="controls">:
-                        <?php
-                          $arridprosestipe="data-rule-required=true id=idprosestipe";
-                          echo form_dropdown('idprosestipe',$idprosestipe_opt,$isi->idprosestipe,$arridprosestipe);
-                        ?>
-                        <?php //echo  <p id="message"></p> ?>
-                </div>
-                  </div>
-                  </th></tr>
-                  <tr>
+			  <tr>
   		            <th align="left">
   		        		<label class="control-label" for="minlengthfield">Mata Pelajaran</label>
   		        		<div class="control-group">
@@ -473,6 +477,20 @@ function cetakabsensi(id) {
   							</div>
   		        		</div>
   		            </th></tr>
+                <tr>
+                  <th align="left">
+                  <label class="control-label" for="minlengthfield">Tipe Proses</label>
+                  <div class="control-group">
+                <div class="controls">:
+                        <?php
+                          $arridprosestipe="data-rule-required=true id=idprosestipe";
+                          echo form_dropdown('idprosestipe',$idprosestipe_opt,$isi->idprosestipe,$arridprosestipe);
+                        ?>
+                        <?php //echo  <p id="message"></p> ?>
+						Perubahan tipe proses dapat menghilangkan nilai yang sudah diisi!.
+                </div>
+                  </div>
+                  </th></tr>
 		    		<tr>
 				            <th align="left">
 		                		<label class="control-label" for="minlengthfield">Tema</label>
@@ -499,6 +517,7 @@ function cetakabsensi(id) {
 	                		</div>
 			            </th>
 			         </tr>
+					 <!--
 		            <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Rapor Tipe</label>
@@ -514,6 +533,7 @@ function cetakabsensi(id) {
 							</div>
 		        		</div>
 		            </th></tr>
+					-->
                 <tr>
 		            	<th align="left">
 		        		<label class="control-label" for="minlengthfield">Non Reguler</label>
@@ -521,6 +541,19 @@ function cetakabsensi(id) {
 							<div class="controls">:
 		                	<?php
 		                		$fcdata=array('name'=>'nonreguler','id'=>'nonreguler','value'=>'1','checked'=>$isi->nonreguler);
+		                		echo form_checkbox($fcdata);
+		                	?>
+		                	<?php //echo  <p id="message"></p> ?>
+							</div>
+		        		</div>
+		            </th></tr>
+					<tr>
+		            	<th align="left">
+		        		<label class="control-label" for="minlengthfield">Rapor Tengah Semester</label>
+		        		<div class="control-group">
+							<div class="controls">:
+		                	<?php
+		                		$fcdata=array('name'=>'raports','id'=>'raports','value'=>'1','checked'=>$isi->raports);
 		                		echo form_checkbox($fcdata);
 		                	?>
 		                	<?php //echo  <p id="message"></p> ?>
@@ -559,16 +592,34 @@ function cetakabsensi(id) {
 	                <small><?php echo $form_small ?></small>
 	            </h1>
               <ol class="breadcrumb">
+			  <?php if($isi->deletethis<>1){ ?>
                     <li><a href="JavaScript:cetakabsensi('<?=$isi->replid?>')"><i class="fa fa-file-text"></i>&nbsp;&nbsp;Cetak</a></li>
+					<?php } ?>
+					<li><a href="<?php echo site_url("ns_pembelajaranjadwal/tambah") ?>" target="_blank"><i class="fa fa-plus"></i>&nbsp;Tambah</a></li>
                   </ol>
+				
               </th>
             </section>
             <section class="content">
+			<?php if($isi->deletethis==1){ ?>
+      <div style="background-color:red;text-align:center;"><h2>Data Telah Dihapus</h2></div>
+      <?php } ?>
 		        <?php
 			        $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate');
 		    	echo form_open($action,$attributes);
 		    	?>
 		    	<table width="100%" border="0">
+				<tr>
+              <th align="left">
+          		<label class="control-label" for="minlengthfield">Unit Bisnis</label>
+          		<div class="control-group">
+  					<div class="controls">:
+                  	<?php
+                  		echo $isi->companytext." (".$isi->iddepartemen.")";
+                  	?>
+  					</div>
+          		</div>
+              </th></tr>
 			        <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Tipe Proses</label>
@@ -691,6 +742,7 @@ function cetakabsensi(id) {
 	                		</div>
 			            </th>
 			         </tr>
+					 <!--
 		            <tr>
 		            <th align="left">
 		        		<label class="control-label" for="minlengthfield">Rapor Tipe</label>
@@ -703,6 +755,7 @@ function cetakabsensi(id) {
 							</div>
 		        		</div>
 		            </th></tr>
+-->
                 <tr>
 				    <th align="left">
 		        		<label class="control-label" for="minlengthfield">Non Reguler</label>
@@ -973,19 +1026,21 @@ function cetakabsensi(id) {
                         //else if (isset($n)){
 												//if ($isi->aktiftahunajaran==1)
                           else {
-                            if ((trim($isi->created_by)==$this->session->userdata('idpegawai')) or (($isi->idwali==$this->session->userdata('idpegawai')) AND ($isi->nilaiwali==1))){
-  						            	//	echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/hapusnilai/'.$isi->replid)."')) class='btn btn-xs btn-danger'>Hapus Penilaian</a> ";
-  						            	//}
-                          //}
-					            	//}else{
-                              echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/penilaian/'.$isi->replid)."/1')) class='btn btn-info'>Penilaian</a> ";
-															echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/duplikasi/'.$isi->replid)."/1')) class='btn btn-info'>Duplikasi</a> ";
-                            if (trim($isi->created_by)==$this->session->userdata('idpegawai')){
-						            		          echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/ubah/'.$isi->replid)."')) class='btn btn-warning'>Ubah</a>&nbsp;&nbsp;";
-						            		          echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/hapus/'.$isi->replid)."')) class='btn btn-danger'>Hapus</a>";
-                            }
-						            	}
-					            	}
+							if($isi->deletethis<>1){
+									if ((trim($isi->created_by)==$this->session->userdata('idpegawai')) or (($isi->idwali==$this->session->userdata('idpegawai')) AND ($isi->nilaiwali==1))){
+												//	echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/hapusnilai/'.$isi->replid)."')) class='btn btn-xs btn-danger'>Hapus Penilaian</a> ";
+												//}
+								//}
+											//}else{
+									echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/penilaian/'.$isi->replid)."/1')) class='btn btn-info'>Penilaian</a> ";
+																	echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/duplikasi/'.$isi->replid)."/1')) class='btn btn-info'>Duplikasi</a> ";
+									if (trim($isi->created_by)==$this->session->userdata('idpegawai')){
+															echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/ubah/'.$isi->replid)."')) class='btn btn-warning'>Ubah</a>&nbsp;&nbsp;";
+															echo "<a href=javascript:void(window.open('".site_url('ns_pembelajaranjadwal/hapus/'.$isi->replid)."')) class='btn btn-danger'>Hapus</a>";
+									}
+												}
+											}
+							}
 				            	?>
 				            	<a href="javascript:void(window.open('<?php echo site_url("ns_pembelajaranjadwal") ?>'))" class="btn btn-success">Kembali</a>
 				            </th>

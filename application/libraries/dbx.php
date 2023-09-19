@@ -306,9 +306,9 @@ Class dbx extends CI_Model {
 		$query = $this->db->query($sql);
 		$rows=$query->row();
 		if(($rows->sisahari<1) AND ($status<>"4")){
-				return '<small class="badge bg-red">'.$CI->p_c->tgl_indo($rows->batas).'</small>';
+				return '<small class="badge bg-red">'.$CI->p_c->tgl_indo($tanggal).'</small>';
 		}else{
-				return $CI->p_c->tgl_indo($rows->batas);
+				return $CI->p_c->tgl_indo($tanggal);
 		}
 	}
 
@@ -341,9 +341,9 @@ Class dbx extends CI_Model {
 
 	public function randomchar($var,$alphabet=""){
 		if ($alphabet<>1){
-			$str="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUPWXYZ!@#$%^&*()_+{}:|\=-,.<>/?";
+			$str="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUPWXYZ!@#$^&*()_+{}:|\=-,.<>/?";
 		}else{
-			$str="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUPWXYZ@#$%&*+?";
+			$str="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUPWXYZ@#$&*+?";
 		}
 		$randomchar=substr(str_shuffle(str_repeat($str, $var)), 0, $var);
 		return $randomchar;
@@ -361,6 +361,64 @@ Class dbx extends CI_Model {
 				return "-";
 			}
 
+	}
+
+	public function ns_rapotkompetensi($idrapot,$idmatpel,$idsiswa){
+			$sql = "SELECT rk.* FROM ns_rapot_kompetensi rk 
+					INNER JOIN ns_rapot r ON r.idtahunajaran=rk.idtahunajaran AND r.idperiode=rk.idperiode
+					INNER JOIN kelas k ON k.replid=r.idkelas AND k.idtingkat=rk.idtingkat
+					INNER JOIN ns_matpel mp ON mp.replid=rk.idmatpel  
+					WHERE rk.aktif=1 AND r.replid='".$idrapot."' AND mp.matpelgroup='".$idmatpel."'
+					ORDER BY mp.no_urut,rk.replid
+					";
+					//AND rk.idmatpel='".$idmatpel."'";
+			//echo $sql;die;
+			$kompetensitext="";$kompetensitext2="";
+			$kompetensi = $this->db->query($sql);
+			if ($kompetensi->num_rows() > 0) {
+				$kompetensidump="0";
+				foreach((array)$kompetensi->result() as $rowkompetensi) {
+					$kompetensidump=$kompetensidump.','.$rowkompetensi->replid;
+				}
+				
+				$sqlchecked="SELECT DISTINCT replid,idkompetensi FROM ns_rapot_kompetensi_pesdik WHERE idsiswa='".$idsiswa."' AND idkompetensi IN (".$kompetensidump.")";
+				//echo $sqlchecked;
+				$checked_kompetensi=$this->data($sqlchecked);
+				foreach((array)$checked_kompetensi as $rowchecked){
+					$checked_kompetensi_data[]=$rowchecked->idkompetensi;
+				}
+				
+				if($checked_kompetensi<>NULL){
+					//$checked_kompetensi_data=array_column($checked_kompetensi,'replid');
+					//echo var_dump($checked_kompetensi_data);
+					foreach($kompetensi->result() as $row){
+						//echo in_array($row->replid,$checked_kompetensi_data);
+						if (!in_array($row->replid,$checked_kompetensi_data)){
+							if ($kompetensitext<>""){$kompetensitext.=", ".$row->kompetensitext;}else{$kompetensitext="Kompetensi ".$row->kompetensitext;}
+							//$kompetensitext.=$row->kompetensitext;
+						}
+					}
+					$kompetensitext.=" telah tercapai.";
+					foreach($kompetensi->result() as $row){
+						if (in_array($row->replid,$checked_kompetensi_data)){
+							if ($kompetensitext2<>""){$kompetensitext2.=", ".$row->kompetensitext;}else{$kompetensitext2="<hr/>Perlu peningkatan pada ".$row->kompetensitext;}
+							//$kompetensitext2.=$row->kompetensitext;
+						}
+					}
+					if($kompetensitext2<>""){$kompetensitext2=$kompetensitext2.".";}
+					
+				}else{
+					foreach($kompetensi->result() as $row){
+							if ($kompetensitext<>""){$kompetensitext.=", ".$row->kompetensitext;}else{$kompetensitext="Kompetensi ".$row->kompetensitext;}
+							//$kompetensitext.=$row->kompetensitext;
+					}
+					$kompetensitext.=" telah tercapai.";
+				}
+				
+				$kompetensitext.=$kompetensitext2;
+				
+			}
+			return $kompetensitext;
 	}
 
 	public function ns_predikat_text_lpd($jenjang,$var,$predikattipe){
@@ -926,6 +984,20 @@ function getpegawai($replid,$nip=0,$shownip=0)
 				";
 		//echo $sql;die;
 		$this->db->query($sql);
+	}
+
+	public function carinis($tanggal_masuk,$kodecabang,$tingkattext){
+		$tahunmasuk=substr($tanggal_masuk,2,2);
+		$nis=$kodecabang.$tahunmasuk.$tingkattext;
+			//$sqlnis="SELECT lpad(right(nissementara,3)+1,3,'0') as isi FROM calonsiswa WHERE LEFT(nissementara,5)='".$datacs->kode_cabang.$tahunmasuk."' order by right(nissementara,3) DESC LIMIT 1";
+			$sqlnis="SELECT lpad(right(nis,3)+1,3,'0') as isi FROM siswa WHERE LEFT(nis,5)='".$kodecabang.$tahunmasuk."' order by right(nis,3) DESC LIMIT 1";
+			//echo $sqlnis;die;
+			$nisurutan=$this->dbx->singlerow($sqlnis);
+		if($nisurutan==""){
+			$nisurutan="001";
+		}
+	    $nis=$nis.$nisurutan;
+		return $nis;
 	}
 
 }

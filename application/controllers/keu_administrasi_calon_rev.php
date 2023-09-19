@@ -32,10 +32,12 @@ parent::__construct();
 
 	public function index($print="",$excel="")
 	{
-			$data= $this->keu_administrasi_calon_db->data();
+			
 			$data['form']='Administrasi Keuangan CPD Revisi';
 			$data['view']='index';
 			$data['action']='keu_administrasi_calon_rev';
+			$data['hanyapusat']=2;
+			$data= $this->keu_administrasi_calon_db->data($data);
 			$this->load->view('keu_administrasi_calon_rev_v', $data);
 	}
 

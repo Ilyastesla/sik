@@ -15,7 +15,6 @@ Class ksw_mutasi_daftar_db extends CI_Model {
 			$cari=$cari." AND s.idkelas='".$this->input->post('idkelas')."' ";
 		}
 
-				//,(select replid from calonsiswa where replidsiswa=s.replid) replidcalon
 		$sql = "SELECT s.*,DAY(s.tgllahir),MONTH(s.tgllahir)
 						,YEAR(s.tgllahir),ks.kondisi as kondisi_nm
 						,(DATEDIFF (current_date(),s.tgl_masuk)) as jml_hari
@@ -26,15 +25,23 @@ Class ksw_mutasi_daftar_db extends CI_Model {
 						,administrasisiswa, r.replid as idregion
 		,ms.tglmutasi,ms.keterangan as keteranganmutasi,jm.jenismutasi
 						FROM siswa s
-		INNER JOIN mutasisiswa ms ON ms.nis=s.nis
+		INNER JOIN (SELECT * FROM mutasisiswa AS t1
+					INNER JOIN
+					(
+					SELECT MAX(modified_date) AS maxDate
+					FROM mutasisiswa
+					GROUP BY idsiswa
+					) AS t2  ON t1.modified_date = t2.maxDate 
+					GROUP BY t1.idsiswa) ms ON ms.nis=s.nis
 		INNER JOIN jenismutasi jm ON jm.replid=ms.jenismutasi
 						LEFT JOIN kondisisiswa ks ON ks.replid=s.kondisi
 						LEFT JOIN kelas k ON s.idkelas = k.replid
 						LEFT JOIN tahunajaran ta ON ta.replid = k.idtahunajaran
 						LEFT JOIN angkatan akt ON akt.replid=s.idangkatan
 						LEFT JOIN regional r ON r.replid=s.region
-						WHERE s.alumni=1 AND s.aktif=0 ".$cari."
+						WHERE s.aktif=0 ".$cari."
 						ORDER BY s.nama ";
+						//s.alumni=1 AND 
 		//echo $sql;die;
 		$data['show_table']=$this->dbx->data($sql);
         $data['hariini']=$this->dbx->cts();
@@ -51,8 +58,7 @@ Class ksw_mutasi_daftar_db extends CI_Model {
 		$data['iddepartemen_opt'] = $this->dbx->opt("SELECT departemen as replid,departemen as nama FROM departemen WHERE aktif=1 AND replid IN (".$this->session->userdata('dept').") ORDER BY urutan",'up');
 		$data['idtahunajaran_opt'] = $this->dbx->opt("SELECT replid,CONCAT('[',departemen,'] ',tahunajaran) as nama FROM tahunajaran WHERE idcompany='".$this->input->post('idcompany')."' AND departemen='".$this->input->post('iddepartemen')."' ORDER BY aktif DESC ,nama DESC ",'up');
 
-		$data['idtingkat_opt'] = $this->dbx->opt("SELECT replid,tingkat as nama FROM tingkat
-																							WHERE aktif=1 AND departemen='".$this->input->post('iddepartemen')."' ORDER BY urutan DESC LIMIT 1",'up');
+		$data['idtingkat_opt'] = $this->dbx->opt("SELECT replid,tingkat as nama FROM tingkat WHERE aktif=1 AND departemen='".$this->input->post('iddepartemen')."' ORDER BY urutan",'up');
 
 		$data['idkelas_opt'] = $this->dbx->opt("SELECT k.replid,k.kelas as nama FROM kelas k
 																								INNER JOIN tingkat t ON k.idtingkat=t.replid

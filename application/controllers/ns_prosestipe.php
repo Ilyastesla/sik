@@ -56,6 +56,7 @@ parent::__construct();
 				'iddepartemen' => $this->input->post('iddepartemen'),
 				'keterangan' => $this->input->post('keterangan'),
 				'nilaiwali' => $this->input->post('nilaiwali'),
+				"kurikulumkode" => $this->input->post("kurikulumkode"),
 				'aktif' => $this->input->post('aktif'),
 				'no_urut' => $this->input->post('no_urut'),
 				"modified_date"=> $this->dbx->cts(),
@@ -83,6 +84,15 @@ parent::__construct();
 						"modified_by"=> $this->session->userdata('idpegawai')
 					);
 					$this->dbx->tambahdata('ns_reff_company',$datacompany) ;
+			}
+
+			$result = $this->db->query("DELETE FROM ns_prosestiperapottipe WHERE idprosestipe='".$id."'");
+			foreach((array)$this->input->post('idrapottipe') as $rowidrapottipe) {
+					$datacompany = array(
+						'idprosestipe'=>$id,
+						'idrapottipe' => $rowidrapottipe,
+					);
+					$this->dbx->tambahdata('ns_prosestiperapottipe',$datacompany) ;
 			}
 		}
 

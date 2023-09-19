@@ -58,9 +58,22 @@
                     </div>
                   </div>
                 </th>
+                
+                <th align="left">
+                                  			<label class="control-label" for="minlengthfield">Tahun Pelajaran</label>
+                                  			<div class="control-group">
+                                  				<div class="controls">:
+                                  					<?php
+                                  						$arridtahunajaran='data-rule-required=false onchange=javascript:this.form.submit();';
+                                  						echo form_dropdown('idtahunajaran',$idtahunajaran_opt,$this->input->post('idtahunajaran'),$arridtahunajaran);
+                                  					?>
+                                  					<?php //echo  <p id="message"></p> ?>
+                                  				</div>
+                                  			</div>
+                                  	</th>
+                                 
             </tr>
-    	                    <tr>
-            						       <th align="left">
+    	                    <tr><th align="left">
       				                		<label class="control-label" for="minlengthfield">Jenjang</label>
       				                		<div class="control-group">
               											<div class="controls">:
@@ -73,20 +86,18 @@
             				              </div>
             						         </th>
                                  <th align="left">
-        				                		<label class="control-label" for="minlengthfield">Proses Penerimaan</label>
-        				                		<div class="control-group">
-                											<div class="controls">:
-            						                	<?php
-            						                		$arridproses='data-rule-required=false onchange=javascript:this.form.submit();';
-            						                		echo form_dropdown('idproses',$idproses_opt,$this->input->post('idproses'),$arridproses);
-            						                	?>
-            						                	<?php //echo  <p id="message"></p> ?>
-                											</div>
-              				              </div>
-              						         </th>
-    			                  </tr>
-                            <tr>
-
+                                      <label class="control-label" for="minlengthfield">Program</label>
+          				                		<div class="control-group">
+                  											<div class="controls">:
+              						                	<?php
+              						                		$arridprogramsiswa='data-rule-required=false onchange=javascript:this.form.submit();';
+              						                		echo form_dropdown('idprogramsiswa',$idprogramsiswa_opt,$this->input->post('idprogramsiswa'),$arridprogramsiswa);
+              						                	?>
+              						                	<?php //echo  <p id="message"></p> ?>
+                  											</div>
+                				              </div>
+                                    </th>
+                                 <!--
                                     <th align="left">
                                       <label class="control-label" for="minlengthfield">Program</label>
           				                		<div class="control-group">
@@ -99,19 +110,22 @@
                   											</div>
                 				              </div>
                                     </th>
-                                    <th align="left">
-                                  			<label class="control-label" for="minlengthfield">Tahun Pelajaran</label>
-                                  			<div class="control-group">
-                                  				<div class="controls">:
-                                  					<?php
-                                  						$arridtahunajaran='data-rule-required=false onchange=javascript:this.form.submit();';
-                                  						echo form_dropdown('idtahunajaran',$idtahunajaran_opt,$this->input->post('idtahunajaran'),$arridtahunajaran);
-                                  					?>
-                                  					<?php //echo  <p id="message"></p> ?>
-                                  				</div>
-                                  			</div>
-                                  	</th>
-                                    <!--
+                                   
+                                 <th align="left">
+        				                		<label class="control-label" for="minlengthfield">Proses Penerimaan</label>
+        				                		<div class="control-group">
+                											<div class="controls">:
+            						                	<?php
+            						                		$arridproses='data-rule-required=false onchange=javascript:this.form.submit();';
+            						                		echo form_dropdown('idproses',$idproses_opt,$this->input->post('idproses'),$arridproses);
+            						                	?>
+            						                	<?php //echo  <p id="message"></p> ?>
+                											</div>
+              				              </div>
+              						         </th>
+                                   
+                                    
+                                    
                                       <th align="left">
               				                		<label class="control-label" for="minlengthfield">Tahun Masuk</label>
               				                		<div class="control-group">

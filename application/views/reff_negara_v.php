@@ -81,7 +81,7 @@
             <section class="content">
 		        <?php
 			        $attributes = array('class' => 'form-horizontal form-validate', 'id' => 'form', 'method' => 'POST', 'novalidate'=>'novalidate','onsubmit'=>'return validate()');
-		    	echo form_open($action,$attributes);
+		    	    echo form_open($action,$attributes);
 		    	?>
 		    	<table width="100%" border="0">
 		    		<tr>

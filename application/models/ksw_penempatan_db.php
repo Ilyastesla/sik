@@ -39,7 +39,7 @@ Class ksw_penempatan_db extends CI_Model {
                 			LEFT JOIN  kondisisiswa ks ON ks.replid=c.kondisi
                 			LEFT JOIN  kelas kls ON c.calon_kelas = kls.replid
 											LEFT JOIN  tahunajaran ta ON kls.idtahunajaran = ta.replid
-                      LEFT JOIN siswa s ON s.replid=c.replidsiswa
+                      LEFT JOIN siswa s ON s.replidcalon=c.replid
                       WHERE c.lulus=1 AND c.tanggal_masuk IS NOT NULL AND c.aktif=1 
 											 AND c.calon_kelas IS NOT NULL
 									".$cari."
@@ -73,23 +73,14 @@ Class ksw_penempatan_db extends CI_Model {
         	$sql="SELECT ".$this->dbx->tablecolumn('calonsiswa').",'".$id."' as replid ";
         	$data['isi']=$this->dbx->rows($sql);
         }
-        $data['idkelas_opt'] = $this->dbx->opt("SELECT replid, kelas as nama FROM kelas WHERE idtahunajaran='".$data['isi']->idtahunajaran."' AND idtingkat='".$data['isi']->tingkat."'ORDER BY kelas",'up');
+        $data['idkelas_opt'] = $this->dbx->opt("SELECT replid, CONCAT(kelas,' (',keterangan,')') as nama FROM kelas WHERE idtahunajaran='".$data['isi']->idtahunajaran."' AND idtingkat='".$data['isi']->tingkat."'ORDER BY kelas",'up');
 				return $data;
   }
 
   public function import($idcalon){
-    $datacs=$this->dbx->getcalonsiswa($idcalon,1);
+    	$datacs=$this->dbx->getcalonsiswa($idcalon,1);
 		if (ISSET($datacs)){
-	    $tahunmasuk=substr($datacs->tanggal_masuk,2,2);
-	    $nis=$datacs->kodecabang.$tahunmasuk.$datacs->tingkatnis;
-			//$sqlnis="SELECT lpad(right(nissementara,3)+1,3,'0') as isi FROM calonsiswa WHERE LEFT(nissementara,5)='".$datacs->kode_cabang.$tahunmasuk."' order by right(nissementara,3) DESC LIMIT 1";
-			$sqlnis="SELECT lpad(right(nis,3)+1,3,'0') as isi FROM siswa WHERE LEFT(nis,5)='".$datacs->kodecabang.$tahunmasuk."' order by right(nis,3) DESC LIMIT 1";
-			//echo $sqlnis;die;
-			$nisurutan=$this->dbx->singlerow($sqlnis);
-	    if($nisurutan==""){
-	      $nisurutan="001";
-	    }
-	    $nis=$nis.$nisurutan;
+			$nis=$this->dbx->carinis($datacs->tanggal_masuk,$datacs->kodecabang,$datacs->tingkatnis);
 	    //echo $nis;die;
 
 	    $sql="INSERT INTO siswa(
@@ -113,32 +104,32 @@ Class ksw_penempatan_db extends CI_Model {
 	                ,modified_by
 									,no_kps,no_kip,jenjangasal,jenjangakhir,wali_opt,kecamatantext,kecamatantext_ayah,kecamatantext_ibu,kecamatantext_wali
 									,instansiayahtext,instansiibutext,instansiwalitext,idtempattinggal
-									,tgl_masuk
+									,tgl_masuk,replidcalon
 	              )
-	            SELECT '".$nis."',nisn,nama,panggilan,aktif,tahunmasuk,suku,agama,status,kondisi,kelamin,tmplahir,tgllahir,warga,anakke,jsaudara,bahasa,berat,tinggi,darah,foto,alamatsiswa
-	                    ,kodepossiswa,telponsiswa,hpsiswa,emailsiswa,kesehatan,asalsekolah,ketsekolah,namaayah,namaibu,almayah,almibu,pendidikanayah,pendidikanibu,pekerjaanayah,pekerjaanibu
-	                    ,wali,penghasilanayah,penghasilanibu,emailayah,alamatsurat,keterangan,emailibu,region,kota,provinsi,negara,pinbbm,tingkat,jurusan,tingkat_asal,jurusan_asal,t_ijazah
-	                    ,ijazah,t_skh,skh,t_lhb,lhb,abk,instansiayah,instansiibu,tel_ayah,tel_ibu,hp_ayah,hp_ibu,bbm_ayah,bbm_ibu,pendidikanwali,pekerjaanwali,instansiwali,penghasilanwali,hpwali
-	                    ,emailwali,tel_wali,hp_wali,bbm_wali,alamat_wali,info_media,pj,alamat_ibu,kota_ibu,provinsi_ibu,negara_ibu,kodepos_ibu,alamat_ayah,kota_ayah,provinsi_ayah,negara_ayah
-	                    ,kodepos_ayah,kota_wali,provinsi_wali,negara_wali,kodepos_wali,agama_ibu,agama_ayah,agama_wali,negara_asal,semester_awal,nis_sk,statanak,pja,remedialperilaku,kelasstatus
-	                    ,regionalstatus,tahunlahirayah,tahunlahiribu,sekolahjenjang,kecamatan,tahunlahirwali,jaraktempuh,waktutempuh,alattransportasi,kps,piplayak,kip,nik_ayah,nik_ibu,nik_wali,nik_siswa
-											,calon_kelas
-											,info1
-	                    ,info2
-	                    ,info3
-	                    ,ts
-	                    ,token
-	                    ,issync
-	            ,'".$this->session->userdata('idpegawai')."'
-	            ,'".$this->dbx->cts()."'
-	            ,'".$this->dbx->cts()."'
-	            ,'".$this->session->userdata('idpegawai')."'
-							,no_kps,no_kip,jenjangasal,jenjangakhir,wali_opt,kecamatantext,kecamatantext_ayah,kecamatantext_ibu,kecamatantext_wali
-							,instansiayahtext,instansiibutext,instansiwalitext,idtempattinggal
-							,tanggal_masuk
-	            FROM calonsiswa
-	            WHERE replid='".$idcalon."'
-	        ";
+					SELECT '".$nis."',nisn,nama,panggilan,aktif,tahunmasuk,suku,agama,status,kondisi,kelamin,tmplahir,tgllahir,warga,anakke,jsaudara,bahasa,berat,tinggi,darah,foto,alamatsiswa
+							,kodepossiswa,telponsiswa,hpsiswa,emailsiswa,kesehatan,asalsekolah,ketsekolah,namaayah,namaibu,almayah,almibu,pendidikanayah,pendidikanibu,pekerjaanayah,pekerjaanibu
+							,wali,penghasilanayah,penghasilanibu,emailayah,alamatsurat,keterangan,emailibu,region,kota,provinsi,negara,pinbbm,tingkat,jurusan,tingkat_asal,jurusan_asal,t_ijazah
+							,ijazah,t_skh,skh,t_lhb,lhb,abk,instansiayah,instansiibu,tel_ayah,tel_ibu,hp_ayah,hp_ibu,bbm_ayah,bbm_ibu,pendidikanwali,pekerjaanwali,instansiwali,penghasilanwali,hpwali
+							,emailwali,tel_wali,hp_wali,bbm_wali,alamat_wali,info_media,pj,alamat_ibu,kota_ibu,provinsi_ibu,negara_ibu,kodepos_ibu,alamat_ayah,kota_ayah,provinsi_ayah,negara_ayah
+							,kodepos_ayah,kota_wali,provinsi_wali,negara_wali,kodepos_wali,agama_ibu,agama_ayah,agama_wali,negara_asal,semester_awal,nis_sk,statanak,pja,remedialperilaku,kelasstatus
+							,regionalstatus,tahunlahirayah,tahunlahiribu,sekolahjenjang,kecamatan,tahunlahirwali,jaraktempuh,waktutempuh,alattransportasi,kps,piplayak,kip,nik_ayah,nik_ibu,nik_wali,nik_siswa
+												,calon_kelas
+												,info1
+							,info2
+							,info3
+							,ts
+							,token
+							,issync
+					,'".$this->session->userdata('idpegawai')."'
+					,'".$this->dbx->cts()."'
+					,'".$this->dbx->cts()."'
+					,'".$this->session->userdata('idpegawai')."'
+								,no_kps,no_kip,jenjangasal,jenjangakhir,wali_opt,kecamatantext,kecamatantext_ayah,kecamatantext_ibu,kecamatantext_wali
+								,instansiayahtext,instansiibutext,instansiwalitext,idtempattinggal
+								,tanggal_masuk,replid
+					FROM calonsiswa
+					WHERE replid='".$idcalon."'
+				";
 	        //echo $sql;die;
 	        $this->db->query($sql);
 	        $insert_id = $this->db->insert_id();
@@ -160,7 +151,7 @@ Class ksw_penempatan_db extends CI_Model {
     $datacs=$this->dbx->getcalonsiswa($idcalon,1);
 		//echo $datacs->replidsiswa;die;
 		if (ISSET($datacs)){
-				 $result=$this->db->query("DELETE FROM siswa WHERE replid='".$datacs->replidsiswa."'");
+				 $result=$this->db->query("DELETE FROM siswa WHERE replidcalon='".$datacs->replid."'");
 				 $result=$this->db->query("UPDATE calonsiswa SET replidsiswa=NULL,nissementara=NULL WHERE replid='".$idcalon."'");
 				 $result=$this->db->query("UPDATE online_kronologis SET status=3 WHERE idcalon='".$idcalon."'");
 				 return $result;

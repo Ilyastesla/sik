@@ -132,7 +132,7 @@ Class reff_user extends CI_Controller {
 	}
 
 	public function hapususer_p($id) {
-		$result = $this->reff_user_db->hapususer_p_db($id) ;
+		$result = $this->dbx->hapusdata('login','replid',$id) ;
 		if ($result == TRUE) {
 			?><script>
 					window.opener.location.reload();

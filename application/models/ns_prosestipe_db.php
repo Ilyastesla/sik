@@ -11,17 +11,25 @@ Class ns_prosestipe_db extends CI_Model {
 				if ($this->input->post('iddepartemen')<>""){
 					$cari=$cari." AND pt.iddepartemen='".$this->input->post('iddepartemen')."' ";
 				}
+				if ($this->input->post('aktif')<>""){
+					$cari=$cari." AND pt.aktif='".$this->input->post('aktif')."' ";
+				}
 				if ($this->input->post('katakunci')<>""){
-					$cari=$cari." AND (pt.prosestipe='".$this->input->post('katakunci')."' OR pt.keterangan='".$this->input->post('katakunci')."') ";
+					$cari=$cari." AND (pt.prosestipe LIKE '%".$this->input->post('katakunci')."%' OR pt.keterangan LIKE '%".$this->input->post('katakunci')."%') ";
 				}
 				
 				if ($this->input->post('idcompany')<>""){
 					$cari=$cari." AND pt.replid IN (SELECT idvariabel FROM ns_reff_company WHERE idcompany='".$this->input->post('idcompany')."' AND tipe='ns_prosestipe' ) ";
 				}
+				if ($this->input->post('kurikulumkode')<>""){
+					$cari=$cari." AND pt.kurikulumkode='".$this->input->post('kurikulumkode')."' ";
+				}
 
       	$sql="SELECT pt.*
 											,(SELECT COUNT(*) FROM ns_prosesvariabel WHERE idprosestipe=pt.replid) as pakai
+											,CONCAT(kr.kurikulumkode,' - ',kr.kurikulum) as kurikulumtext
 				 				FROM ns_prosestipe pt
+								 LEFT JOIN ns_kurikulum kr ON kr.kurikulumkode=pt.kurikulumkode
 								WHERE pt.replid<>0
 								".$cari."
 								ORDER BY pt.no_urut";
@@ -30,7 +38,8 @@ Class ns_prosestipe_db extends CI_Model {
 				$data['iddepartemen_opt'] = $this->dbx->opt("SELECT departemen as replid,departemen as nama FROM departemen WHERE aktif=1 AND replid IN (".$this->session->userdata('dept').") ORDER BY urutan",'up');
 				$data['idcompany_opt'] = $this->dbx->opt("SELECT replid,nama as nama FROM hrm_company ORDER BY nama",'up');
 				$data['aktif_opt'] =array('1'=>'Aktif','2'=>'Tidak Aktif','3'=>'Semuanya');
-      	return $data;
+				$data['kurikulumkode_opt'] = $this->dbx->opt("SELECT kurikulumkode as replid,CONCAT(kurikulumkode,' - ',kurikulum) as nama FROM ns_kurikulum WHERE aktif=1 ORDER BY kurikulumkode DESC",'up');
+				return $data;
     }
 
      //TAMBAH
@@ -43,26 +52,19 @@ Class ns_prosestipe_db extends CI_Model {
 
         if ($data['isi']== NULL ) {
         	unset($data['isi']);
-        	$sql="SELECT
-        			NULL as replid,
-					NULL as prosestipe,
-					NULL as iddepartemen,
-					0 as nilaiwali,
-					1 as aktif,
-					NULL as no_urut,
-					NULL as keterangan,
-					NULL as created_date,
-					NULL as created_by,
-					NULL as modified_date,
-					NULL as modified_by
-					";
-        	$data['isi']=$this->dbx->rows($sql);
+	        $sql="SELECT ".$this->dbx->tablecolumn('ns_prosestipe').",1 as aktif";
+	        $data['isi']=$this->dbx->rows($sql);
         }
 
 				$data['iddepartemen_opt'] = $this->dbx->opt("SELECT departemen as replid,departemen as nama FROM departemen WHERE aktif=1 AND replid IN (".$this->session->userdata('dept').") ORDER BY urutan",'up');
 				$data['idcompany_opt'] = $this->dbx->data("SELECT replid,nama as nama FROM hrm_company ORDER BY nama",'up');
 				$data['idreff_company_opt'] = $this->dbx->rowscsv("SELECT idcompany as var FROM ns_reff_company WHERE idvariabel='".$data['isi']->replid."' AND tipe='ns_prosestipe'",'up');
-
+				$data['kurikulumkode_opt'] = $this->dbx->opt("SELECT kurikulumkode as replid,CONCAT(kurikulumkode,' - ',kurikulum) as nama FROM ns_kurikulum ORDER BY kurikulumkode DESC",'up');
+				$sqlrapot="SELECT rt.replid,CONCAT('[',rt.iddepartemen,'] ',rt.rapottipe,' ',rt.keterangan, ' (',IF(rt.aktif=1,'A','T'),')') as nama,(SELECT 1 FROM ns_prosestiperapottipe WHERE idprosestipe='".$data["isi"]->replid."' AND idrapottipe=rt.replid) as checked
+							FROM ns_rapottipe rt
+							WHERE rt.iddepartemen='".$data["isi"]->iddepartemen."' AND rt.kurikulumkode='".$data["isi"]->kurikulumkode."' 
+							ORDER BY rt.iddepartemen,rt.rapottipe";
+        $data['idrapottipe_opt'] = $this->dbx->data($sqlrapot);
         return $data;
   }
 

@@ -203,7 +203,7 @@ parent::__construct();
         			,pm.idpermintaan_barang, pm.idmaterial, pb.idinventory_pembelian
 					,pyb.tanggalserah, pyb.kode_transaksi as kodepenyerahan,kk.iddepartemen as iddepartemenpermintaan,pb.idpj,kk.idcompany
 					,(SELECT SUM(jml_serah) FROM inventory_penyerahan_barang_mat WHERE pm.idpermintaan_barang=idpermintaanbarang AND idmaterial=pm.idmaterial AND idpermintaan_mat=pm.replid) as total_serah
-					,pb.iddepartemen
+					,pb.iddepartemen,pb.idsumberdana
         		FROM
 						inventory_permintaan_barang_mat pm
         		INNER JOIN inventory_permintaan_barang kk ON kk.replid=pm.idpermintaan_barang
@@ -228,6 +228,7 @@ parent::__construct();
 
 
         $data['kelompok_inventaris_opt'] = $this->dbx->opt("SELECT replid,reff_nama as nama FROM inventory_reff WHERE grup='inventaris' ORDER BY reff_nama",'up');
+		$data['idsumberdana_opt'] = $this->dbx->opt("SELECT replid,reff_nama as nama FROM inventory_reff WHERE grup='sumberdana' ORDER BY reff_nama",'up');
         $data['ruang_opt'] = $this->dbx->opt("SELECT replid, nama FROM inventory_ruang ORDER BY nama",'up');
         $data['unit_opt'] = $this->dbx->opt("SELECT im.replid,im.unit as nama FROM inventory_unit im ORDER BY im.unit",'up');
 		$data['idinventory_pembelian_opt'] = $this->dbx->opt("SELECT a.replid,a.kode_transaksi as nama
@@ -300,10 +301,12 @@ parent::__construct();
 	    $sql="SELECT pb.*,u.unit,ki.reff_nama as kelompok_inventaris
 	    			,ir.nama as ruangan,ipb.kode_transaksi as kode_pembelian
 						,pyb.kode_transaksi as kodepenyerahan,d.departemen as departementext,c.logo , c.nama as companytext,k.nama as kelompokbarangtext
+						,sd.reff_nama as sumberdanatext 
 	    		FROM inventory_penyerahan_barang_mat pb
 				LEFT JOIN inventory_material im ON pb.idmaterial=im.replid
         		LEFT JOIN inventory_kelompok k ON k.replid=im.idkelompok
-	    		LEFT JOIN inventory_reff ki ON pb.idkelompok_inventaris=ki.replid AND ki.grup='inventaris'
+	    		LEFT JOIN inventory_reff sd ON pb.idsumberdana=sd.replid AND sd.grup='sumberdana'
+				LEFT JOIN inventory_reff ki ON pb.idkelompok_inventaris=ki.replid AND ki.grup='inventaris'
 	    		LEFT JOIN inventory_unit u ON pb.idunit=u.replid
 	    		LEFT JOIN inventory_ruang ir ON pb.idruang=ir.replid
 				LEFT JOIN inventory_pembelian ipb ON pb.idinventory_pembelian=ipb.replid

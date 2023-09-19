@@ -22,7 +22,6 @@ Class ksw_siswa_db extends CI_Model {
 				$cari=$cari." AND s.idkelas='".$this->input->post('idkelas')."' ";
 			}
 
-				//,(select replid from calonsiswa where replidsiswa=s.replid) replidcalon
 				$sql = "SELECT s.*,DAY(s.tgllahir),MONTH(s.tgllahir)
 								,YEAR(s.tgllahir),ks.kondisi as kondisi_nm
 								,cs.replid as replidcalon
@@ -44,7 +43,7 @@ Class ksw_siswa_db extends CI_Model {
 								LEFT JOIN hrm_company com ON com.replid=t.idcompany
 								LEFT JOIN angkatan akt ON akt.replid=s.idangkatan
 								LEFT JOIN regional r ON r.replid=s.region
-								LEFT JOIN calonsiswa cs ON cs.replidsiswa=s.replid
+								LEFT JOIN calonsiswa cs ON cs.replid=s.replidcalon
 								LEFT JOIN kelas kls ON kls.replid=s.idkelas
 								LEFT JOIN semester sm ON sm.departemen=t.departemen AND sm.aktif=1
 								LEFT JOIN agama ag ON ag.replid=s.agama 
@@ -152,7 +151,7 @@ Class ksw_siswa_db extends CI_Model {
 								,sm.semester,p.nip,p.nama as namakepsek,p.gelarawal,p.gelarakhir,p.ttd
 	 						 ,d.keterangan as depttext,d.departemen
 	 						 ,CONCAT(s.tmplahir,', ',DATE_FORMAT(s.tgllahir,'%d-%m-%Y')) as ttl
-							 ,ta.idkepsek,com.logo as logotext
+							 ,ta.idkepsek,com.logo as logotext,com.city,com.cap as capcompany
 	 						 FROM siswa s
 	 						 INNER JOIN kelas k ON s.idkelas=k.replid
 	 						 INNER JOIN tingkat t ON k.idtingkat=t.replid

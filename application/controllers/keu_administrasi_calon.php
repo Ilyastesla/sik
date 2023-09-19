@@ -32,11 +32,13 @@ parent::__construct();
 
 	public function index($print="",$excel="")
 	{
-			$data= $this->keu_administrasi_calon_db->data();
 			$data['form']='Administrasi Keuangan Calon Peserta Didik';
 			$data['view']='index';
 			$data['action']='keu_administrasi_calon';
 			$data['excel']=$excel;
+			$data['hanyapusat']=0;
+			$data= $this->keu_administrasi_calon_db->data($data);
+			
 			$data['hariini']=$this->dbx->singlerow("SELECT CURRENT_DATE() as isi");
 			if($print<>"1"){
 				$this->load->view('keu_administrasi_calon_v', $data);
